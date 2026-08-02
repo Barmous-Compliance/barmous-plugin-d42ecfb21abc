@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
+    <meta name="googlebot" content="noindex, nofollow, noarchive, noimageindex" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="description" content="Download the public-by-link evaluation preview of the Barmous Compliance Codex plugin." />
+    <title>Barmous Compliance | Codex Plugin Preview</title>
+    <link rel="icon" href="barmous-mark.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="site-shell">
+      <header class="site-header" aria-label="Barmous Compliance">
+        <a class="brand" href="#top" aria-label="Barmous Compliance home">
+          <img src="barmous-mark.png" alt="" width="46" height="46" />
+          <span>
+            <strong>Barmous</strong>
+            <small>Compliance</small>
+          </span>
+        </a>
+        <span class="link-status">
+          <span class="status-dot"></span> Public by link
+        </span>
+      </header>
+
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">Codex plugin · evaluation preview</p>
+          <h1>Your company&apos;s compliance context, available in Codex.</h1>
+          <p class="hero-lede">
+            Connect Codex to Barmous through audited, company-scoped,
+            read-only tools for frameworks, released findings, evidence
+            actions, remediation, and published reports.
+          </p>
+
+          <ul class="trust-list" aria-label="Plugin safeguards">
+            <li><span>01</span> Read-only access</li>
+            <li><span>02</span> Company-scoped</li>
+            <li><span>03</span> Audited reads</li>
+          </ul>
+        </div>
+
+        <aside class="release-card" aria-labelledby="release-heading">
+          <div class="release-card-topline">
+            <span class="release-kicker">Latest preview</span>
+            <span class="release-ready"><span></span> Verified</span>
+          </div>
+          <div class="plugin-lockup">
+            <img src="barmous-mark.png" alt="" width="58" height="58" />
+            <div>
+              <h2 id="release-heading">Barmous Compliance</h2>
+              <p>Codex plugin</p>
+            </div>
+          </div>
+
+          <dl class="release-meta">
+            <div><dt>Version</dt><dd>0.1.0+codex.20260802110450</dd></div>
+            <div><dt>Package</dt><dd>966 KB · ZIP</dd></div>
+            <div><dt>Released</dt><dd>02 Aug 2026</dd></div>
+          </dl>
+
+          <a class="download-button" href="downloads/barmous-company-data-codex-plugin-0.1.0-codex.20260802110450.zip" download>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path>
+            </svg>
+            <span>Download plugin</span>
+            <small>ZIP · 966 KB</small>
+          </a>
+
+          <p class="package-note">
+            No agent token, credentials, or company data are included.
+          </p>
+        </aside>
+      </section>
+
+      <section class="privacy-note" aria-label="Link access notice">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3 5.5 6v5.2c0 4.1 2.7 7.8 6.5 9.1 3.8-1.3 6.5-5 6.5-9.1V6L12 3Z"></path>
+          <path d="m9.4 11.7 1.8 1.8 3.7-4"></path>
+        </svg>
+        <div>
+          <strong>Link-only preview</strong>
+          <p>
+            This page asks search engines not to index it, but it is not
+            access-controlled. Anyone with the URL can download or reshare the
+            package.
+          </p>
+        </div>
+      </section>
+
+      <section class="details-grid">
+        <article class="detail-card install-card">
+          <p class="section-index">01 / INSTALL</p>
+          <h2>Install in a few commands</h2>
+          <p>
+            Extract the ZIP, open PowerShell inside the extracted folder, and
+            run:
+          </p>
+          <pre><code>$pluginRoot = (Resolve-Path ".").Path
+codex plugin marketplace add $pluginRoot
+codex plugin add barmous-company-data@barmous</code></pre>
+          <p class="after-command">
+            Then start a new Codex task and run <code>/mcp</code> to confirm the
+            Barmous server is available.
+          </p>
+        </article>
+
+        <article class="detail-card requirements-card">
+          <p class="section-index">02 / CONNECT</p>
+          <h2>What you&apos;ll need</h2>
+          <ul class="requirements-list">
+            <li><span>Node</span><strong>22.12 through 24.x</strong></li>
+            <li><span>Account</span><strong>Authorized Barmous access</strong></li>
+            <li><span>Backend</span><strong>Production HTTPS URL</strong></li>
+            <li><span>Token</span><strong>One-time scoped agent token</strong></li>
+          </ul>
+          <p class="security-copy">
+            Create the token in <strong>Settings → Agent access</strong>. Revoke
+            it immediately if exposed. Insecure HTTP is for localhost
+            development only.
+          </p>
+        </article>
+      </section>
+
+      <section class="integrity-card" aria-labelledby="integrity-heading">
+        <div>
+          <p class="section-index">03 / VERIFY</p>
+          <h2 id="integrity-heading">Package integrity</h2>
+        </div>
+        <div class="checksum-block">
+          <span>SHA-256</span>
+          <code>8C938340C455B34684D9AF77140D6793D879725B3A616163FEE577E2DC367290</code>
+        </div>
+      </section>
+
+      <footer>
+        <span>© 2026 Barmous Compliance</span>
+        <span class="footer-links">
+          <a href="PREVIEW_DISTRIBUTION_NOTICE.md">Preview terms</a>
+          <a href="THIRD_PARTY_NOTICES.md">Third-party notices</a>
+        </span>
+      </footer>
+    </main>
+  </body>
+</html>
