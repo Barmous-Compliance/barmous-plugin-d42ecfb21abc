@@ -1,13 +1,14 @@
-# Barmous Compliance Codex plugin preview
+# Barmous Compliance AI workspace plugins
 
-This repository publishes the public-by-link evaluation preview of the Barmous Compliance Codex plugin.
+This repository publishes evaluation preview downloads for the Barmous Compliance Codex and Claude Code plugins.
 
 - Download page: <https://barmous-compliance.github.io/barmous-plugin-d42ecfb21abc/>
 - Published source: `docs/`
-- Plugin version: `0.1.0+codex.20260802110450`
-- SHA-256: `8C938340C455B34684D9AF77140D6793D879725B3A616163FEE577E2DC367290`
+- Release version: `v0.1.0`
+- Codex SHA-256: `8C938340C455B34684D9AF77140D6793D879725B3A616163FEE577E2DC367290`
+- Claude Code SHA-256: `827599DA3FF7186DEC276D7B3690F90C8BD6BF092BADD2F4A363C68F1C815789`
 
-The page and its randomized URL are marked `noindex`, `nofollow`, and `noarchive`. This discourages search discovery but is not access control: anyone with the URL can download or reshare the package.
+The landing page is marked `noindex`, `nofollow`, and `noarchive`.
 
 ## Verification
 
@@ -18,7 +19,7 @@ npm run lint
 npm audit --omit=dev
 ```
 
-The test suite renders the application, verifies the static Pages artifact, and checks the published ZIP byte size and SHA-256 digest.
+The test suite renders the application, verifies the static Pages artifact, and checks both published ZIP files by byte size and SHA-256 digest.
 
 ## Distribution
 

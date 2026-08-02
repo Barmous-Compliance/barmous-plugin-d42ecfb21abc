@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Barmous Compliance | Codex Plugin Preview",
+  title: "Barmous Compliance | AI Workspace Plugins",
   description:
-    "Download the public-by-link evaluation preview of the Barmous Compliance Codex plugin.",
+    "Download Barmous Compliance plugins for Codex and Claude Code.",
   icons: {
     icon: "/barmous-mark.png",
     shortcut: "/barmous-mark.png",

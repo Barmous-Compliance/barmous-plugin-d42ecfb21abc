@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "barmous-company-data",
+  "displayName": "Barmous Compliance",
+  "version": "0.1.0",
+  "description": "Secure read-only access to company compliance data in Barmous",
+  "author": {
+    "name": "Barmous Compliance",
+    "url": "https://barmous-compliance.github.io/barmous-plugin-d42ecfb21abc/"
+  },
+  "homepage": "https://barmous-compliance.github.io/barmous-plugin-d42ecfb21abc/",
+  "repository": "https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc",
+  "license": "LicenseRef-Barmous-Preview",
+  "keywords": [
+    "barmous",
+    "compliance",
+    "frameworks",
+    "findings",
+    "readiness"
+  ],
+  "defaultEnabled": false,
+  "mcpServers": "./.mcp.json",
+  "userConfig": {
+    "api_url": {
+      "type": "string",
+      "title": "Barmous API URL",
+      "description": "HTTPS origin for your Barmous backend",
+      "required": true
+    },
+    "agent_token": {
+      "type": "string",
+      "title": "Barmous agent token",
+      "description": "One-time company-scoped token from Settings > Agent access",
+      "sensitive": true,
+      "required": true
+    }
+  }
+}

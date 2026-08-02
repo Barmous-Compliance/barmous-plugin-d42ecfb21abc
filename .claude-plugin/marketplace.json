@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "barmous",
+  "description": "Barmous Compliance integrations for AI workspaces",
+  "owner": {
+    "name": "Barmous Compliance",
+    "url": "https://barmous-compliance.github.io/barmous-plugin-d42ecfb21abc/"
+  },
+  "plugins": [
+    {
+      "name": "barmous-company-data",
+      "source": "./plugins/barmous-company-data",
+      "description": "Secure read-only access to company compliance data in Barmous",
+      "category": "productivity",
+      "tags": [
+        "compliance",
+        "readiness",
+        "findings",
+        "remediation"
+      ]
+    }
+  ]
+}

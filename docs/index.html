@@ -6,8 +6,8 @@
     <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
     <meta name="googlebot" content="noindex, nofollow, noarchive, noimageindex" />
     <meta name="referrer" content="no-referrer" />
-    <meta name="description" content="Download the public-by-link evaluation preview of the Barmous Compliance Codex plugin." />
-    <title>Barmous Compliance | Codex Plugin Preview</title>
+    <meta name="description" content="Download Barmous Compliance plugins for Codex and Claude Code." />
+    <title>Barmous Compliance | AI Workspace Plugins</title>
     <link rel="icon" href="barmous-mark.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -21,19 +21,16 @@
             <small>Compliance</small>
           </span>
         </a>
-        <span class="link-status">
-          <span class="status-dot"></span> Public by link
-        </span>
       </header>
 
       <section class="hero" id="top">
         <div class="hero-copy">
-          <p class="eyebrow">Codex plugin · evaluation preview</p>
-          <h1>Your company&apos;s compliance context, available in Codex.</h1>
+          <p class="eyebrow">AI workspace plugins · evaluation preview</p>
+          <h1>Bring Barmous compliance context into Codex and Claude Code.</h1>
           <p class="hero-lede">
-            Connect Codex to Barmous through audited, company-scoped,
-            read-only tools for frameworks, released findings, evidence
-            actions, remediation, and published reports.
+            Connect your AI workspace to Barmous through audited,
+            company-scoped, read-only tools for frameworks, released findings,
+            evidence actions, remediation, and published reports.
           </p>
 
           <ul class="trust-list" aria-label="Plugin safeguards">
@@ -45,30 +42,53 @@
 
         <aside class="release-card" aria-labelledby="release-heading">
           <div class="release-card-topline">
-            <span class="release-kicker">Latest preview</span>
+            <span class="release-kicker">Latest release</span>
             <span class="release-ready"><span></span> Verified</span>
           </div>
+
           <div class="plugin-lockup">
             <img src="barmous-mark.png" alt="" width="58" height="58" />
             <div>
               <h2 id="release-heading">Barmous Compliance</h2>
-              <p>Codex plugin</p>
+              <p>AI workspace plugins</p>
             </div>
           </div>
 
           <dl class="release-meta">
-            <div><dt>Version</dt><dd>0.1.0+codex.20260802110450</dd></div>
-            <div><dt>Package</dt><dd>966 KB · ZIP</dd></div>
+            <div><dt>Version</dt><dd>v0.1.0</dd></div>
             <div><dt>Released</dt><dd>02 Aug 2026</dd></div>
+            <div><dt>Access</dt><dd>Read-only</dd></div>
           </dl>
 
-          <a class="download-button" href="downloads/barmous-company-data-codex-plugin-0.1.0-codex.20260802110450.zip" download>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path>
-            </svg>
-            <span>Download plugin</span>
-            <small>ZIP · 966 KB</small>
-          </a>
+          <div class="platform-downloads" aria-label="Plugin downloads">
+            <a class="platform-download" href="downloads/barmous-compliance-codex-plugin-v0.1.0.zip" download>
+              <span class="platform-copy">
+                <small>OpenAI</small>
+                <strong>Codex</strong>
+              </span>
+              <span class="download-action">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path>
+                </svg>
+                <span>Download</span>
+                <small>ZIP · 966 KB</small>
+              </span>
+            </a>
+
+            <a class="platform-download" href="downloads/barmous-compliance-claude-plugin-v0.1.0.zip" download>
+              <span class="platform-copy">
+                <small>Anthropic</small>
+                <strong>Claude Code</strong>
+              </span>
+              <span class="download-action">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path>
+                </svg>
+                <span>Download</span>
+                <small>ZIP · 207 KB</small>
+              </span>
+            </a>
+          </div>
 
           <p class="package-note">
             No agent token, credentials, or company data are included.
@@ -76,63 +96,63 @@
         </aside>
       </section>
 
-      <section class="privacy-note" aria-label="Link access notice">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 3 5.5 6v5.2c0 4.1 2.7 7.8 6.5 9.1 3.8-1.3 6.5-5 6.5-9.1V6L12 3Z"></path>
-          <path d="m9.4 11.7 1.8 1.8 3.7-4"></path>
-        </svg>
-        <div>
-          <strong>Link-only preview</strong>
-          <p>
-            This page asks search engines not to index it, but it is not
-            access-controlled. Anyone with the URL can download or reshare the
-            package.
-          </p>
-        </div>
-      </section>
-
-      <section class="details-grid">
+      <section class="details-grid" id="install">
         <article class="detail-card install-card">
-          <p class="section-index">01 / INSTALL</p>
-          <h2>Install in a few commands</h2>
+          <p class="section-index">01 / CODEX</p>
+          <h2>Install for Codex</h2>
           <p>
-            Extract the ZIP, open PowerShell inside the extracted folder, and
-            run:
+            Extract the Codex ZIP, open PowerShell inside the extracted folder,
+            and run:
           </p>
           <pre><code>$pluginRoot = (Resolve-Path ".").Path
 codex plugin marketplace add $pluginRoot
 codex plugin add barmous-company-data@barmous</code></pre>
           <p class="after-command">
-            Then start a new Codex task and run <code>/mcp</code> to confirm the
+            Start a new Codex task and run <code>/mcp</code> to confirm the
             Barmous server is available.
           </p>
         </article>
 
-        <article class="detail-card requirements-card">
-          <p class="section-index">02 / CONNECT</p>
-          <h2>What you&apos;ll need</h2>
-          <ul class="requirements-list">
-            <li><span>Node</span><strong>22.12 through 24.x</strong></li>
-            <li><span>Account</span><strong>Authorized Barmous access</strong></li>
-            <li><span>Backend</span><strong>Production HTTPS URL</strong></li>
-            <li><span>Token</span><strong>One-time scoped agent token</strong></li>
-          </ul>
-          <p class="security-copy">
-            Create the token in <strong>Settings → Agent access</strong>. Revoke
-            it immediately if exposed. Insecure HTTP is for localhost
-            development only.
+        <article class="detail-card install-card">
+          <p class="section-index">02 / CLAUDE CODE</p>
+          <h2>Install for Claude Code</h2>
+          <p>
+            Add the Barmous marketplace, install the plugin, and enable it:
+          </p>
+          <pre><code>claude plugin marketplace add Barmous-Compliance/barmous-plugin-d42ecfb21abc
+claude plugin install barmous-company-data@barmous
+claude plugin enable barmous-company-data@barmous</code></pre>
+          <p class="after-command">
+            Claude Code securely prompts for the API URL and token. Run
+            <code> /reload-plugins</code>, then <code>/mcp</code>.
           </p>
         </article>
       </section>
 
       <section class="integrity-card" aria-labelledby="integrity-heading">
-        <div>
+        <div class="integrity-intro">
           <p class="section-index">03 / VERIFY</p>
-          <h2 id="integrity-heading">Package integrity</h2>
+          <h2 id="integrity-heading">Verified release packages</h2>
+          <p>
+            Requires Node.js 22.12–24.x, an authorized Barmous account, a
+            production HTTPS backend URL, and a scoped agent token.
+          </p>
         </div>
-        <div class="checksum-block">
-          <span>SHA-256</span>
-          <code>8C938340C455B34684D9AF77140D6793D879725B3A616163FEE577E2DC367290</code>
+        <div class="checksum-list">
+          <div class="checksum-row">
+            <span>
+              <strong>Codex</strong>
+              <small>966 KB · SHA-256</small>
+            </span>
+            <code>8C938340C455B34684D9AF77140D6793D879725B3A616163FEE577E2DC367290</code>
+          </div>
+          <div class="checksum-row">
+            <span>
+              <strong>Claude Code</strong>
+              <small>207 KB · SHA-256</small>
+            </span>
+            <code>827599DA3FF7186DEC276D7B3690F90C8BD6BF092BADD2F4A363C68F1C815789</code>
+          </div>
         </div>
       </section>
 

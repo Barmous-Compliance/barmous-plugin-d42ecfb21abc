@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Published plugin source includes a generated, bundled MCP server.
+    "plugins/**",
   ]),
 ]);
 

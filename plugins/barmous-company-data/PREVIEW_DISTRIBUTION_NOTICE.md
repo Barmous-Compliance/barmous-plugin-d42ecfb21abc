@@ -1,6 +1,6 @@
 # Barmous Compliance plugin preview distribution notice
 
-These packages are evaluation previews of the Barmous Compliance integrations for Codex and Claude Code. They are provided for testing by recipients who have an authorized Barmous account and a scoped agent-access token.
+This package is an evaluation preview of the Barmous Compliance integration for Claude Code. It is provided for testing by recipients who have an authorized Barmous account and a scoped agent-access token.
 
 No open-source license is granted for Barmous-owned code in this package. Barmous Compliance retains all rights in that code.
 
