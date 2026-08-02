@@ -6,10 +6,14 @@
     <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
     <meta name="googlebot" content="noindex, nofollow, noarchive, noimageindex" />
     <meta name="referrer" content="no-referrer" />
-    <meta name="description" content="Download Barmous Compliance plugins for Codex and Claude Code." />
+    <meta
+      name="description"
+      content="Install and connect Barmous Compliance plugins for Codex and Claude Code."
+    />
     <title>Barmous Compliance | AI Workspace Plugins</title>
     <link rel="icon" href="barmous-mark.png" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="scripts.js" defer></script>
   </head>
   <body>
     <main class="site-shell">
@@ -21,138 +25,242 @@
             <small>Compliance</small>
           </span>
         </a>
+        <div class="header-release" aria-label="Current plugin release">
+          <span><i></i> Verified preview</span>
+          <code>v0.1.0</code>
+        </div>
       </header>
 
       <section class="hero" id="top">
-        <div class="hero-copy">
-          <p class="eyebrow">AI workspace plugins · evaluation preview</p>
-          <h1>Bring Barmous compliance context into Codex and Claude Code.</h1>
-          <p class="hero-lede">
-            Connect your AI workspace to Barmous through audited,
-            company-scoped, read-only tools for frameworks, released findings,
-            evidence actions, remediation, and published reports.
-          </p>
+        <p class="eyebrow">Barmous for AI workspaces</p>
+        <h1>Connect your compliance workspace in three clear steps.</h1>
+        <p class="hero-lede">
+          Install the Barmous plugin for Codex or Claude Code, connect your
+          company-scoped access, and start reviewing live readiness with
+          audited, read-only tools.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#installer">
+            Start setup
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14m-5-5 5 5-5 5"></path>
+            </svg>
+          </a>
+          <a
+            class="button button-secondary"
+            href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
+            target="_blank"
+            rel="noreferrer"
+          >
+            View plugin source
+          </a>
+        </div>
+        <ul class="trust-list" aria-label="Plugin safeguards">
+          <li><span>01</span> Read-only access</li>
+          <li><span>02</span> Company-scoped</li>
+          <li><span>03</span> Audited reads</li>
+        </ul>
+      </section>
 
-          <ul class="trust-list" aria-label="Plugin safeguards">
-            <li><span>01</span> Read-only access</li>
-            <li><span>02</span> Company-scoped</li>
-            <li><span>03</span> Audited reads</li>
-          </ul>
+      <section class="installer" id="installer" aria-labelledby="installer-heading">
+        <div class="installer-topbar">
+          <div class="client-tabs" role="group" aria-label="Choose your AI workspace">
+            <button
+              class="client-tab is-active"
+              type="button"
+              aria-pressed="true"
+              data-client="codex"
+            >
+              <span class="client-mark" aria-hidden="true">C</span>
+              <span>
+                <strong>Codex</strong>
+                <small>OpenAI</small>
+              </span>
+            </button>
+            <button
+              class="client-tab"
+              type="button"
+              aria-pressed="false"
+              data-client="claude"
+            >
+              <span class="client-mark" aria-hidden="true">A</span>
+              <span>
+                <strong>Claude Code</strong>
+                <small>Anthropic</small>
+              </span>
+            </button>
+          </div>
+
+          <div class="mode-tabs" role="group" aria-label="Choose setup stage">
+            <button
+              class="mode-tab is-active"
+              type="button"
+              aria-pressed="true"
+              data-mode="install"
+            >
+              Install
+            </button>
+            <button
+              class="mode-tab"
+              type="button"
+              aria-pressed="false"
+              data-mode="connect"
+            >
+              Connect
+            </button>
+          </div>
         </div>
 
-        <aside class="release-card" aria-labelledby="release-heading">
-          <div class="release-card-topline">
-            <span class="release-kicker">Latest release</span>
-            <span class="release-ready"><span></span> Verified</span>
+        <div class="installer-heading">
+          <div>
+            <p class="installer-kicker" data-installer-kicker>Plugin installation</p>
+            <h2 id="installer-heading" data-installer-title>Set up Barmous for Codex</h2>
           </div>
+          <span class="local-mcp-badge"><i></i> Local MCP · read-only</span>
+        </div>
 
-          <div class="plugin-lockup">
-            <img src="barmous-mark.png" alt="" width="58" height="58" />
-            <div>
-              <h2 id="release-heading">Barmous Compliance</h2>
-              <p>AI workspace plugins</p>
+        <div class="setup-grid" aria-live="polite" data-setup-grid>
+          <article class="setup-step">
+            <span class="step-number">1</span>
+            <h3>Download the Codex bundle</h3>
+            <p>Get the verified preview ZIP, then extract it to a folder you control.</p>
+            <div class="step-control">
+              <a
+                class="step-action"
+                href="downloads/barmous-compliance-codex-plugin-v0.1.0.zip"
+                download
+              >
+                Download Codex ZIP
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 12h14m-5-5 5 5-5 5"></path>
+                </svg>
+              </a>
             </div>
-          </div>
+          </article>
 
+          <article class="setup-step">
+            <span class="step-number">2</span>
+            <h3>Install from PowerShell</h3>
+            <p>Open PowerShell in the extracted bundle root and run both commands.</p>
+            <div class="step-control">
+              <div class="command-box">
+                <code>$pluginRoot = (Resolve-Path ".").Path
+codex plugin marketplace add $pluginRoot
+codex plugin add barmous-company-data@barmous</code>
+                <button class="copy-button" type="button" data-copy aria-label="Copy command" aria-live="polite">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="8" y="8" width="11" height="11" rx="2"></rect>
+                    <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+                  </svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="setup-step">
+            <span class="step-number">3</span>
+            <h3>Connect, then verify</h3>
+            <p>
+              Complete the Connect steps above, launch Codex from that
+              PowerShell session, and run this check in a new task.
+            </p>
+            <div class="step-control">
+              <div class="command-box">
+                <code>/mcp</code>
+                <button class="copy-button" type="button" data-copy aria-label="Copy command" aria-live="polite">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="8" y="8" width="11" height="11" rx="2"></rect>
+                    <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+                  </svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="installer-footer">
+          <span>Use a scoped token and revoke it immediately if exposed.</span>
+          <a
+            href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Plugin repository
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14m-5-5 5 5-5 5"></path>
+            </svg>
+          </a>
+        </div>
+      </section>
+
+      <section class="release-section" id="requirements" aria-labelledby="release-heading">
+        <div class="release-intro">
+          <p class="section-index">Verified release</p>
+          <h2 id="release-heading">Everything you need, nothing sensitive included.</h2>
+          <p>
+            Packages contain the local MCP server and five Barmous compliance
+            skills. No agent token, credentials, or company data are bundled.
+          </p>
           <dl class="release-meta">
             <div><dt>Version</dt><dd>v0.1.0</dd></div>
             <div><dt>Released</dt><dd>02 Aug 2026</dd></div>
+            <div><dt>Runtime</dt><dd>Node.js 22.12–24.x</dd></div>
             <div><dt>Access</dt><dd>Read-only</dd></div>
           </dl>
+        </div>
 
-          <div class="platform-downloads" aria-label="Plugin downloads">
-            <a class="platform-download" href="downloads/barmous-compliance-codex-plugin-v0.1.0.zip" download>
-              <span class="platform-copy">
+        <div class="release-downloads" aria-label="Verified plugin downloads">
+          <article class="release-download">
+            <div class="download-heading">
+              <span class="platform-mark" aria-hidden="true">C</span>
+              <span>
                 <small>OpenAI</small>
                 <strong>Codex</strong>
               </span>
-              <span class="download-action">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path>
-                </svg>
-                <span>Download</span>
-                <small>ZIP · 966 KB</small>
-              </span>
+            </div>
+            <a
+              class="download-button"
+              href="downloads/barmous-compliance-codex-plugin-v0.1.0.zip"
+              download
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path>
+              </svg>
+              Download ZIP
+              <small>966 KB</small>
             </a>
+            <div class="checksum">
+              <span>SHA-256</span>
+              <code>D9363EDC4FF9B2B42D97CB55A77A26FB6C557E4720AE5FEE8DA550A53044D987</code>
+            </div>
+          </article>
 
-            <a class="platform-download" href="downloads/barmous-compliance-claude-plugin-v0.1.0.zip" download>
-              <span class="platform-copy">
+          <article class="release-download">
+            <div class="download-heading">
+              <span class="platform-mark" aria-hidden="true">A</span>
+              <span>
                 <small>Anthropic</small>
                 <strong>Claude Code</strong>
               </span>
-              <span class="download-action">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path>
-                </svg>
-                <span>Download</span>
-                <small>ZIP · 207 KB</small>
-              </span>
+            </div>
+            <a
+              class="download-button"
+              href="downloads/barmous-compliance-claude-plugin-v0.1.0.zip"
+              download
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path>
+              </svg>
+              Download ZIP
+              <small>207 KB</small>
             </a>
-          </div>
-
-          <p class="package-note">
-            No agent token, credentials, or company data are included.
-          </p>
-        </aside>
-      </section>
-
-      <section class="details-grid" id="install">
-        <article class="detail-card install-card">
-          <p class="section-index">01 / CODEX</p>
-          <h2>Install for Codex</h2>
-          <p>
-            Extract the Codex ZIP, open PowerShell inside the extracted folder,
-            and run:
-          </p>
-          <pre><code>$pluginRoot = (Resolve-Path ".").Path
-codex plugin marketplace add $pluginRoot
-codex plugin add barmous-company-data@barmous</code></pre>
-          <p class="after-command">
-            Start a new Codex task and run <code>/mcp</code> to confirm the
-            Barmous server is available.
-          </p>
-        </article>
-
-        <article class="detail-card install-card">
-          <p class="section-index">02 / CLAUDE CODE</p>
-          <h2>Install for Claude Code</h2>
-          <p>
-            Add the Barmous marketplace, install the plugin, and enable it:
-          </p>
-          <pre><code>claude plugin marketplace add Barmous-Compliance/barmous-plugin-d42ecfb21abc
-claude plugin install barmous-company-data@barmous
-claude plugin enable barmous-company-data@barmous</code></pre>
-          <p class="after-command">
-            Claude Code securely prompts for the API URL and token. Run
-            <code> /reload-plugins</code>, then <code>/mcp</code>.
-          </p>
-        </article>
-      </section>
-
-      <section class="integrity-card" aria-labelledby="integrity-heading">
-        <div class="integrity-intro">
-          <p class="section-index">03 / VERIFY</p>
-          <h2 id="integrity-heading">Verified release packages</h2>
-          <p>
-            Requires Node.js 22.12–24.x, an authorized Barmous account, a
-            production HTTPS backend URL, and a scoped agent token.
-          </p>
-        </div>
-        <div class="checksum-list">
-          <div class="checksum-row">
-            <span>
-              <strong>Codex</strong>
-              <small>966 KB · SHA-256</small>
-            </span>
-            <code>D9363EDC4FF9B2B42D97CB55A77A26FB6C557E4720AE5FEE8DA550A53044D987</code>
-          </div>
-          <div class="checksum-row">
-            <span>
-              <strong>Claude Code</strong>
-              <small>207 KB · SHA-256</small>
-            </span>
-            <code>827599DA3FF7186DEC276D7B3690F90C8BD6BF092BADD2F4A363C68F1C815789</code>
-          </div>
+            <div class="checksum">
+              <span>SHA-256</span>
+              <code>827599DA3FF7186DEC276D7B3690F90C8BD6BF092BADD2F4A363C68F1C815789</code>
+            </div>
+          </article>
         </div>
       </section>
 

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import PluginInstaller from "./plugin-installer";
 
 const releaseVersion = "v0.1.0";
 
@@ -29,6 +30,14 @@ function DownloadIcon() {
   );
 }
 
+function ArrowIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12h14m-5-5 5 5-5 5" />
+    </svg>
+  );
+}
+
 export default function Home() {
   return (
     <main className="site-shell">
@@ -40,130 +49,90 @@ export default function Home() {
             <small>Compliance</small>
           </span>
         </a>
+        <div className="header-release" aria-label="Current plugin release">
+          <span><i /> Verified preview</span>
+          <code>{releaseVersion}</code>
+        </div>
       </header>
 
       <section className="hero" id="top">
-        <div className="hero-copy">
-          <p className="eyebrow">AI workspace plugins · evaluation preview</p>
-          <h1>Bring Barmous compliance context into Codex and Claude Code.</h1>
-          <p className="hero-lede">
-            Connect your AI workspace to Barmous through audited,
-            company-scoped, read-only tools for frameworks, released findings,
-            evidence actions, remediation, and published reports.
-          </p>
-
-          <ul className="trust-list" aria-label="Plugin safeguards">
-            <li><span>01</span> Read-only access</li>
-            <li><span>02</span> Company-scoped</li>
-            <li><span>03</span> Audited reads</li>
-          </ul>
+        <p className="eyebrow">Barmous for AI workspaces</p>
+        <h1>Connect your compliance workspace in three clear steps.</h1>
+        <p className="hero-lede">
+          Install the Barmous plugin for Codex or Claude Code, connect your
+          company-scoped access, and start reviewing live readiness with
+          audited, read-only tools.
+        </p>
+        <div className="hero-actions">
+          <a className="button button-primary" href="#installer">
+            Start setup <ArrowIcon />
+          </a>
+          <a
+            className="button button-secondary"
+            href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
+            target="_blank"
+            rel="noreferrer"
+          >
+            View plugin source
+          </a>
         </div>
+        <ul className="trust-list" aria-label="Plugin safeguards">
+          <li><span>01</span> Read-only access</li>
+          <li><span>02</span> Company-scoped</li>
+          <li><span>03</span> Audited reads</li>
+        </ul>
+      </section>
 
-        <aside className="release-card" aria-labelledby="release-heading">
-          <div className="release-card-topline">
-            <span className="release-kicker">Latest release</span>
-            <span className="release-ready"><span /> Verified</span>
-          </div>
+      <PluginInstaller />
 
-          <div className="plugin-lockup">
-            <Image src="/barmous-mark.png" alt="" width={58} height={58} unoptimized />
-            <div>
-              <h2 id="release-heading">Barmous Compliance</h2>
-              <p>AI workspace plugins</p>
-            </div>
-          </div>
-
+      <section className="release-section" id="requirements" aria-labelledby="release-heading">
+        <div className="release-intro">
+          <p className="section-index">Verified release</p>
+          <h2 id="release-heading">Everything you need, nothing sensitive included.</h2>
+          <p>
+            Packages contain the local MCP server and five Barmous compliance
+            skills. No agent token, credentials, or company data are bundled.
+          </p>
           <dl className="release-meta">
             <div><dt>Version</dt><dd>{releaseVersion}</dd></div>
             <div><dt>Released</dt><dd>02 Aug 2026</dd></div>
+            <div><dt>Runtime</dt><dd>Node.js 22.12–24.x</dd></div>
             <div><dt>Access</dt><dd>Read-only</dd></div>
           </dl>
+        </div>
 
-          <div className="platform-downloads" aria-label="Plugin downloads">
-            {downloads.map((download) => (
-              <a
-                className="platform-download"
-                href={download.path}
-                download
-                key={download.product}
-              >
-                <span className="platform-copy">
+        <div className="release-downloads" aria-label="Verified plugin downloads">
+          {downloads.map((download) => (
+            <article className="release-download" key={download.product}>
+              <div className="download-heading">
+                <span className="platform-mark" aria-hidden="true">
+                  {download.product === "Codex" ? "C" : "A"}
+                </span>
+                <span>
                   <small>{download.maker}</small>
                   <strong>{download.product}</strong>
                 </span>
-                <span className="download-action">
-                  <DownloadIcon />
-                  <span>Download</span>
-                  <small>ZIP · {download.size}</small>
-                </span>
+              </div>
+              <a className="download-button" href={download.path} download>
+                <DownloadIcon />
+                Download ZIP
+                <small>{download.size}</small>
               </a>
-            ))}
-          </div>
-
-          <p className="package-note">
-            No agent token, credentials, or company data are included.
-          </p>
-        </aside>
-      </section>
-
-      <section className="details-grid" id="install">
-        <article className="detail-card install-card">
-          <p className="section-index">01 / CODEX</p>
-          <h2>Install for Codex</h2>
-          <p>
-            Extract the Codex ZIP, open PowerShell inside the extracted folder,
-            and run:
-          </p>
-          <pre><code>{`$pluginRoot = (Resolve-Path ".").Path
-codex plugin marketplace add $pluginRoot
-codex plugin add barmous-company-data@barmous`}</code></pre>
-          <p className="after-command">
-            Start a new Codex task and run <code>/mcp</code> to confirm the
-            Barmous server is available.
-          </p>
-        </article>
-
-        <article className="detail-card install-card">
-          <p className="section-index">02 / CLAUDE CODE</p>
-          <h2>Install for Claude Code</h2>
-          <p>
-            Add the Barmous marketplace, install the plugin, and enable it:
-          </p>
-          <pre><code>{`claude plugin marketplace add Barmous-Compliance/barmous-plugin-d42ecfb21abc
-claude plugin install barmous-company-data@barmous
-claude plugin enable barmous-company-data@barmous`}</code></pre>
-          <p className="after-command">
-            Claude Code securely prompts for the API URL and token. Run
-            <code> /reload-plugins</code>, then <code>/mcp</code>.
-          </p>
-        </article>
-      </section>
-
-      <section className="integrity-card" aria-labelledby="integrity-heading">
-        <div className="integrity-intro">
-          <p className="section-index">03 / VERIFY</p>
-          <h2 id="integrity-heading">Verified release packages</h2>
-          <p>
-            Requires Node.js 22.12–24.x, an authorized Barmous account, a
-            production HTTPS backend URL, and a scoped agent token.
-          </p>
-        </div>
-        <div className="checksum-list">
-          {downloads.map((download) => (
-            <div className="checksum-row" key={download.product}>
-              <span>
-                <strong>{download.product}</strong>
-                <small>{download.size} · SHA-256</small>
-              </span>
-              <code>{download.checksum}</code>
-            </div>
+              <div className="checksum">
+                <span>SHA-256</span>
+                <code>{download.checksum}</code>
+              </div>
+            </article>
           ))}
         </div>
       </section>
 
       <footer>
         <span>© 2026 Barmous Compliance</span>
-        <span>Evaluation preview · No open-source license granted</span>
+        <span className="footer-links">
+          <a href="PREVIEW_DISTRIBUTION_NOTICE.md">Preview terms</a>
+          <a href="THIRD_PARTY_NOTICES.md">Third-party notices</a>
+        </span>
       </footer>
     </main>
   );
