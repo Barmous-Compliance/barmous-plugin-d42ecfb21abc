@@ -55,7 +55,15 @@ test("server-renders both clean v0.1.0 plugin downloads", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>Barmous Compliance \| AI Workspace Plugins<\/title>/i);
-  assert.match(html, /Bring Barmous compliance context into Codex and Claude Code\./i);
+  assert.match(
+    html,
+    /Connect your compliance workspace in three clear steps\./i,
+  );
+  assert.match(html, /Set up Barmous for .*Codex/i);
+  assert.match(html, /Download Codex ZIP/i);
+  assert.match(html, /codex plugin marketplace add \$pluginRoot/i);
+  assert.match(html, /data-client="claude"/i);
+  assert.match(html, /data-mode="connect"/i);
   assert.match(html, />v0\.1\.0</i);
   for (const release of releases) {
     assert.match(html, new RegExp(`/downloads/${release.name}`));
@@ -128,15 +136,54 @@ test("removes the disposable starter preview", async () => {
 });
 
 test("keeps the static Pages release synchronized", async () => {
-  const html = await readFile(
-    new URL("../docs/index.html", import.meta.url),
-    "utf8",
+  const [
+    html,
+    script,
+    pagesPreviewNotice,
+    runtimePreviewNotice,
+    pagesThirdPartyNotices,
+    runtimeThirdPartyNotices,
+  ] = await Promise.all([
+    readFile(new URL("../docs/index.html", import.meta.url), "utf8"),
+    readFile(new URL("../docs/scripts.js", import.meta.url), "utf8"),
+    readFile(
+      new URL("../docs/PREVIEW_DISTRIBUTION_NOTICE.md", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../public/PREVIEW_DISTRIBUTION_NOTICE.md", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../docs/THIRD_PARTY_NOTICES.md", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../public/THIRD_PARTY_NOTICES.md", import.meta.url),
+      "utf8",
+    ),
+  ]);
+  assert.equal(runtimePreviewNotice.trimEnd(), pagesPreviewNotice.trimEnd());
+  assert.equal(
+    runtimeThirdPartyNotices.trimEnd(),
+    pagesThirdPartyNotices.trimEnd(),
   );
   assert.match(
     html,
     /name="robots" content="noindex, nofollow, noarchive, noimageindex"/i,
   );
   assert.match(html, />v0\.1\.0</i);
+  assert.match(html, /src="scripts\.js"/i);
+  assert.match(html, /data-client="codex"/i);
+  assert.match(html, /data-client="claude"/i);
+  assert.match(html, /data-mode="install"/i);
+  assert.match(html, /data-mode="connect"/i);
+  assert.match(script, /navigator\.clipboard/i);
+  assert.match(
+    script,
+    /claude plugin marketplace add Barmous-Compliance\/barmous-plugin-d42ecfb21abc/i,
+  );
+  assert.match(script, /BARMOUS_AGENT_TOKEN/i);
   assert.doesNotMatch(html, /Public by link|Link-only preview|not access-controlled/i);
 
   for (const release of releases) {
