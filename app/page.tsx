@@ -9,7 +9,7 @@ const downloads = [
     path: "/downloads/barmous-compliance-codex-plugin-v0.1.0.zip",
     size: "966 KB",
     checksum:
-      "8C938340C455B34684D9AF77140D6793D879725B3A616163FEE577E2DC367290",
+      "D9363EDC4FF9B2B42D97CB55A77A26FB6C557E4720AE5FEE8DA550A53044D987",
   },
   {
     product: "Claude Code",
