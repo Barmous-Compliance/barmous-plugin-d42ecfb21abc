@@ -1,11 +1,13 @@
 import Image from "next/image";
 import PluginInstaller from "./plugin-installer";
+import ProductMark, { type ProductId } from "./product-mark";
 
 const releaseVersion = "v0.1.0";
 
 const downloads = [
   {
     product: "Codex",
+    productId: "codex" as ProductId,
     maker: "OpenAI",
     path: "/downloads/barmous-compliance-codex-plugin-v0.1.0.zip",
     size: "966 KB",
@@ -14,6 +16,7 @@ const downloads = [
   },
   {
     product: "Claude Code",
+    productId: "claude" as ProductId,
     maker: "Anthropic",
     path: "/downloads/barmous-compliance-claude-plugin-v0.1.0.zip",
     size: "207 KB",
@@ -38,6 +41,31 @@ function ArrowIcon() {
   );
 }
 
+function SafeguardIcon({ type }: { type: "scope" | "company" | "audit" }) {
+  if (type === "company") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 21V6l7-3 7 3v15M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h6" />
+      </svg>
+    );
+  }
+
+  if (type === "audit") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M9 5h10M9 10h10M9 15h6M4 5l1 1 2-2M4 10l1 1 2-2M4 15l1 1 2-2" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 3 5 6v5c0 4.5 2.8 8.3 7 10 4.2-1.7 7-5.5 7-10V6l-7-3Z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+}
+
 export default function Home() {
   return (
     <main className="site-shell">
@@ -56,7 +84,6 @@ export default function Home() {
       </header>
 
       <section className="hero" id="top">
-        <p className="eyebrow">Barmous for AI workspaces</p>
         <h1>Connect your compliance workspace in three clear steps.</h1>
         <p className="hero-lede">
           Install the Barmous plugin for Codex or Claude Code, connect your
@@ -77,9 +104,9 @@ export default function Home() {
           </a>
         </div>
         <ul className="trust-list" aria-label="Plugin safeguards">
-          <li><span>01</span> Read-only access</li>
-          <li><span>02</span> Company-scoped</li>
-          <li><span>03</span> Audited reads</li>
+          <li><span><SafeguardIcon type="scope" /></span> Read-only access</li>
+          <li><span><SafeguardIcon type="company" /></span> Company-scoped</li>
+          <li><span><SafeguardIcon type="audit" /></span> Audited reads</li>
         </ul>
       </section>
 
@@ -87,7 +114,6 @@ export default function Home() {
 
       <section className="release-section" id="requirements" aria-labelledby="release-heading">
         <div className="release-intro">
-          <p className="section-index">Verified release</p>
           <h2 id="release-heading">Everything you need, nothing sensitive included.</h2>
           <p>
             Packages contain the local MCP server and five Barmous compliance
@@ -105,9 +131,7 @@ export default function Home() {
           {downloads.map((download) => (
             <article className="release-download" key={download.product}>
               <div className="download-heading">
-                <span className="platform-mark" aria-hidden="true">
-                  {download.product === "Codex" ? "C" : "A"}
-                </span>
+                <ProductMark product={download.productId} className="platform-mark" />
                 <span>
                   <small>{download.maker}</small>
                   <strong>{download.product}</strong>

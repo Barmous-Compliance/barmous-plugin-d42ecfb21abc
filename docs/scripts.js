@@ -133,7 +133,7 @@ const state = {
 
 const grid = document.querySelector("[data-setup-grid]");
 const title = document.querySelector("[data-installer-title]");
-const kicker = document.querySelector("[data-installer-kicker]");
+const installer = document.querySelector(".installer");
 const clientButtons = [...document.querySelectorAll("[data-client]")];
 const modeButtons = [...document.querySelectorAll("[data-mode]")];
 
@@ -174,8 +174,7 @@ function render() {
   const steps = client[state.mode];
 
   title.textContent = "Set up Barmous for " + client.label;
-  kicker.textContent =
-    state.mode === "install" ? "Plugin installation" : "Secure connection";
+  installer.dataset.activeClient = state.client;
 
   clientButtons.forEach((button) => {
     const active = button.dataset.client === state.client;

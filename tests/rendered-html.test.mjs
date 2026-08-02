@@ -48,6 +48,10 @@ function digest(buffer) {
   return createHash("sha256").update(buffer).digest("hex").toUpperCase();
 }
 
+function normalizeText(value) {
+  return value.replace(/\r\n?/g, "\n").trimEnd();
+}
+
 test("server-renders both clean v0.1.0 plugin downloads", async () => {
   const response = await render();
   assert.equal(response.status, 200);
@@ -135,9 +139,58 @@ test("removes the disposable starter preview", async () => {
   await access(new URL("../public/barmous-mark.png", import.meta.url));
 });
 
+test("ships synchronized official product marks", async () => {
+  const productMarks = [
+    {
+      name: "openai.svg",
+      checksum:
+        "8E1B976BA47E927AC2928303FD5362FCADFEFD68743506510596F107DF676E58",
+    },
+    {
+      name: "claude.svg",
+      checksum:
+        "6D53DB4BE375E899C937C26CF16684A80D6E869B1928D72B37748BEF2560E219",
+    },
+  ];
+
+  for (const { name, checksum } of productMarks) {
+    const [runtimeLogo, pagesLogo] = await Promise.all([
+      readFile(new URL(`../public/logos/${name}`, import.meta.url)),
+      readFile(new URL(`../docs/logos/${name}`, import.meta.url)),
+    ]);
+    assert.equal(Buffer.compare(runtimeLogo, pagesLogo), 0, name);
+    assert.equal(digest(runtimeLogo), checksum, name);
+    assert.match(runtimeLogo.toString("utf8"), /<svg\b/i, name);
+  }
+});
+
+test("ships the synchronized Barmous font and its license", async () => {
+  const [runtimeFont, pagesFont, runtimeLicense, pagesLicense] =
+    await Promise.all([
+      readFile(
+        new URL("../public/fonts/noto-sans-variable.woff2", import.meta.url),
+      ),
+      readFile(
+        new URL("../docs/fonts/noto-sans-variable.woff2", import.meta.url),
+      ),
+      readFile(new URL("../public/fonts/OFL.txt", import.meta.url), "utf8"),
+      readFile(new URL("../docs/fonts/OFL.txt", import.meta.url), "utf8"),
+    ]);
+
+  assert.equal(Buffer.compare(runtimeFont, pagesFont), 0);
+  assert.equal(
+    digest(runtimeFont),
+    "51CA196F49A33E79E7870FF88EBD2829A3F627A51E7D690986618F0E7AD2B52D",
+  );
+  assert.equal(normalizeText(runtimeLicense), normalizeText(pagesLicense));
+  assert.match(runtimeLicense, /SIL OPEN FONT LICENSE Version 1\.1/i);
+});
+
 test("keeps the static Pages release synchronized", async () => {
   const [
     html,
+    styles,
+    runtimeStyles,
     script,
     pagesPreviewNotice,
     runtimePreviewNotice,
@@ -145,6 +198,8 @@ test("keeps the static Pages release synchronized", async () => {
     runtimeThirdPartyNotices,
   ] = await Promise.all([
     readFile(new URL("../docs/index.html", import.meta.url), "utf8"),
+    readFile(new URL("../docs/styles.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../docs/scripts.js", import.meta.url), "utf8"),
     readFile(
       new URL("../docs/PREVIEW_DISTRIBUTION_NOTICE.md", import.meta.url),
@@ -163,10 +218,19 @@ test("keeps the static Pages release synchronized", async () => {
       "utf8",
     ),
   ]);
-  assert.equal(runtimePreviewNotice.trimEnd(), pagesPreviewNotice.trimEnd());
   assert.equal(
-    runtimeThirdPartyNotices.trimEnd(),
-    pagesThirdPartyNotices.trimEnd(),
+    normalizeText(runtimePreviewNotice),
+    normalizeText(pagesPreviewNotice),
+  );
+  assert.equal(
+    normalizeText(runtimeThirdPartyNotices),
+    normalizeText(pagesThirdPartyNotices),
+  );
+  assert.equal(
+    normalizeText(runtimeStyles)
+      .replace(/^@import "tailwindcss";\n\n/, "")
+      .replaceAll('url("/fonts/', 'url("fonts/'),
+    normalizeText(styles),
   );
   assert.match(
     html,
@@ -178,6 +242,10 @@ test("keeps the static Pages release synchronized", async () => {
   assert.match(html, /data-client="claude"/i);
   assert.match(html, /data-mode="install"/i);
   assert.match(html, /data-mode="connect"/i);
+  assert.match(html, /src="logos\/openai\.svg"/i);
+  assert.match(html, /src="logos\/claude\.svg"/i);
+  assert.match(styles, /fonts\/noto-sans-variable\.woff2/i);
+  assert.doesNotMatch(html, /class="(?:client|platform)-mark"[^>]*>[CA]</i);
   assert.match(script, /navigator\.clipboard/i);
   assert.match(
     script,

@@ -32,7 +32,6 @@
       </header>
 
       <section class="hero" id="top">
-        <p class="eyebrow">Barmous for AI workspaces</p>
         <h1>Connect your compliance workspace in three clear steps.</h1>
         <p class="hero-lede">
           Install the Barmous plugin for Codex or Claude Code, connect your
@@ -56,13 +55,40 @@
           </a>
         </div>
         <ul class="trust-list" aria-label="Plugin safeguards">
-          <li><span>01</span> Read-only access</li>
-          <li><span>02</span> Company-scoped</li>
-          <li><span>03</span> Audited reads</li>
+          <li>
+            <span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3 5 6v5c0 4.5 2.8 8.3 7 10 4.2-1.7 7-5.5 7-10V6l-7-3Z"></path>
+                <path d="m9 12 2 2 4-4"></path>
+              </svg>
+            </span>
+            Read-only access
+          </li>
+          <li>
+            <span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 21V6l7-3 7 3v15M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h6"></path>
+              </svg>
+            </span>
+            Company-scoped
+          </li>
+          <li>
+            <span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 5h10M9 10h10M9 15h6M4 5l1 1 2-2M4 10l1 1 2-2M4 15l1 1 2-2"></path>
+              </svg>
+            </span>
+            Audited reads
+          </li>
         </ul>
       </section>
 
-      <section class="installer" id="installer" aria-labelledby="installer-heading">
+      <section
+        class="installer"
+        id="installer"
+        aria-labelledby="installer-heading"
+        data-active-client="codex"
+      >
         <div class="installer-topbar">
           <div class="client-tabs" role="group" aria-label="Choose your AI workspace">
             <button
@@ -71,7 +97,9 @@
               aria-pressed="true"
               data-client="codex"
             >
-              <span class="client-mark" aria-hidden="true">C</span>
+              <span class="client-mark product-mark product-mark-codex" aria-hidden="true">
+                <img src="logos/openai.svg" alt="" width="64" height="64" />
+              </span>
               <span>
                 <strong>Codex</strong>
                 <small>OpenAI</small>
@@ -83,7 +111,9 @@
               aria-pressed="false"
               data-client="claude"
             >
-              <span class="client-mark" aria-hidden="true">A</span>
+              <span class="client-mark product-mark product-mark-claude" aria-hidden="true">
+                <img src="logos/claude.svg" alt="" width="64" height="64" />
+              </span>
               <span>
                 <strong>Claude Code</strong>
                 <small>Anthropic</small>
@@ -113,7 +143,6 @@
 
         <div class="installer-heading">
           <div>
-            <p class="installer-kicker" data-installer-kicker>Plugin installation</p>
             <h2 id="installer-heading" data-installer-title>Set up Barmous for Codex</h2>
           </div>
           <span class="local-mcp-badge"><i></i> Local MCP · read-only</span>
@@ -197,7 +226,6 @@ codex plugin add barmous-company-data@barmous</code>
 
       <section class="release-section" id="requirements" aria-labelledby="release-heading">
         <div class="release-intro">
-          <p class="section-index">Verified release</p>
           <h2 id="release-heading">Everything you need, nothing sensitive included.</h2>
           <p>
             Packages contain the local MCP server and five Barmous compliance
@@ -214,7 +242,9 @@ codex plugin add barmous-company-data@barmous</code>
         <div class="release-downloads" aria-label="Verified plugin downloads">
           <article class="release-download">
             <div class="download-heading">
-              <span class="platform-mark" aria-hidden="true">C</span>
+              <span class="platform-mark product-mark product-mark-codex" aria-hidden="true">
+                <img src="logos/openai.svg" alt="" width="64" height="64" />
+              </span>
               <span>
                 <small>OpenAI</small>
                 <strong>Codex</strong>
@@ -239,7 +269,9 @@ codex plugin add barmous-company-data@barmous</code>
 
           <article class="release-download">
             <div class="download-heading">
-              <span class="platform-mark" aria-hidden="true">A</span>
+              <span class="platform-mark product-mark product-mark-claude" aria-hidden="true">
+                <img src="logos/claude.svg" alt="" width="64" height="64" />
+              </span>
               <span>
                 <small>Anthropic</small>
                 <strong>Claude Code</strong>

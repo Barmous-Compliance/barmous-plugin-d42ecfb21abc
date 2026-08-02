@@ -2,6 +2,17 @@
 
 The Barmous Compliance Codex and Claude Code plugin bundles include the following third-party software. Each component remains subject to its own license.
 
+## Product marks used on the download page
+
+- The OpenAI mark is provided by OpenAI and is used only to identify the Codex setup option. OpenAI and its marks remain the property of OpenAI. Source and usage terms: <https://openai.com/brand/>.
+- The Claude spark is provided in Anthropic's official media press kit and is used only to identify the Claude Code setup option. Anthropic, Claude, and their marks remain the property of Anthropic. Source: <https://www.anthropic.com/news>.
+
+These product marks do not imply endorsement of Barmous Compliance by OpenAI or Anthropic.
+
+## SIL Open Font License component
+
+The download page self-hosts Noto Sans Variable, Copyright 2022 The Noto Project Authors. It is distributed under the SIL Open Font License, Version 1.1. The complete license is included at [fonts/OFL.txt](./fonts/OFL.txt).
+
 ## MIT-licensed components
 
 - `@modelcontextprotocol/sdk` 1.30.0 — Copyright 2024 Anthropic PBC

@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Barmous Sans";
+  src: url("/fonts/noto-sans-variable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 :root {
   --navy: #082d46;
   --navy-mid: #0b3b58;
@@ -29,7 +37,7 @@ body {
   background:
     radial-gradient(circle at 88% 2%, rgba(21, 104, 145, 0.13), transparent 29rem),
     linear-gradient(180deg, #f9fbfc 0%, #eef4f7 100%);
-  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Barmous Sans", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -138,19 +146,8 @@ a:focus-visible {
   text-align: center;
 }
 
-.eyebrow,
-.section-index,
-.installer-kicker {
-  margin: 0;
-  color: #876006;
-  font-size: 11px;
-  font-weight: 850;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
 .hero h1 {
-  margin: 17px auto 20px;
+  margin: 0 auto 20px;
   color: var(--navy-deep);
   font-size: clamp(44px, 5.5vw, 68px);
   line-height: 1;
@@ -229,7 +226,7 @@ a:focus-visible {
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px 22px;
-  margin: 30px 0 0;
+  margin: 28px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -245,24 +242,35 @@ a:focus-visible {
 
 .trust-list span {
   display: grid;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   place-items: center;
   color: var(--navy);
-  background: #dfeaf0;
-  border-radius: 6px;
-  font-size: 9px;
+  background: #e4eef3;
+  border: 1px solid #cfdee6;
+  border-radius: 8px;
+}
+
+.trust-list svg {
+  width: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
 }
 
 .installer {
+  position: relative;
+  isolation: isolate;
   overflow: hidden;
   color: #eef6f8;
   background:
     radial-gradient(circle at 85% -15%, rgba(40, 125, 165, 0.48), transparent 24rem),
     linear-gradient(145deg, #082d46 0%, #051d2f 72%);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 24px;
-  box-shadow: 0 30px 72px rgba(5, 29, 47, 0.22);
+  border-radius: 20px;
+  box-shadow: 0 24px 58px rgba(5, 29, 47, 0.2);
   scroll-margin-top: 24px;
 }
 
@@ -272,7 +280,7 @@ a:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 13px 18px;
+  padding: 14px 24px;
   background: rgba(1, 16, 27, 0.35);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -293,15 +301,16 @@ a:focus-visible {
 
 .client-tab {
   display: flex;
-  min-width: 150px;
+  min-width: 164px;
   align-items: center;
   gap: 10px;
-  padding: 9px 12px;
+  padding: 8px 10px;
   color: #b8cbd5;
   background: transparent;
+  border: 1px solid transparent;
   border-radius: 10px;
   text-align: left;
-  transition: color 160ms ease, background 160ms ease;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 
 .client-tab:hover {
@@ -311,8 +320,17 @@ a:focus-visible {
 
 .client-tab.is-active {
   color: var(--navy-deep);
-  background: var(--white);
-  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.18);
+  background: #f7fafb;
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.14);
+}
+
+.client-tab.is-active[data-client="codex"] {
+  box-shadow: inset 0 -2px #0080f7, 0 5px 14px rgba(0, 0, 0, 0.14);
+}
+
+.client-tab.is-active[data-client="claude"] {
+  box-shadow: inset 0 -2px #d97757, 0 5px 14px rgba(0, 0, 0, 0.14);
 }
 
 .client-mark,
@@ -324,17 +342,33 @@ a:focus-visible {
 }
 
 .client-mark {
-  width: 30px;
-  height: 30px;
-  color: var(--navy);
-  background: #e6eef2;
-  border-radius: 8px;
-  font-size: 12px;
+  width: 34px;
+  height: 34px;
+  background: #ffffff;
+  border: 1px solid rgba(8, 45, 70, 0.12);
+  border-radius: 9px;
 }
 
 .client-tab.is-active .client-mark {
-  color: #fff4d2;
-  background: var(--navy);
+  background: #ffffff;
+  border-color: rgba(8, 45, 70, 0.16);
+}
+
+.product-mark img {
+  display: block;
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
+
+.product-mark-codex img {
+  width: 76%;
+  height: 76%;
+}
+
+.product-mark-claude img {
+  width: 68%;
+  height: 68%;
 }
 
 .client-tab > span:last-child {
@@ -361,7 +395,7 @@ a:focus-visible {
 }
 
 .mode-tab {
-  min-height: 34px;
+  min-height: 40px;
   padding: 0 14px;
   color: #9eb5c1;
   background: transparent;
@@ -377,18 +411,14 @@ a:focus-visible {
 
 .installer-heading {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 29px 32px 25px;
-}
-
-.installer-kicker {
-  color: #f2bd48;
+  padding: 27px 30px 20px;
 }
 
 .installer-heading h2 {
-  margin: 8px 0 0;
+  margin: 0;
   font-size: 25px;
   letter-spacing: -0.035em;
 }
@@ -398,7 +428,7 @@ a:focus-visible {
   flex: 0 0 auto;
   align-items: center;
   gap: 9px;
-  color: #bfd2dc;
+  color: #d2e0e6;
   font-size: 11px;
   font-weight: 750;
 }
@@ -406,22 +436,19 @@ a:focus-visible {
 .setup-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin: 0 18px;
-  background: rgba(0, 11, 19, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  gap: 12px;
+  margin: 0 30px;
 }
 
 .setup-step {
   display: flex;
   min-width: 0;
-  min-height: 310px;
+  min-height: 270px;
   flex-direction: column;
   padding: 24px 22px 22px;
-}
-
-.setup-step + .setup-step {
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 11, 19, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 14px;
 }
 
 .step-number {
@@ -437,15 +464,15 @@ a:focus-visible {
 }
 
 .setup-step h3 {
-  margin: 25px 0 7px;
+  margin: 16px 0 8px;
   font-size: 16px;
   letter-spacing: -0.02em;
 }
 
 .setup-step > p {
   margin: 0;
-  color: #9eb4c0;
-  font-size: 12px;
+  color: #abc0ca;
+  font-size: 13px;
   line-height: 1.55;
 }
 
@@ -453,14 +480,14 @@ a:focus-visible {
   display: grid;
   gap: 10px;
   margin-top: auto;
-  padding-top: 22px;
+  padding-top: 20px;
 }
 
 .command-box {
   position: relative;
   overflow: hidden;
-  min-height: 62px;
-  padding: 12px 44px 12px 13px;
+  min-height: 66px;
+  padding: 13px 46px 13px 14px;
   color: #dbeaf0;
   background: rgba(255, 255, 255, 0.075);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -472,8 +499,8 @@ a:focus-visible {
   overflow-wrap: anywhere;
   white-space: pre-wrap;
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
-  font-size: 10px;
-  line-height: 1.65;
+  font-size: 11px;
+  line-height: 1.6;
 }
 
 .copy-button {
@@ -550,13 +577,15 @@ a:focus-visible {
 
 .installer-footer {
   display: flex;
-  min-height: 64px;
+  min-height: 62px;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 14px 32px;
-  color: #8ea7b4;
-  font-size: 10px;
+  margin: 22px 30px 0;
+  padding: 16px 0 19px;
+  color: #a5bac4;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11px;
 }
 
 .installer-footer a {
@@ -577,7 +606,7 @@ a:focus-visible {
   display: grid;
   grid-template-columns: minmax(270px, 0.72fr) minmax(0, 1.28fr);
   gap: 42px;
-  margin: 26px 0 56px;
+  margin: 22px 0 56px;
   padding: 38px;
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid var(--line);
@@ -587,7 +616,7 @@ a:focus-visible {
 }
 
 .release-intro h2 {
-  margin: 10px 0 12px;
+  margin: 0 0 12px;
   color: var(--navy-deep);
   font-size: 27px;
   line-height: 1.12;
@@ -639,9 +668,11 @@ a:focus-visible {
 }
 
 .release-download {
+  display: flex;
   min-width: 0;
+  flex-direction: column;
   padding: 18px;
-  background: #f4f8fa;
+  background: #ffffff;
   border: 1px solid #d9e4ea;
   border-radius: 14px;
 }
@@ -653,12 +684,11 @@ a:focus-visible {
 }
 
 .platform-mark {
-  width: 35px;
-  height: 35px;
-  color: #fff5d7;
-  background: var(--navy);
-  border-radius: 9px;
-  font-size: 12px;
+  width: 40px;
+  height: 40px;
+  background: #f3f7f9;
+  border: 1px solid #d7e3e9;
+  border-radius: 10px;
 }
 
 .download-heading > span:last-child {
@@ -720,7 +750,7 @@ a:focus-visible {
   display: block;
   margin-bottom: 5px;
   color: #718493;
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 850;
   letter-spacing: 0.12em;
 }
@@ -730,8 +760,8 @@ a:focus-visible {
   overflow-wrap: anywhere;
   color: #486477;
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
-  font-size: 8px;
-  line-height: 1.55;
+  font-size: 10px;
+  line-height: 1.5;
 }
 
 footer {
@@ -754,7 +784,6 @@ footer {
 }
 
 @media (max-width: 920px) {
-  .installer-topbar,
   .installer-heading {
     align-items: flex-start;
     flex-direction: column;
@@ -762,15 +791,12 @@ footer {
 
   .setup-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 0 24px;
   }
 
   .setup-step {
-    min-height: 260px;
-  }
-
-  .setup-step + .setup-step {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-left: 0;
+    min-height: 0;
   }
 
   .release-section {
@@ -825,6 +851,9 @@ footer {
   }
 
   .installer-topbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
     padding: 12px;
   }
 
@@ -848,6 +877,7 @@ footer {
 
   .mode-tab {
     flex: 1;
+    min-height: 44px;
   }
 
   .installer-heading {
@@ -859,18 +889,20 @@ footer {
   }
 
   .setup-grid {
-    margin: 0 10px;
+    gap: 8px;
+    margin: 0 12px;
   }
 
   .setup-step {
-    min-height: 250px;
+    min-height: 0;
     padding: 21px 18px;
   }
 
   .installer-footer {
     align-items: flex-start;
     flex-direction: column;
-    padding: 18px 20px;
+    margin: 18px 20px 0;
+    padding: 16px 0 19px;
   }
 
   .release-section {

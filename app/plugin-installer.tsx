@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import ProductMark, { type ProductId } from "./product-mark";
 
-type ClientId = "codex" | "claude";
+type ClientId = ProductId;
 type ModeId = "install" | "connect";
 
 type SetupStep = {
@@ -17,9 +18,9 @@ type SetupStep = {
   };
 };
 
-const clients: { id: ClientId; label: string; maker: string; mark: string }[] = [
-  { id: "codex", label: "Codex", maker: "OpenAI", mark: "C" },
-  { id: "claude", label: "Claude Code", maker: "Anthropic", mark: "A" },
+const clients: { id: ClientId; label: string; maker: string }[] = [
+  { id: "codex", label: "Codex", maker: "OpenAI" },
+  { id: "claude", label: "Claude Code", maker: "Anthropic" },
 ];
 
 const modes: { id: ModeId; label: string }[] = [
@@ -240,7 +241,12 @@ export default function PluginInstaller() {
   const steps = flows[client][mode];
 
   return (
-    <section className="installer" id="installer" aria-labelledby="installer-heading">
+    <section
+      className="installer"
+      id="installer"
+      aria-labelledby="installer-heading"
+      data-active-client={client}
+    >
       <div className="installer-topbar">
         <div className="client-tabs" role="group" aria-label="Choose your AI workspace">
           {clients.map((item) => (
@@ -252,7 +258,7 @@ export default function PluginInstaller() {
               key={item.id}
               onClick={() => setClient(item.id)}
             >
-              <span className="client-mark" aria-hidden="true">{item.mark}</span>
+              <ProductMark product={item.id} className="client-mark" />
               <span>
                 <strong>{item.label}</strong>
                 <small>{item.maker}</small>
@@ -279,9 +285,6 @@ export default function PluginInstaller() {
 
       <div className="installer-heading">
         <div>
-          <p className="installer-kicker">
-            {mode === "install" ? "Plugin installation" : "Secure connection"}
-          </p>
           <h2 id="installer-heading">
             Set up Barmous for {clients.find((item) => item.id === client)?.label}
           </h2>
