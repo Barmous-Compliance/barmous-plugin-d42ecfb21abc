@@ -255,6 +255,7 @@ test("keeps the static Pages release synchronized", async () => {
   assert.match(html, /data-mode="connect"/i);
   assert.match(html, /src="logos\/openai\.svg"/i);
   assert.match(html, /src="logos\/claude\.svg"/i);
+  assert.match(html, /href="styles\.css\?v=20260803\.2"/i);
   assert.match(styles, /fonts\/noto-sans-variable\.woff2/i);
   assert.match(html, /class="setup-stage"/i);
   assert.doesNotMatch(html, /Start setup/i);
