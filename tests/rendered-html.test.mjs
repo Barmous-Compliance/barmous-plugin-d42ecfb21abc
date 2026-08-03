@@ -63,6 +63,17 @@ test("server-renders both clean v0.1.0 plugin downloads", async () => {
     html,
     /Connect your compliance workspace in three clear steps\./i,
   );
+  assert.match(html, /class="setup-stage"/i);
+  assert.doesNotMatch(html, /Start setup/i);
+  assert.doesNotMatch(html, /Plugin repository/i);
+  assert.equal(
+    (html.match(/<a\b[^>]*\bsource-button\b[^>]*>/gi) ?? []).length,
+    1,
+  );
+  assert.ok(
+    html.indexOf("View plugin source") >
+      html.indexOf("Everything you need, nothing sensitive included."),
+  );
   assert.match(html, /Set up Barmous for .*Codex/i);
   assert.match(html, /Download Codex ZIP/i);
   assert.match(html, /codex plugin marketplace add \$pluginRoot/i);
@@ -245,6 +256,17 @@ test("keeps the static Pages release synchronized", async () => {
   assert.match(html, /src="logos\/openai\.svg"/i);
   assert.match(html, /src="logos\/claude\.svg"/i);
   assert.match(styles, /fonts\/noto-sans-variable\.woff2/i);
+  assert.match(html, /class="setup-stage"/i);
+  assert.doesNotMatch(html, /Start setup/i);
+  assert.doesNotMatch(html, /Plugin repository/i);
+  assert.equal(
+    (html.match(/<a\b[^>]*\bsource-button\b[^>]*>/gi) ?? []).length,
+    1,
+  );
+  assert.ok(
+    html.indexOf("View plugin source") >
+      html.indexOf("Everything you need, nothing sensitive included."),
+  );
   assert.doesNotMatch(html, /class="(?:client|platform)-mark"[^>]*>[CA]</i);
   assert.match(script, /navigator\.clipboard/i);
   assert.match(

@@ -31,59 +31,39 @@
         </div>
       </header>
 
-      <section class="hero" id="top">
-        <h1>Connect your compliance workspace in three clear steps.</h1>
-        <p class="hero-lede">
-          Install the Barmous plugin for Codex or Claude Code, connect your
-          company-scoped access, and start reviewing live readiness with
-          audited, read-only tools.
-        </p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#installer">
-            Start setup
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 12h14m-5-5 5 5-5 5"></path>
-            </svg>
-          </a>
-          <a
-            class="button button-secondary"
-            href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
-            target="_blank"
-            rel="noreferrer"
-          >
-            View plugin source
-          </a>
-        </div>
-        <ul class="trust-list" aria-label="Plugin safeguards">
-          <li>
-            <span>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 3 5 6v5c0 4.5 2.8 8.3 7 10 4.2-1.7 7-5.5 7-10V6l-7-3Z"></path>
-                <path d="m9 12 2 2 4-4"></path>
-              </svg>
-            </span>
-            Read-only access
-          </li>
-          <li>
-            <span>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M5 21V6l7-3 7 3v15M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h6"></path>
-              </svg>
-            </span>
-            Company-scoped
-          </li>
-          <li>
-            <span>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M9 5h10M9 10h10M9 15h6M4 5l1 1 2-2M4 10l1 1 2-2M4 15l1 1 2-2"></path>
-              </svg>
-            </span>
-            Audited reads
-          </li>
-        </ul>
-      </section>
+      <div class="setup-stage" id="top">
+        <section class="hero" aria-labelledby="hero-heading">
+          <h1 id="hero-heading">Connect your compliance workspace in three clear steps.</h1>
+          <ul class="trust-list" aria-label="Plugin safeguards">
+            <li>
+              <span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3 5 6v5c0 4.5 2.8 8.3 7 10 4.2-1.7 7-5.5 7-10V6l-7-3Z"></path>
+                  <path d="m9 12 2 2 4-4"></path>
+                </svg>
+              </span>
+              Read-only access
+            </li>
+            <li>
+              <span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 21V6l7-3 7 3v15M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h6"></path>
+                </svg>
+              </span>
+              Company-scoped
+            </li>
+            <li>
+              <span>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 5h10M9 10h10M9 15h6M4 5l1 1 2-2M4 10l1 1 2-2M4 15l1 1 2-2"></path>
+                </svg>
+              </span>
+              Audited reads
+            </li>
+          </ul>
+        </section>
 
-      <section
+        <section
         class="installer"
         id="installer"
         aria-labelledby="installer-heading"
@@ -211,18 +191,9 @@ codex plugin add barmous-company-data@barmous</code>
 
         <div class="installer-footer">
           <span>Use a scoped token and revoke it immediately if exposed.</span>
-          <a
-            href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Plugin repository
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 12h14m-5-5 5 5-5 5"></path>
-            </svg>
-          </a>
         </div>
-      </section>
+        </section>
+      </div>
 
       <section class="release-section" id="requirements" aria-labelledby="release-heading">
         <div class="release-intro">
@@ -295,6 +266,20 @@ codex plugin add barmous-company-data@barmous</code>
           </article>
         </div>
       </section>
+
+      <div class="source-action">
+        <a
+          class="button button-secondary source-button"
+          href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
+          target="_blank"
+          rel="noreferrer"
+        >
+          View plugin source
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14m-5-5 5 5-5 5"></path>
+          </svg>
+        </a>
+      </div>
 
       <footer>
         <span>© 2026 Barmous Compliance</span>

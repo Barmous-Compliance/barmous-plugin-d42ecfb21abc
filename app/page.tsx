@@ -83,34 +83,18 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="hero" id="top">
-        <h1>Connect your compliance workspace in three clear steps.</h1>
-        <p className="hero-lede">
-          Install the Barmous plugin for Codex or Claude Code, connect your
-          company-scoped access, and start reviewing live readiness with
-          audited, read-only tools.
-        </p>
-        <div className="hero-actions">
-          <a className="button button-primary" href="#installer">
-            Start setup <ArrowIcon />
-          </a>
-          <a
-            className="button button-secondary"
-            href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
-            target="_blank"
-            rel="noreferrer"
-          >
-            View plugin source
-          </a>
-        </div>
-        <ul className="trust-list" aria-label="Plugin safeguards">
-          <li><span><SafeguardIcon type="scope" /></span> Read-only access</li>
-          <li><span><SafeguardIcon type="company" /></span> Company-scoped</li>
-          <li><span><SafeguardIcon type="audit" /></span> Audited reads</li>
-        </ul>
-      </section>
+      <div className="setup-stage" id="top">
+        <section className="hero" aria-labelledby="hero-heading">
+          <h1 id="hero-heading">Connect your compliance workspace in three clear steps.</h1>
+          <ul className="trust-list" aria-label="Plugin safeguards">
+            <li><span><SafeguardIcon type="scope" /></span> Read-only access</li>
+            <li><span><SafeguardIcon type="company" /></span> Company-scoped</li>
+            <li><span><SafeguardIcon type="audit" /></span> Audited reads</li>
+          </ul>
+        </section>
 
-      <PluginInstaller />
+        <PluginInstaller />
+      </div>
 
       <section className="release-section" id="requirements" aria-labelledby="release-heading">
         <div className="release-intro">
@@ -150,6 +134,17 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <div className="source-action">
+        <a
+          className="button button-secondary source-button"
+          href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
+          target="_blank"
+          rel="noreferrer"
+        >
+          View plugin source <ArrowIcon />
+        </a>
+      </div>
 
       <footer>
         <span>© 2026 Barmous Compliance</span>

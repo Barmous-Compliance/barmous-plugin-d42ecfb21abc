@@ -323,13 +323,6 @@ export default function PluginInstaller() {
 
       <div className="installer-footer">
         <span>Use a scoped token and revoke it immediately if exposed.</span>
-        <a
-          href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Plugin repository <ArrowIcon />
-        </a>
       </div>
     </section>
   );
