@@ -1,0 +1,9 @@
+interface:
+  display_name: "Barmous Findings Triage"
+  short_description: "Prioritize released Barmous compliance findings."
+  default_prompt: "Use $barmous-findings-triage to triage the company's released Barmous findings."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "barmous"
+      description: "Read-only Barmous company compliance data."

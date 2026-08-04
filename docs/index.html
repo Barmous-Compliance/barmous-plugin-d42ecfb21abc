@@ -8,11 +8,11 @@
     <meta name="referrer" content="no-referrer" />
     <meta
       name="description"
-      content="Install and connect Barmous Compliance plugins for Codex and Claude Code."
+      content="Install the read-only Barmous CLI and local MCP plugins for Codex and Claude Code."
     />
     <title>Barmous Compliance | AI Workspace Plugins</title>
     <link rel="icon" href="barmous-mark.png" />
-    <link rel="stylesheet" href="styles.css?v=20260803.2" />
+    <link rel="stylesheet" href="styles.css?v=20260805.1" />
     <script src="scripts.js" defer></script>
   </head>
   <body>
@@ -27,7 +27,7 @@
         </a>
         <div class="header-release" aria-label="Current plugin release">
           <span><i></i> Verified preview</span>
-          <code>v0.1.0</code>
+          <code>v0.2.0</code>
         </div>
       </header>
 
@@ -42,7 +42,7 @@
                   <path d="m9 12 2 2 4-4"></path>
                 </svg>
               </span>
-              Read-only access
+              Read-only CLI + MCP
             </li>
             <li>
               <span>
@@ -50,7 +50,7 @@
                   <path d="M5 21V6l7-3 7 3v15M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h6"></path>
                 </svg>
               </span>
-              Company-scoped
+              Browser-authorized profiles
             </li>
             <li>
               <span>
@@ -58,7 +58,7 @@
                   <path d="M9 5h10M9 10h10M9 15h6M4 5l1 1 2-2M4 10l1 1 2-2M4 15l1 1 2-2"></path>
                 </svg>
               </span>
-              Audited reads
+              30-day default
             </li>
           </ul>
         </section>
@@ -136,7 +136,7 @@
             <div class="step-control">
               <a
                 class="step-action"
-                href="downloads/barmous-compliance-codex-plugin-v0.1.0.zip"
+                href="downloads/barmous-compliance-codex-plugin-v0.2.0.zip"
                 download
               >
                 Download Codex ZIP
@@ -149,11 +149,12 @@
 
           <article class="setup-step">
             <span class="step-number">2</span>
-            <h3>Install from PowerShell</h3>
-            <p>Open PowerShell in the extracted bundle root and run both commands.</p>
+            <h3>Install the CLI and plugin</h3>
+            <p>Open PowerShell in the extracted bundle root. This installs the local CLI and registers the bundled Codex marketplace.</p>
             <div class="step-control">
               <div class="command-box">
-                <code>$pluginRoot = (Resolve-Path ".").Path
+                <code>npm install --global .\plugins\barmous-company-data
+$pluginRoot = (Resolve-Path ".").Path
 codex plugin marketplace add $pluginRoot
 codex plugin add barmous-company-data@barmous</code>
                 <button class="copy-button" type="button" data-copy aria-label="Copy command" aria-live="polite">
@@ -169,10 +170,10 @@ codex plugin add barmous-company-data@barmous</code>
 
           <article class="setup-step">
             <span class="step-number">3</span>
-            <h3>Connect, then verify</h3>
+            <h3>Verify the local MCP</h3>
             <p>
-              Complete the Connect steps above, launch Codex from that
-              PowerShell session, and run this check in a new task.
+              Complete the Connect steps, start a new Codex task, and confirm
+              the Barmous local server and nine read-only tools.
             </p>
             <div class="step-control">
               <div class="command-box">
@@ -190,23 +191,38 @@ codex plugin add barmous-company-data@barmous</code>
         </div>
 
         <div class="installer-footer">
-          <span>Use a scoped token and revoke it immediately if exposed.</span>
+          <span>Browser-authorized profiles are revocable, expire absolutely, and never require a token pasted into plugin configuration.</span>
         </div>
         </section>
+
+        <div class="source-action">
+          <a
+            class="button button-secondary source-button"
+            href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
+            target="_blank"
+            rel="noreferrer"
+          >
+            View plugin source
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14m-5-5 5 5-5 5"></path>
+            </svg>
+          </a>
+        </div>
       </div>
 
       <section class="release-section" id="requirements" aria-labelledby="release-heading">
         <div class="release-intro">
           <h2 id="release-heading">Everything you need, nothing sensitive included.</h2>
           <p>
-            Packages contain the local MCP server and five Barmous compliance
-            skills. No agent token, credentials, or company data are bundled.
+            Packages contain the read-only Barmous CLI, local MCP server, and
+            five compliance skills. No credential or company data is bundled,
+            and plugin configuration never contains a pasted token.
           </p>
           <dl class="release-meta">
-            <div><dt>Version</dt><dd>v0.1.0</dd></div>
-            <div><dt>Released</dt><dd>02 Aug 2026</dd></div>
+            <div><dt>Version</dt><dd>v0.2.0</dd></div>
+            <div><dt>Released</dt><dd>05 Aug 2026</dd></div>
             <div><dt>Runtime</dt><dd>Node.js 22.12–24.x</dd></div>
-            <div><dt>Access</dt><dd>Read-only</dd></div>
+            <div><dt>Expiry</dt><dd>30 / 60 / 90 days</dd></div>
           </dl>
         </div>
 
@@ -223,18 +239,18 @@ codex plugin add barmous-company-data@barmous</code>
             </div>
             <a
               class="download-button"
-              href="downloads/barmous-compliance-codex-plugin-v0.1.0.zip"
+              href="downloads/barmous-compliance-codex-plugin-v0.2.0.zip"
               download
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path>
               </svg>
               Download ZIP
-              <small>966 KB</small>
+              <small>1,175 KB</small>
             </a>
             <div class="checksum">
               <span>SHA-256</span>
-              <code>D9363EDC4FF9B2B42D97CB55A77A26FB6C557E4720AE5FEE8DA550A53044D987</code>
+              <code>06A05BF0F1B745FA4C8C8DEB4425C1685A48CD43545223CD91EECD3F95731E42</code>
             </div>
           </article>
 
@@ -250,36 +266,22 @@ codex plugin add barmous-company-data@barmous</code>
             </div>
             <a
               class="download-button"
-              href="downloads/barmous-compliance-claude-plugin-v0.1.0.zip"
+              href="downloads/barmous-compliance-claude-plugin-v0.2.0.zip"
               download
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path>
               </svg>
               Download ZIP
-              <small>207 KB</small>
+              <small>412 KB</small>
             </a>
             <div class="checksum">
               <span>SHA-256</span>
-              <code>827599DA3FF7186DEC276D7B3690F90C8BD6BF092BADD2F4A363C68F1C815789</code>
+              <code>8FABFA35C8755A32F98BE11BBC6865E87D269BF341A3745880932E041E72E8D5</code>
             </div>
           </article>
         </div>
       </section>
-
-      <div class="source-action">
-        <a
-          class="button button-secondary source-button"
-          href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
-          target="_blank"
-          rel="noreferrer"
-        >
-          View plugin source
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 12h14m-5-5 5 5-5 5"></path>
-          </svg>
-        </a>
-      </div>
 
       <footer>
         <span>© 2026 Barmous Compliance</span>

@@ -1,52 +1,62 @@
-# Barmous Compliance for Claude Code
+# Barmous Compliance for Codex
 
-This plugin gives Claude Code company-scoped, read-only access to released compliance data in Barmous. It bundles a self-contained MCP server and five reusable compliance skills.
+This v0.2.0 bundle provides two read-only clients for the same company-scoped Barmous access:
 
-This is an evaluation preview, not an open-source release. Review the [preview distribution notice](./PREVIEW_DISTRIBUTION_NOTICE.md) and [third-party notices](./THIRD_PARTY_NOTICES.md) before use.
+- a standalone `barmous` CLI; and
+- a local stdio MCP server plus five Codex compliance skills.
+
+No credential or company data is included. Browser login creates an absolute 30, 60, or 90-day credential; 30 days is the default. The CLI stores it in a restricted named profile that the bundled MCP reads lazily.
 
 ## Requirements
 
-- Claude Code `2.1.154` or newer
 - Node.js `>=22.12 <25`
-- An authorized Barmous account
-- A production Barmous backend URL served over HTTPS
-- A one-time, company-scoped agent token created in Barmous
+- npm `>=10 <12`
+- an authorized Barmous developer/customer account
 
-The package contains no Barmous token, credential, or company data. Plain HTTP is allowed only for local development against `localhost`; never enable the insecure HTTP override for a production connection.
+## Install the CLI from this extracted bundle
 
-## Install from the Barmous marketplace
-
-```powershell
-claude plugin marketplace add Barmous-Compliance/barmous-plugin-d42ecfb21abc
-claude plugin install barmous-company-data@barmous
-claude plugin enable barmous-company-data@barmous
-```
-
-Claude Code prompts for the Barmous API URL and agent token when the plugin is enabled. The token is declared as a sensitive plugin option so Claude Code masks it and stores it in credential storage rather than ordinary settings.
-
-Run `/reload-plugins`, then `/mcp`, to confirm the plugin-provided `barmous` server is connected.
-
-## Install the downloaded bundle
+Run this from the plugin directory containing `package.json`:
 
 ```powershell
-$marketplaceRoot = (Resolve-Path ".").Path
-claude plugin marketplace add $marketplaceRoot
-claude plugin install barmous-company-data@barmous
-claude plugin enable barmous-company-data@barmous
+npm install --global .
+barmous --version
+barmous login
+barmous status
 ```
 
-To test the extracted plugin for only one session without installing it, run `claude --plugin-dir .\plugins\barmous-company-data` from the bundle root.
+Choose another lifetime or a named account profile when needed:
+
+```powershell
+barmous login --expires-in 60 --profile work
+barmous status --profile work
+```
+
+Login always prints a verification URL and short code. It never prints the device secret, PKCE verifier, or issued credential. Existing named profiles are not overwritten; log out first or choose a different name.
+
+## Install the Codex plugin
+
+From the downloaded marketplace bundle root:
+
+```powershell
+$pluginRoot = (Resolve-Path ".").Path
+codex plugin marketplace add $pluginRoot
+codex plugin add barmous-company-data@barmous
+```
+
+Start a new Codex task and run `/mcp`. The server and all nine read-only tools appear even when logged out. Run `barmous login`, then invoke a tool; the long-running MCP process reads the new profile without a restart.
+
+Environment credentials remain an explicit CI/manual fallback. `BARMOUS_API_URL` and `BARMOUS_AGENT_TOKEN` must always be set together and override profiles without cross-mixing.
 
 ## Included skills
 
-- `/barmous-company-data:barmous-company-brief`
-- `/barmous-company-data:barmous-framework-review`
-- `/barmous-company-data:barmous-findings-triage`
-- `/barmous-company-data:barmous-evidence-gap-review`
-- `/barmous-company-data:barmous-remediation-plan`
+- `barmous-company-brief`
+- `barmous-framework-review`
+- `barmous-findings-triage`
+- `barmous-evidence-gap-review`
+- `barmous-remediation-plan`
 
 ## Security boundary
 
-The plugin never accepts a tenant or company selector. The backend derives company access from the token, exposes only released or published safe projections, and audits reads. Returned company text must be treated as data rather than instructions.
+The CLI and local MCP call only the authenticated read-only Barmous API. They cannot select another company or create, update, delete, upload, download, expose raw evidence, or run arbitrary API/SQL requests. Logout revokes remotely before deleting locally; `--force` is only for local cleanup when remote revocation cannot be confirmed.
 
-This release has no create, update, delete, upload, download, raw evidence, questionnaire, member-directory, billing, or generic API/SQL tool. Revoke a token immediately in Barmous if it is exposed.
+This is a local stdio MCP. A future hosted Streamable HTTP MCP with OAuth is a separate product and credential boundary; this package does not claim to provide it.

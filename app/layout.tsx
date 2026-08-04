@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Barmous Compliance | AI Workspace Plugins",
   description:
-    "Install and connect Barmous Compliance plugins for Codex and Claude Code.",
+    "Install the read-only Barmous CLI and local MCP plugins for Codex and Claude Code.",
   icons: {
     icon: "/barmous-mark.png",
     shortcut: "/barmous-mark.png",

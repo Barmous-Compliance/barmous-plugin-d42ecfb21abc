@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "barmous-company-data",
-      "source": "./plugins/barmous-company-data-claude",
+      "source": "./plugins/barmous-company-data",
       "description": "Secure read-only access to company compliance data in Barmous",
       "category": "productivity",
       "tags": [

@@ -36,111 +36,106 @@ const flows: Record<ClientId, Record<ModeId, SetupStep[]>> = {
         description:
           "Get the verified preview ZIP, then extract it to a folder you control.",
         action: {
-          href: "/downloads/barmous-compliance-codex-plugin-v0.1.0.zip",
+          href: "/downloads/barmous-compliance-codex-plugin-v0.2.0.zip",
           label: "Download Codex ZIP",
           download: true,
         },
       },
       {
-        title: "Install from PowerShell",
+        title: "Install the CLI and plugin",
         description:
-          "Open PowerShell in the extracted bundle root and run both commands.",
+          "Open PowerShell in the extracted bundle root. This installs the local CLI and registers the bundled Codex marketplace.",
         command: [
+          "npm install --global .\\plugins\\barmous-company-data",
           '$pluginRoot = (Resolve-Path ".").Path',
           "codex plugin marketplace add $pluginRoot",
           "codex plugin add barmous-company-data@barmous",
         ].join("\n"),
       },
       {
-        title: "Connect, then verify",
+        title: "Verify the local MCP",
         description:
-          "Complete the Connect steps above, launch Codex from that PowerShell session, and run this check in a new task.",
+          "Complete the Connect steps, start a new Codex task, and confirm the Barmous local server and nine read-only tools.",
         command: "/mcp",
       },
     ],
     connect: [
       {
-        title: "Create scoped access",
+        title: "Authorize in your browser",
         description:
-          "In Barmous, open Settings → Agent access and create a read-only company token.",
-        action: {
-          href: "#requirements",
-          label: "Review access requirements",
-        },
+          "Login opens Barmous. Match the short code, choose the exact company, review four read-only scopes, and approve 30 days.",
+        command: "barmous login",
       },
       {
-        title: "Set connection details",
+        title: "Choose a named profile",
         description:
-          "Set these in the PowerShell session that will launch Codex. Replace the placeholders locally—never paste a live token into this page.",
+          "Optional: keep accounts separate and choose either 60 or 90 days. These examples create work and audit profiles.",
         command: [
-          '$env:BARMOUS_API_URL="https://your-barmous-api.example"',
-          '$env:BARMOUS_AGENT_TOKEN="<paste-token-locally>"',
-          "codex",
+          "barmous login --expires-in 60 --profile work",
+          "barmous login --expires-in 90 --profile audit",
+          "barmous status --profile work",
         ].join("\n"),
       },
       {
-        title: "Restart and confirm",
+        title: "Check the active profile",
         description:
-          "From that Codex session, start a fresh task and confirm the Barmous server.",
-        command: ["/mcp", "Ask: Brief me on our current compliance posture."].join("\n"),
+          "Confirm the default profile in your terminal, then run /mcp in Codex. Access is revocable and never extends beyond its approved expiry.",
+        command: "barmous status",
       },
     ],
   },
   claude: {
     install: [
       {
-        title: "Add the Barmous marketplace",
+        title: "Download the Claude bundle",
         description:
-          "Register the official Barmous GitHub marketplace in Claude Code.",
-        command:
-          "claude plugin marketplace add Barmous-Compliance/barmous-plugin-d42ecfb21abc",
+          "Get the verified preview ZIP, then extract it to a folder you control.",
+        action: {
+          href: "/downloads/barmous-compliance-claude-plugin-v0.2.0.zip",
+          label: "Download Claude ZIP",
+          download: true,
+        },
       },
       {
-        title: "Install and enable",
+        title: "Install the CLI and plugin",
         description:
-          "Install the company-data plugin, then enable its secure connection prompts.",
+          "Open PowerShell in the extracted bundle root. Install the local CLI, add this marketplace, and enable the plugin.",
         command: [
+          "npm install --global .\\plugins\\barmous-company-data",
+          "claude plugin marketplace add .",
           "claude plugin install barmous-company-data@barmous",
           "claude plugin enable barmous-company-data@barmous",
         ].join("\n"),
       },
       {
-        title: "Reload and verify",
+        title: "Verify the local MCP",
         description:
-          "Complete the API URL and token prompts, then run both slash commands.",
+          "Complete the Connect steps, reload plugins, and confirm the Barmous local server and nine read-only tools.",
         command: ["/reload-plugins", "/mcp"].join("\n"),
-        action: {
-          href: "/downloads/barmous-compliance-claude-plugin-v0.1.0.zip",
-          label: "Or download the ZIP",
-          download: true,
-        },
       },
     ],
     connect: [
       {
-        title: "Create scoped access",
+        title: "Authorize in your browser",
         description:
-          "In Barmous, open Settings → Agent access and create a read-only company token.",
-        action: {
-          href: "#requirements",
-          label: "Review access requirements",
-        },
+          "Login opens Barmous. Match the short code, choose the exact company, review four read-only scopes, and approve 30 days.",
+        command: "barmous login",
       },
       {
-        title: "Open plugin settings",
+        title: "Choose a named profile",
         description:
-          "Use Claude Code’s installed-plugin screen to configure or replace the API URL and token.",
-        command: "/plugin",
-      },
-      {
-        title: "Reload and confirm",
-        description:
-          "Reload installed plugins, verify the Barmous MCP server, then start with a company brief.",
+          "Optional: keep accounts separate and choose either 60 or 90 days. These examples create work and audit profiles.",
         command: [
-          "/reload-plugins",
-          "/mcp",
-          "/barmous-company-data:barmous-company-brief",
+          "barmous login --expires-in 60 --profile work",
+          "barmous login --expires-in 90 --profile audit",
+          "barmous status --profile work",
         ].join("\n"),
+      },
+      {
+        title: "Check the active profile",
+        description:
+          "Confirm the default profile in your terminal, then run /reload-plugins and /mcp in Claude Code. Expiry is absolute and access can be revoked earlier.",
+        command: "barmous status",
       },
     ],
   },
@@ -322,7 +317,7 @@ export default function PluginInstaller() {
       </div>
 
       <div className="installer-footer">
-        <span>Use a scoped token and revoke it immediately if exposed.</span>
+        <span>Browser-authorized profiles are revocable, expire absolutely, and never require a token pasted into plugin configuration.</span>
       </div>
     </section>
   );

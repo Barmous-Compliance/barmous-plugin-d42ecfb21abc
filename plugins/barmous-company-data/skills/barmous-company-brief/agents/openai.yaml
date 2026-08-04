@@ -1,0 +1,9 @@
+interface:
+  display_name: "Barmous Company Brief"
+  short_description: "Create a sourced company compliance briefing."
+  default_prompt: "Use $barmous-company-brief to summarize this company's current compliance position from Barmous."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "barmous"
+      description: "Read-only Barmous company compliance data."

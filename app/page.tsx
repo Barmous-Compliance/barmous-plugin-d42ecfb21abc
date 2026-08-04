@@ -2,26 +2,26 @@ import Image from "next/image";
 import PluginInstaller from "./plugin-installer";
 import ProductMark, { type ProductId } from "./product-mark";
 
-const releaseVersion = "v0.1.0";
+const releaseVersion = "v0.2.0";
 
 const downloads = [
   {
     product: "Codex",
     productId: "codex" as ProductId,
     maker: "OpenAI",
-    path: "/downloads/barmous-compliance-codex-plugin-v0.1.0.zip",
-    size: "966 KB",
+    path: "/downloads/barmous-compliance-codex-plugin-v0.2.0.zip",
+    size: "1,175 KB",
     checksum:
-      "D9363EDC4FF9B2B42D97CB55A77A26FB6C557E4720AE5FEE8DA550A53044D987",
+      "06A05BF0F1B745FA4C8C8DEB4425C1685A48CD43545223CD91EECD3F95731E42",
   },
   {
     product: "Claude Code",
     productId: "claude" as ProductId,
     maker: "Anthropic",
-    path: "/downloads/barmous-compliance-claude-plugin-v0.1.0.zip",
-    size: "207 KB",
+    path: "/downloads/barmous-compliance-claude-plugin-v0.2.0.zip",
+    size: "412 KB",
     checksum:
-      "827599DA3FF7186DEC276D7B3690F90C8BD6BF092BADD2F4A363C68F1C815789",
+      "8FABFA35C8755A32F98BE11BBC6865E87D269BF341A3745880932E041E72E8D5",
   },
 ] as const;
 
@@ -87,27 +87,39 @@ export default function Home() {
         <section className="hero" aria-labelledby="hero-heading">
           <h1 id="hero-heading">Connect your compliance workspace in three clear steps.</h1>
           <ul className="trust-list" aria-label="Plugin safeguards">
-            <li><span><SafeguardIcon type="scope" /></span> Read-only access</li>
-            <li><span><SafeguardIcon type="company" /></span> Company-scoped</li>
-            <li><span><SafeguardIcon type="audit" /></span> Audited reads</li>
+            <li><span><SafeguardIcon type="scope" /></span> Read-only CLI + MCP</li>
+            <li><span><SafeguardIcon type="company" /></span> Browser-authorized profiles</li>
+            <li><span><SafeguardIcon type="audit" /></span> 30-day default</li>
           </ul>
         </section>
 
         <PluginInstaller />
+
+        <div className="source-action">
+          <a
+            className="button button-secondary source-button"
+            href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
+            target="_blank"
+            rel="noreferrer"
+          >
+            View plugin source <ArrowIcon />
+          </a>
+        </div>
       </div>
 
       <section className="release-section" id="requirements" aria-labelledby="release-heading">
         <div className="release-intro">
           <h2 id="release-heading">Everything you need, nothing sensitive included.</h2>
           <p>
-            Packages contain the local MCP server and five Barmous compliance
-            skills. No agent token, credentials, or company data are bundled.
+            Packages contain the read-only Barmous CLI, local MCP server, and five
+            compliance skills. No credential or company data is bundled, and
+            plugin configuration never contains a pasted token.
           </p>
           <dl className="release-meta">
             <div><dt>Version</dt><dd>{releaseVersion}</dd></div>
-            <div><dt>Released</dt><dd>02 Aug 2026</dd></div>
+            <div><dt>Released</dt><dd>05 Aug 2026</dd></div>
             <div><dt>Runtime</dt><dd>Node.js 22.12–24.x</dd></div>
-            <div><dt>Access</dt><dd>Read-only</dd></div>
+            <div><dt>Expiry</dt><dd>30 / 60 / 90 days</dd></div>
           </dl>
         </div>
 
@@ -134,17 +146,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      <div className="source-action">
-        <a
-          className="button button-secondary source-button"
-          href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
-          target="_blank"
-          rel="noreferrer"
-        >
-          View plugin source <ArrowIcon />
-        </a>
-      </div>
 
       <footer>
         <span>© 2026 Barmous Compliance</span>

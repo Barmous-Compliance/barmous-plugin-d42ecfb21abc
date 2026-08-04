@@ -1,0 +1,38 @@
+{
+  "name": "barmous-company-data",
+  "version": "0.2.0",
+  "description": "Secure read-only access to company compliance data in Barmous",
+  "author": {
+    "name": "Barmous Compliance"
+  },
+  "keywords": [
+    "barmous",
+    "compliance",
+    "frameworks",
+    "findings",
+    "readiness"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Barmous Compliance",
+    "shortDescription": "Review your company's live Barmous compliance posture.",
+    "longDescription": "Connect Codex to a company-scoped Barmous account through audited read-only tools for frameworks, released findings, evidence actions, remediation, and published reports.",
+    "developerName": "Barmous Compliance",
+    "category": "Business",
+    "capabilities": [
+      "Read-only company data",
+      "Compliance workflows",
+      "Framework readiness"
+    ],
+    "defaultPrompt": [
+      "Brief me on our current compliance posture.",
+      "Triage our highest-priority released findings.",
+      "Review our evidence actions requiring attention."
+    ],
+    "brandColor": "#0C314A",
+    "composerIcon": "./assets/barmous-mark.png",
+    "logo": "./assets/barmous-mark.png",
+    "logoDark": "./assets/barmous-mark.png"
+  },
+  "mcpServers": "./.mcp.json"
+}

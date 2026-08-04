@@ -1,0 +1,9 @@
+interface:
+  display_name: "Barmous Remediation Plan"
+  short_description: "Build a practical Barmous remediation plan."
+  default_prompt: "Use $barmous-remediation-plan to build a remediation plan from Barmous."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "barmous"
+      description: "Read-only Barmous company compliance data."

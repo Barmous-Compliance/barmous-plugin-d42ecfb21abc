@@ -1,0 +1,9 @@
+interface:
+  display_name: "Barmous Evidence Gap Review"
+  short_description: "Review evidence actions requiring attention."
+  default_prompt: "Use $barmous-evidence-gap-review to identify evidence gaps in Barmous."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "barmous"
+      description: "Read-only Barmous company compliance data."

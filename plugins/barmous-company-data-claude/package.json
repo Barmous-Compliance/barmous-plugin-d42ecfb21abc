@@ -1,0 +1,14 @@
+{
+  "name": "@barmous/company-data-cli-claude",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Local installer for the read-only Barmous CLI bundled with the Claude plugin",
+  "type": "module",
+  "bin": {
+    "barmous": "./bin/barmous.mjs"
+  },
+  "engines": {
+    "node": ">=22.12 <25",
+    "npm": ">=10 <12"
+  }
+}

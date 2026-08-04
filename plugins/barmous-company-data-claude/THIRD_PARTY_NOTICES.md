@@ -1,6 +1,6 @@
 # Third-party notices
 
-The Barmous Compliance Codex plugin bundle includes the following third-party software. Each component remains subject to its own license.
+The Barmous Compliance Claude Code plugin bundle includes the following third-party software. Each component remains subject to its own license.
 
 ## MIT-licensed components
 

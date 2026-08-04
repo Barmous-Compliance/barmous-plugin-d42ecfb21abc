@@ -1,0 +1,9 @@
+interface:
+  display_name: "Barmous Framework Review"
+  short_description: "Review framework readiness and gaps from Barmous."
+  default_prompt: "Use $barmous-framework-review to review the selected compliance framework in Barmous."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "barmous"
+      description: "Read-only Barmous company compliance data."

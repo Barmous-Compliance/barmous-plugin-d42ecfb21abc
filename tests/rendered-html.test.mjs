@@ -6,22 +6,27 @@ import test from "node:test";
 const releases = [
   {
     product: "Codex",
-    name: "barmous-compliance-codex-plugin-v0.1.0.zip",
-    bytes: 989189,
+    name: "barmous-compliance-codex-plugin-v0.2.0.zip",
+    root: "barmous-compliance-codex-plugin-v0.2.0",
+    bytes: 1202822,
     checksum:
-      "D9363EDC4FF9B2B42D97CB55A77A26FB6C557E4720AE5FEE8DA550A53044D987",
+      "06A05BF0F1B745FA4C8C8DEB4425C1685A48CD43545223CD91EECD3F95731E42",
   },
   {
     product: "Claude Code",
-    name: "barmous-compliance-claude-plugin-v0.1.0.zip",
-    bytes: 211582,
+    name: "barmous-compliance-claude-plugin-v0.2.0.zip",
+    root: "barmous-compliance-claude-plugin-v0.2.0",
+    bytes: 421732,
     checksum:
-      "827599DA3FF7186DEC276D7B3690F90C8BD6BF092BADD2F4A363C68F1C815789",
+      "8FABFA35C8755A32F98BE11BBC6865E87D269BF341A3745880932E041E72E8D5",
   },
 ];
 
-const retiredDownload =
-  "barmous-company-data-codex-plugin-0.1.0-codex.20260802110450.zip";
+const retiredDownloads = [
+  "barmous-compliance-codex-plugin-v0.1.0.zip",
+  "barmous-compliance-claude-plugin-v0.1.0.zip",
+  "barmous-company-data-codex-plugin-0.1.0-codex.20260802110450.zip",
+];
 
 async function render() {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
@@ -52,7 +57,37 @@ function normalizeText(value) {
   return value.replace(/\r\n?/g, "\n").trimEnd();
 }
 
-test("server-renders both clean v0.1.0 plugin downloads", async () => {
+function zipEntryNames(buffer) {
+  const eocdSignature = 0x06054b50;
+  const centralSignature = 0x02014b50;
+  const minimumOffset = Math.max(0, buffer.length - 65557);
+  let eocdOffset = -1;
+  for (let offset = buffer.length - 22; offset >= minimumOffset; offset -= 1) {
+    if (buffer.readUInt32LE(offset) === eocdSignature) {
+      eocdOffset = offset;
+      break;
+    }
+  }
+  assert.notEqual(eocdOffset, -1, "ZIP end-of-central-directory record");
+  const entryCount = buffer.readUInt16LE(eocdOffset + 10);
+  let cursor = buffer.readUInt32LE(eocdOffset + 16);
+  const entries = [];
+  for (let index = 0; index < entryCount; index += 1) {
+    assert.equal(buffer.readUInt32LE(cursor), centralSignature, `ZIP central entry ${index}`);
+    const nameLength = buffer.readUInt16LE(cursor + 28);
+    const extraLength = buffer.readUInt16LE(cursor + 30);
+    const commentLength = buffer.readUInt16LE(cursor + 32);
+    const name = buffer
+      .subarray(cursor + 46, cursor + 46 + nameLength)
+      .toString("utf8")
+      .replaceAll("\\", "/");
+    entries.push(name);
+    cursor += 46 + nameLength + extraLength + commentLength;
+  }
+  return entries;
+}
+
+test("server-renders both clean v0.2.0 plugin downloads", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -70,22 +105,24 @@ test("server-renders both clean v0.1.0 plugin downloads", async () => {
     (html.match(/<a\b[^>]*\bsource-button\b[^>]*>/gi) ?? []).length,
     1,
   );
+  assert.ok(html.indexOf("View plugin source") > html.indexOf("Set up Barmous for"));
   assert.ok(
-    html.indexOf("View plugin source") >
+    html.indexOf("View plugin source") <
       html.indexOf("Everything you need, nothing sensitive included."),
   );
   assert.match(html, /Set up Barmous for .*Codex/i);
   assert.match(html, /Download Codex ZIP/i);
+  assert.match(html, /npm install --global .*plugins.*barmous-company-data/i);
   assert.match(html, /codex plugin marketplace add \$pluginRoot/i);
   assert.match(html, /data-client="claude"/i);
   assert.match(html, /data-mode="connect"/i);
-  assert.match(html, />v0\.1\.0</i);
+  assert.match(html, />v0\.2\.0</i);
   for (const release of releases) {
     assert.match(html, new RegExp(`/downloads/${release.name}`));
     assert.match(html, new RegExp(release.checksum));
   }
   assert.doesNotMatch(html, /Public by link|Link-only preview|not access-controlled/i);
-  assert.doesNotMatch(html, /0\.1\.0\+codex|20260802110450/i);
+  assert.doesNotMatch(html, /0\.2\.0\+codex|0\.1\.0\+codex|20260802110450/i);
   assert.match(html, /noindex/i);
   assert.match(html, /nofollow/i);
 });
@@ -101,17 +138,29 @@ test("ships both exact verified plugin archives", async () => {
     assert.equal(archive.byteLength, release.bytes, release.product);
     assert.equal(digest(archive), release.checksum, release.product);
   }
-  await assert.rejects(
-    access(new URL(`../public/downloads/${retiredDownload}`, import.meta.url)),
-  );
+  for (const retiredDownload of retiredDownloads) {
+    await assert.rejects(
+      access(new URL(`../public/downloads/${retiredDownload}`, import.meta.url)),
+    );
+  }
 });
 
-test("publishes a valid Claude marketplace source", async () => {
-  const [marketplaceText, pluginText, mcpText] = await Promise.all([
-    readFile(new URL("../.claude-plugin/marketplace.json", import.meta.url), "utf8"),
+test("publishes valid v0.2.0 Codex and Claude marketplace sources", async () => {
+  const [
+    codexMarketplaceText,
+    codexPluginText,
+    codexMcpText,
+    codexPackageText,
+    claudeMarketplaceText,
+    claudeReleaseMarketplaceText,
+    claudePluginText,
+    claudeMcpText,
+    claudePackageText,
+  ] = await Promise.all([
+    readFile(new URL("../.agents/plugins/marketplace.json", import.meta.url), "utf8"),
     readFile(
       new URL(
-        "../plugins/barmous-company-data/.claude-plugin/plugin.json",
+        "../plugins/barmous-company-data/.codex-plugin/plugin.json",
         import.meta.url,
       ),
       "utf8",
@@ -120,19 +169,123 @@ test("publishes a valid Claude marketplace source", async () => {
       new URL("../plugins/barmous-company-data/.mcp.json", import.meta.url),
       "utf8",
     ),
+    readFile(
+      new URL("../plugins/barmous-company-data/package.json", import.meta.url),
+      "utf8",
+    ),
+    readFile(new URL("../.claude-plugin/marketplace.json", import.meta.url), "utf8"),
+    readFile(
+      new URL("../release/claude-marketplace.json", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL(
+        "../plugins/barmous-company-data-claude/.claude-plugin/plugin.json",
+        import.meta.url,
+      ),
+      "utf8",
+    ),
+    readFile(
+      new URL("../plugins/barmous-company-data-claude/.mcp.json", import.meta.url),
+      "utf8",
+    ),
+    readFile(
+      new URL("../plugins/barmous-company-data-claude/package.json", import.meta.url),
+      "utf8",
+    ),
   ]);
-  const marketplace = JSON.parse(marketplaceText);
-  const plugin = JSON.parse(pluginText);
-  const mcp = JSON.parse(mcpText);
+  const codexMarketplace = JSON.parse(codexMarketplaceText);
+  const codexPlugin = JSON.parse(codexPluginText);
+  const codexMcp = JSON.parse(codexMcpText);
+  const codexPackage = JSON.parse(codexPackageText);
+  const claudeMarketplace = JSON.parse(claudeMarketplaceText);
+  const claudeReleaseMarketplace = JSON.parse(claudeReleaseMarketplaceText);
+  const claudePlugin = JSON.parse(claudePluginText);
+  const claudeMcp = JSON.parse(claudeMcpText);
+  const claudePackage = JSON.parse(claudePackageText);
 
-  assert.equal(marketplace.name, "barmous");
-  assert.equal(marketplace.plugins[0].source, "./plugins/barmous-company-data");
-  assert.equal(plugin.name, "barmous-company-data");
-  assert.equal(plugin.version, "0.1.0");
-  assert.equal(plugin.defaultEnabled, false);
-  assert.equal(plugin.userConfig.agent_token.sensitive, true);
-  assert.equal(mcp.barmous.type, "stdio");
-  assert.equal(mcp.barmous.args[0], "${CLAUDE_PLUGIN_ROOT}/mcp/server.mjs");
+  assert.equal(codexMarketplace.name, "barmous");
+  assert.equal(
+    codexMarketplace.plugins[0].source.path,
+    "./plugins/barmous-company-data",
+  );
+  assert.equal(codexPlugin.name, "barmous-company-data");
+  assert.equal(codexPlugin.version, "0.2.0");
+  assert.equal(codexPackage.version, "0.2.0");
+  assert.equal(codexMcp.mcpServers.barmous.command, "node");
+  assert.equal(codexMcp.mcpServers.barmous.args[0], "./mcp/server.mjs");
+
+  assert.equal(claudeMarketplace.name, "barmous");
+  assert.equal(
+    claudeMarketplace.plugins[0].source,
+    "./plugins/barmous-company-data-claude",
+  );
+  assert.equal(claudeReleaseMarketplace.name, claudeMarketplace.name);
+  assert.equal(
+    claudeReleaseMarketplace.plugins[0].source,
+    "./plugins/barmous-company-data",
+  );
+  assert.equal(claudePlugin.name, "barmous-company-data");
+  assert.equal(claudePlugin.version, "0.2.0");
+  assert.equal(claudePlugin.defaultEnabled, false);
+  assert.equal(claudePlugin.userConfig, undefined);
+  assert.equal(claudePackage.version, "0.2.0");
+  assert.equal(claudeMcp.barmous.type, "stdio");
+  assert.equal(claudeMcp.barmous.args[0], "${CLAUDE_PLUGIN_ROOT}/mcp/server.mjs");
+});
+
+test("packages complete local CLI and MCP bundles without sensitive material", async () => {
+  const requiredPluginFiles = [
+    "package.json",
+    "bin/barmous.mjs",
+    "mcp/server.mjs",
+    "skills/barmous-company-brief/SKILL.md",
+    "skills/barmous-evidence-gap-review/SKILL.md",
+    "skills/barmous-findings-triage/SKILL.md",
+    "skills/barmous-framework-review/SKILL.md",
+    "skills/barmous-remediation-plan/SKILL.md",
+  ];
+
+  for (const release of releases) {
+    const archive = await readFile(
+      new URL(`../public/downloads/${release.name}`, import.meta.url),
+    );
+    const entries = zipEntryNames(archive);
+    const pluginRoot = `${release.root}/plugins/barmous-company-data`;
+    const platformManifest =
+      release.product === "Codex"
+        ? `${release.root}/.agents/plugins/marketplace.json`
+        : `${release.root}/.claude-plugin/marketplace.json`;
+    const pluginManifest =
+      release.product === "Codex"
+        ? `${pluginRoot}/.codex-plugin/plugin.json`
+        : `${pluginRoot}/.claude-plugin/plugin.json`;
+
+    assert.ok(entries.includes(platformManifest), `${release.product} marketplace`);
+    assert.ok(entries.includes(pluginManifest), `${release.product} manifest`);
+    for (const file of requiredPluginFiles) {
+      assert.ok(entries.includes(`${pluginRoot}/${file}`), `${release.product}: ${file}`);
+    }
+    assert.ok(entries.includes(`${release.root}/README.md`), `${release.product} README`);
+    assert.ok(
+      entries.includes(`${release.root}/PREVIEW_DISTRIBUTION_NOTICE.md`),
+      `${release.product} preview notice`,
+    );
+    assert.equal(
+      entries.some((entry) =>
+        /(?:^|\/)(?:node_modules|\.env(?:\.|$)|credentials?(?:\.|$)|tokens?(?:\.|$)|\.git)(?:\/|$)/i.test(
+          entry,
+        ),
+      ),
+      false,
+      `${release.product} excludes secrets and transient files`,
+    );
+    assert.equal(
+      entries.some((entry) => /0\.2\.0\+codex|202608\d{8}/i.test(entry)),
+      false,
+      `${release.product} uses the clean release version`,
+    );
+  }
 });
 
 test("removes the disposable starter preview", async () => {
@@ -247,7 +400,7 @@ test("keeps the static Pages release synchronized", async () => {
     html,
     /name="robots" content="noindex, nofollow, noarchive, noimageindex"/i,
   );
-  assert.match(html, />v0\.1\.0</i);
+  assert.match(html, />v0\.2\.0</i);
   assert.match(html, /src="scripts\.js"/i);
   assert.match(html, /data-client="codex"/i);
   assert.match(html, /data-client="claude"/i);
@@ -255,7 +408,7 @@ test("keeps the static Pages release synchronized", async () => {
   assert.match(html, /data-mode="connect"/i);
   assert.match(html, /src="logos\/openai\.svg"/i);
   assert.match(html, /src="logos\/claude\.svg"/i);
-  assert.match(html, /href="styles\.css\?v=20260803\.2"/i);
+  assert.match(html, /href="styles\.css\?v=20260805\.1"/i);
   assert.match(styles, /fonts\/noto-sans-variable\.woff2/i);
   assert.match(html, /class="setup-stage"/i);
   assert.doesNotMatch(html, /Start setup/i);
@@ -266,26 +419,39 @@ test("keeps the static Pages release synchronized", async () => {
   );
   assert.ok(
     html.indexOf("View plugin source") >
+      html.indexOf("Set up Barmous for"),
+  );
+  assert.ok(
+    html.indexOf("View plugin source") <
       html.indexOf("Everything you need, nothing sensitive included."),
   );
   assert.doesNotMatch(html, /class="(?:client|platform)-mark"[^>]*>[CA]</i);
   assert.match(script, /navigator\.clipboard/i);
-  assert.match(
-    script,
-    /claude plugin marketplace add Barmous-Compliance\/barmous-plugin-d42ecfb21abc/i,
-  );
-  assert.match(script, /BARMOUS_AGENT_TOKEN/i);
+  assert.match(script, /npm install --global/i);
+  assert.match(script, /claude plugin marketplace add \./i);
+  assert.match(script, /barmous login/i);
+  assert.match(script, /--expires-in 60/i);
+  assert.match(script, /--expires-in 90/i);
+  assert.match(script, /--profile work/i);
+  assert.match(script, /barmous status/i);
+  assert.match(script, /\/mcp/i);
+  assert.doesNotMatch(script, /BARMOUS_AGENT_TOKEN|paste-token/i);
   assert.doesNotMatch(html, /Public by link|Link-only preview|not access-controlled/i);
+  assert.doesNotMatch(html + script, /hosted remote MCP|remote MCP endpoint/i);
 
   for (const release of releases) {
     assert.match(html, new RegExp(`href="downloads/${release.name}"`));
-    const archive = await readFile(
-      new URL(`../docs/downloads/${release.name}`, import.meta.url),
-    );
-    assert.equal(archive.byteLength, release.bytes, release.product);
-    assert.equal(digest(archive), release.checksum, release.product);
+    const [pagesArchive, runtimeArchive] = await Promise.all([
+      readFile(new URL(`../docs/downloads/${release.name}`, import.meta.url)),
+      readFile(new URL(`../public/downloads/${release.name}`, import.meta.url)),
+    ]);
+    assert.equal(pagesArchive.byteLength, release.bytes, release.product);
+    assert.equal(digest(pagesArchive), release.checksum, release.product);
+    assert.equal(Buffer.compare(pagesArchive, runtimeArchive), 0, release.product);
   }
-  await assert.rejects(
-    access(new URL(`../docs/downloads/${retiredDownload}`, import.meta.url)),
-  );
+  for (const retiredDownload of retiredDownloads) {
+    await assert.rejects(
+      access(new URL(`../docs/downloads/${retiredDownload}`, import.meta.url)),
+    );
+  }
 });
