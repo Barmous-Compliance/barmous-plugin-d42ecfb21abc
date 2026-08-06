@@ -62,7 +62,11 @@ export default function Home() {
   return (
     <main className="site-shell">
       <header className="site-header" aria-label="Barmous Compliance">
-        <a className="brand" href="#top" aria-label="Barmous Compliance home">
+        <a
+          className="brand"
+          href="https://barmous.ae/"
+          aria-label="Return to Barmous Compliance website"
+        >
           <Image src="/barmous-mark.png" alt="" width={46} height={46} unoptimized />
           <span>
             <strong>Barmous</strong>

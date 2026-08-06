@@ -98,6 +98,10 @@ test("server-renders both clean v0.3.0 plugin downloads", async () => {
   assert.match(html, /<title>Barmous Compliance \| MCP &amp; CLI Connections<\/title>/i);
   assert.match(
     html,
+    /<a\b[^>]*class="brand"[^>]*href="https:\/\/barmous\.ae\/"[^>]*aria-label="Return to Barmous Compliance website"[^>]*>/i,
+  );
+  assert.match(
+    html,
     /Barmous MCP &amp; CLI for the AI tools you already use\./i,
   );
   assert.match(html, /class="setup-stage"/i);
@@ -464,6 +468,10 @@ test("keeps the static Pages release synchronized", async () => {
   assert.match(
     html,
     /name="robots" content="noindex, nofollow, noarchive, noimageindex"/i,
+  );
+  assert.match(
+    html,
+    /<a\b[^>]*class="brand"[^>]*href="https:\/\/barmous\.ae\/"[^>]*aria-label="Return to Barmous Compliance website"[^>]*>/i,
   );
   assert.match(html, />v0\.3\.0</i);
   assert.match(html, /src="scripts\.js\?v=20260806\.4"/i);
