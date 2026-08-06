@@ -106,7 +106,7 @@ test("server-renders both clean v0.3.0 plugin downloads", async () => {
     "codex",
     "claude",
     "cursor",
-    "gemini",
+    "antigravity",
     "perplexity",
     "kimi",
     "hermes",
@@ -117,7 +117,6 @@ test("server-renders both clean v0.3.0 plugin downloads", async () => {
     "openai.svg",
     "claude.svg",
     "cursor.svg",
-    "google-gemini.svg",
     "antigravity.png",
     "perplexity.svg",
     "kimi-code.png",
@@ -125,8 +124,8 @@ test("server-renders both clean v0.3.0 plugin downloads", async () => {
   ]) {
     assert.match(html, new RegExp(`/logos/${logo.replace(".", "\\.")}`, "i"));
   }
-  assert.match(html, /class="product-mark-pair"/i);
-  assert.match(html, /Gemini \+ Antigravity/i);
+  assert.match(html, />Antigravity</i);
+  assert.doesNotMatch(html, /Gemini|product-mark-pair|google-gemini/i);
   assert.match(html, /data-mode="mcp"/i);
   assert.match(html, /data-mode="cli"/i);
   assert.match(html, /Remote MCP is being prepared/i);
@@ -343,11 +342,6 @@ test("ships synchronized audited product marks", async () => {
         "EA5D9706762F2EAE285B69C8769C376892BA1EFE068FEBD8E2857AFF0AFEBC85",
     },
     {
-      name: "google-gemini.svg",
-      checksum:
-        "CC58217AF6FF40B9DE0D105A3820CA2CBC8B806905DBEDF3BAF47FF7EEC91A7A",
-    },
-    {
       name: "perplexity.svg",
       checksum:
         "097A62048785135C87E4F1BBB4E021A194E8AA3BFB9BBA3F54ABA84DC4D8991C",
@@ -389,6 +383,14 @@ test("ships synchronized audited product marks", async () => {
       );
     }
   }
+  await Promise.all([
+    assert.rejects(
+      access(new URL("../public/logos/google-gemini.svg", import.meta.url)),
+    ),
+    assert.rejects(
+      access(new URL("../docs/logos/google-gemini.svg", import.meta.url)),
+    ),
+  ]);
 });
 
 test("ships the synchronized Barmous font and its license", async () => {
@@ -464,36 +466,39 @@ test("keeps the static Pages release synchronized", async () => {
     /name="robots" content="noindex, nofollow, noarchive, noimageindex"/i,
   );
   assert.match(html, />v0\.3\.0</i);
-  assert.match(html, /src="scripts\.js\?v=20260806\.3"/i);
+  assert.match(html, /src="scripts\.js\?v=20260806\.4"/i);
   for (const client of [
     "codex",
     "claude",
     "cursor",
-    "gemini",
+    "antigravity",
     "perplexity",
     "kimi",
     "hermes",
   ]) {
     assert.match(html, new RegExp(`data-client="${client}"`, "i"));
   }
-  assert.match(html, /Gemini \+ Antigravity/i);
+  assert.match(html, />Antigravity</i);
+  assert.doesNotMatch(html, /Gemini|product-mark-pair|google-gemini/i);
   assert.match(html, /data-mode="mcp"/i);
   assert.match(html, /data-mode="cli"/i);
   assert.match(html, /src="logos\/openai\.svg"/i);
   assert.match(html, /src="logos\/claude\.svg"/i);
   assert.match(html, /src="logos\/cursor\.svg"/i);
-  assert.match(html, /src="logos\/google-gemini\.svg"/i);
   assert.match(html, /src="logos\/antigravity\.png"/i);
   assert.match(html, /src="logos\/perplexity\.svg"/i);
   assert.match(html, /src="logos\/kimi-code\.png"/i);
   assert.match(html, /src="logos\/hermes\.png"/i);
-  assert.match(html, /class="product-mark-pair"/i);
   assert.doesNotMatch(
     html,
     /class="client-mark[^\"]*"[^>]*>\s*<svg\b/i,
   );
-  assert.match(html, /href="styles\.css\?v=20260806\.3"/i);
+  assert.match(html, /href="styles\.css\?v=20260806\.4"/i);
   assert.match(styles, /fonts\/noto-sans-variable\.woff2/i);
+  assert.match(styles, /overflow-x:\s*auto/i);
+  assert.match(styles, /flex:\s*0 0 158px/i);
+  assert.match(styles, /scrollbar-width:\s*thin/i);
+  assert.match(styles, /text-overflow:\s*ellipsis/i);
   assert.match(html, /class="setup-stage"/i);
   assert.equal(
     (html.match(/<article\b[^>]*\bsetup-step\b[^>]*>/gi) ?? []).length,
@@ -521,6 +526,8 @@ test("keeps the static Pages release synchronized", async () => {
   assert.match(script, /hermes mcp test barmous/i);
   assert.match(script, /hermes chat/i);
   assert.match(script, /URLSearchParams/i);
+  assert.match(script, /requestedClient === "gemini" \? "antigravity"/i);
+  assert.match(script, /replaceState/i);
   assert.match(script, /pushState/i);
   assert.match(script, /revealClientTab/i);
   assert.match(script, /scrollTo/i);
@@ -552,4 +559,20 @@ test("keeps the static Pages release synchronized", async () => {
       access(new URL(`../docs/downloads/${retiredDownload}`, import.meta.url)),
     );
   }
+});
+
+test("ships a durable GitHub Pages workflow", async () => {
+  const workflow = await readFile(
+    new URL("../.github/workflows/pages.yml", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(workflow, /codex\/plugin-download-preview/);
+  assert.match(workflow, /actions\/upload-pages-artifact@v3/);
+  assert.match(workflow, /path:\s*docs/);
+  assert.match(workflow, /include-hidden-files:\s*true/);
+  assert.match(workflow, /actions\/deploy-pages@v5/);
+  assert.match(workflow, /timeout:\s*1200000/);
+  assert.match(workflow, /pages:\s*write/);
+  assert.match(workflow, /id-token:\s*write/);
 });
