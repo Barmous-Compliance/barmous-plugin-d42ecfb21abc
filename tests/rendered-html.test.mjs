@@ -553,3 +553,19 @@ test("keeps the static Pages release synchronized", async () => {
     );
   }
 });
+
+test("ships a durable GitHub Pages workflow", async () => {
+  const workflow = await readFile(
+    new URL("../.github/workflows/pages.yml", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(workflow, /codex\/plugin-download-preview/);
+  assert.match(workflow, /actions\/upload-pages-artifact@v3/);
+  assert.match(workflow, /path:\s*docs/);
+  assert.match(workflow, /include-hidden-files:\s*true/);
+  assert.match(workflow, /actions\/deploy-pages@v5/);
+  assert.match(workflow, /timeout:\s*1200000/);
+  assert.match(workflow, /pages:\s*write/);
+  assert.match(workflow, /id-token:\s*write/);
+});
