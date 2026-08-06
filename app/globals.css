@@ -383,6 +383,18 @@ a:focus-visible {
   height: 72%;
 }
 
+.product-mark-kimi img {
+  width: 80%;
+  height: 80%;
+  border-radius: 5px;
+}
+
+.product-mark-hermes img {
+  width: 82%;
+  height: 82%;
+  border-radius: 4px;
+}
+
 .client-tab > span:last-child {
   display: grid;
   gap: 2px;
@@ -943,6 +955,7 @@ footer {
   .client-tabs {
     width: max-content;
     min-width: max-content;
+    padding-inline-end: 12px;
   }
 
   .client-tab {

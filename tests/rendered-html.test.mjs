@@ -102,7 +102,15 @@ test("server-renders both clean v0.3.0 plugin downloads", async () => {
   );
   assert.match(html, /class="setup-stage"/i);
   assert.match(html, /Connect .*Codex.* with .*remote MCP/i);
-  for (const client of ["codex", "claude", "cursor", "gemini", "perplexity"]) {
+  for (const client of [
+    "codex",
+    "claude",
+    "cursor",
+    "gemini",
+    "perplexity",
+    "kimi",
+    "hermes",
+  ]) {
     assert.match(html, new RegExp(`data-client="${client}"`, "i"));
   }
   for (const logo of [
@@ -112,6 +120,8 @@ test("server-renders both clean v0.3.0 plugin downloads", async () => {
     "google-gemini.svg",
     "antigravity.png",
     "perplexity.svg",
+    "kimi-code.png",
+    "hermes.png",
   ]) {
     assert.match(html, new RegExp(`/logos/${logo.replace(".", "\\.")}`, "i"));
   }
@@ -347,6 +357,16 @@ test("ships synchronized audited product marks", async () => {
       checksum:
         "E0CD08CCD10CD8D08CCF0BA449823EE88495825C0841619618100D3AB089F51E",
     },
+    {
+      name: "kimi-code.png",
+      checksum:
+        "DBD00E2AD61EA8832EF0B024662A4A8A5D1B66F0599D5D42E1C9688B9D4CFDF6",
+    },
+    {
+      name: "hermes.png",
+      checksum:
+        "5847654A3B7C692A8EDCF3A2138BC2B5C1072362FE99C2DAE033D2672D2A075A",
+    },
   ];
 
   for (const { name, checksum } of productMarks) {
@@ -444,8 +464,16 @@ test("keeps the static Pages release synchronized", async () => {
     /name="robots" content="noindex, nofollow, noarchive, noimageindex"/i,
   );
   assert.match(html, />v0\.3\.0</i);
-  assert.match(html, /src="scripts\.js\?v=20260806\.1"/i);
-  for (const client of ["codex", "claude", "cursor", "gemini", "perplexity"]) {
+  assert.match(html, /src="scripts\.js\?v=20260806\.2"/i);
+  for (const client of [
+    "codex",
+    "claude",
+    "cursor",
+    "gemini",
+    "perplexity",
+    "kimi",
+    "hermes",
+  ]) {
     assert.match(html, new RegExp(`data-client="${client}"`, "i"));
   }
   assert.match(html, /Gemini \+ Antigravity/i);
@@ -457,12 +485,14 @@ test("keeps the static Pages release synchronized", async () => {
   assert.match(html, /src="logos\/google-gemini\.svg"/i);
   assert.match(html, /src="logos\/antigravity\.png"/i);
   assert.match(html, /src="logos\/perplexity\.svg"/i);
+  assert.match(html, /src="logos\/kimi-code\.png"/i);
+  assert.match(html, /src="logos\/hermes\.png"/i);
   assert.match(html, /class="product-mark-pair"/i);
   assert.doesNotMatch(
     html,
     /class="client-mark[^\"]*"[^>]*>\s*<svg\b/i,
   );
-  assert.match(html, /href="styles\.css\?v=20260806\.2"/i);
+  assert.match(html, /href="styles\.css\?v=20260806\.3"/i);
   assert.match(styles, /fonts\/noto-sans-variable\.woff2/i);
   assert.match(html, /class="setup-stage"/i);
   assert.equal(
@@ -482,8 +512,18 @@ test("keeps the static Pages release synchronized", async () => {
   assert.match(script, /barmous login/i);
   assert.match(script, /barmous status/i);
   assert.match(script, /\/mcp/i);
+  assert.match(script, /~\/\.kimi-code\/mcp\.json/i);
+  assert.match(script, /\/mcp-config login barmous/i);
+  assert.match(
+    script,
+    /hermes mcp add barmous --command barmous --args mcp/i,
+  );
+  assert.match(script, /hermes mcp test barmous/i);
+  assert.match(script, /hermes chat/i);
   assert.match(script, /URLSearchParams/i);
   assert.match(script, /pushState/i);
+  assert.match(script, /revealClientTab/i);
+  assert.match(script, /scrollTo/i);
   assert.match(script, /ArrowRight/i);
   assert.match(script, /REMOTE_MCP_URL/i);
   assert.match(script, /Remote MCP is being prepared/i);
@@ -494,6 +534,8 @@ test("keeps the static Pages release synchronized", async () => {
   assert.doesNotMatch(script, /BARMOUS_AGENT_TOKEN|paste-token/i);
   assert.doesNotMatch(html, /Public by link|Link-only preview|not access-controlled/i);
   assert.doesNotMatch(html + script, /mcp\.barmous\.ae|https:\/\/[^"'\s]*barmous[^"'\s]*\/mcp/i);
+  assert.match(pagesThirdPartyNotices, /MoonshotAI\/kimi-code/i);
+  assert.match(pagesThirdPartyNotices, /NousResearch\/hermes-agent/i);
 
   for (const release of releases) {
     assert.match(html, new RegExp(`href="downloads/${release.name}"`));

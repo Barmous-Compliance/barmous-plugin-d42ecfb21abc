@@ -8,6 +8,8 @@ The Barmous Compliance Codex and Claude Code plugin bundles include the followin
 - The Claude spark is provided in Anthropic's official media press kit and is used only to identify the Claude Code setup option. Anthropic, Claude, and their marks remain the property of Anthropic. Source: <https://www.anthropic.com/news>.
 - The Cursor, Google Gemini, and Perplexity SVG icon data is sourced from Simple Icons 16.28.0 and distributed under CC0 1.0 Universal. Source: <https://github.com/simple-icons/simple-icons/tree/16.28.0>. The CC0 dedication applies to the icon data and does not grant trademark rights in the identified products.
 - The Google Antigravity full-color icon is provided by Google on the official Antigravity brand site and is used only to identify Antigravity in the combined Gemini + Antigravity setup option. Source: <https://antigravity.google/assets/image/brand/antigravity-icon__full-color.png>.
+- The Kimi Code storefront icon is sourced from Moonshot AI's official Kimi Code repository and is used only to identify the compatible Kimi Code setup option. Source: <https://github.com/MoonshotAI/kimi-code/blob/02c026d4871a14cd5e7b4b0e0ec71ba815f643df/apps/vscode/resources/kimi-icon-storefront.png>.
+- The Hermes icon is sourced from Nous Research's official Hermes Agent repository and is used only to identify the compatible Hermes setup option. Source: <https://github.com/NousResearch/hermes-agent/blob/ea0d54db1d22416ea07cd98abfb5d6e160aa86c9/website/static/img/apple-touch-icon.png>.
 
 These product marks identify compatible setup options and do not imply endorsement of Barmous Compliance by their owners.
 
@@ -27,6 +29,8 @@ The download page self-hosts Noto Sans Variable, Copyright 2022 The Noto Project
 - `fast-deep-equal` — Copyright 2017 Evgeny Poberezkin
 - `json-schema-traverse` — Copyright 2017 Evgeny Poberezkin
 - `zod` 4.4.3 — Copyright 2025 Colin McDonnell
+- Kimi Code storefront icon — Copyright 2026 Moonshot AI
+- Hermes icon — Copyright 2025 Nous Research
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

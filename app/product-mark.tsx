@@ -1,6 +1,13 @@
 import Image from "next/image";
 
-export type ProductId = "codex" | "claude" | "cursor" | "gemini" | "perplexity";
+export type ProductId =
+  | "codex"
+  | "claude"
+  | "cursor"
+  | "gemini"
+  | "perplexity"
+  | "kimi"
+  | "hermes";
 
 type ProductLogo = {
   src: string;
@@ -16,6 +23,8 @@ const productLogos: Record<ProductId, readonly ProductLogo[]> = {
     { src: "/logos/antigravity.png", className: "product-logo-antigravity" },
   ],
   perplexity: [{ src: "/logos/perplexity.svg" }],
+  kimi: [{ src: "/logos/kimi-code.png" }],
+  hermes: [{ src: "/logos/hermes.png" }],
 };
 
 export default function ProductMark({
