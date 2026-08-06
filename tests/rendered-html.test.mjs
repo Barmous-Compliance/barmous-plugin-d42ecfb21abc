@@ -577,7 +577,7 @@ test("ships a durable GitHub Pages workflow", async () => {
   assert.match(workflow, /listWorkflowRunArtifacts/);
   assert.match(workflow, /core\.getIDToken\(\)/);
   assert.match(workflow, /pages_build_version:\s*buildVersion/);
-  assert.match(workflow, /context\.runId/);
+  assert.match(workflow, /const buildVersion = context\.sha/);
   assert.match(workflow, /POST \/repos\/\{owner\}\/\{repo\}\/pages\/deployments/);
   assert.match(workflow, /GET \/repos\/\{owner\}\/\{repo\}\/pages\/deployments/);
   assert.doesNotMatch(workflow, /pages\/deployments\/\{[^}]+\}\/cancel/);

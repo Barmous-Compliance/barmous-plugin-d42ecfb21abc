@@ -38,7 +38,7 @@ jobs:
     timeout-minutes: 25
     steps:
       # The stock deploy action cancels valid Pages deployments after ten minutes.
-      # Use a unique build version and leave slow server-side work intact.
+      # Keep the OIDC-bound commit version and leave slow server-side work intact.
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/github-script@v9
@@ -50,8 +50,7 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const artifactName = "github-pages";
-            const buildVersion =
-              `${context.sha.slice(0, 12)}-${context.runId}-${context.runAttempt}`;
+            const buildVersion = context.sha;
             const timeoutMs = Number(process.env.PAGES_DEPLOY_TIMEOUT_MS);
             const pollIntervalMs = 5000;
             const terminalFailures = new Set([
