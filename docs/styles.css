@@ -346,14 +346,19 @@ a:focus-visible {
   object-fit: contain;
 }
 
-.product-mark svg {
-  width: 63%;
-  height: 63%;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.65;
+.product-mark-pair {
+  display: flex;
+  width: 96%;
+  height: 72%;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+
+.product-mark-pair img {
+  width: calc(50% - 1px);
+  height: 100%;
+  object-fit: contain;
 }
 
 .product-mark-codex img {
@@ -364,6 +369,16 @@ a:focus-visible {
 .product-mark-claude img {
   width: 68%;
   height: 68%;
+}
+
+.product-mark-cursor img {
+  width: 72%;
+  height: 72%;
+}
+
+.product-mark-perplexity img {
+  width: 72%;
+  height: 72%;
 }
 
 .client-tab > span:last-child {

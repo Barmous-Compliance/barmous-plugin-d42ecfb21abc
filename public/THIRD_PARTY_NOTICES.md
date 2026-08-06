@@ -6,8 +6,14 @@ The Barmous Compliance Codex and Claude Code plugin bundles include the followin
 
 - The OpenAI mark is provided by OpenAI and is used only to identify the Codex setup option. OpenAI and its marks remain the property of OpenAI. Source and usage terms: <https://openai.com/brand/>.
 - The Claude spark is provided in Anthropic's official media press kit and is used only to identify the Claude Code setup option. Anthropic, Claude, and their marks remain the property of Anthropic. Source: <https://www.anthropic.com/news>.
+- The Cursor, Google Gemini, and Perplexity SVG icon data is sourced from Simple Icons 16.28.0 and distributed under CC0 1.0 Universal. Source: <https://github.com/simple-icons/simple-icons/tree/16.28.0>. The CC0 dedication applies to the icon data and does not grant trademark rights in the identified products.
+- The Google Antigravity full-color icon is provided by Google on the official Antigravity brand site and is used only to identify Antigravity in the combined Gemini + Antigravity setup option. Source: <https://antigravity.google/assets/image/brand/antigravity-icon__full-color.png>.
 
-These product marks do not imply endorsement of Barmous Compliance by OpenAI or Anthropic.
+These product marks identify compatible setup options and do not imply endorsement of Barmous Compliance by their owners.
+
+## CC0 1.0 Universal component
+
+Simple Icons 16.28.0 icon data for Cursor, Google Gemini, and Perplexity is dedicated to the public domain under CC0 1.0 Universal. The complete legal code is available at <https://creativecommons.org/publicdomain/zero/1.0/legalcode>.
 
 ## SIL Open Font License component
 

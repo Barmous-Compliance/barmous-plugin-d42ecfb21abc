@@ -105,6 +105,17 @@ test("server-renders both clean v0.3.0 plugin downloads", async () => {
   for (const client of ["codex", "claude", "cursor", "gemini", "perplexity"]) {
     assert.match(html, new RegExp(`data-client="${client}"`, "i"));
   }
+  for (const logo of [
+    "openai.svg",
+    "claude.svg",
+    "cursor.svg",
+    "google-gemini.svg",
+    "antigravity.png",
+    "perplexity.svg",
+  ]) {
+    assert.match(html, new RegExp(`/logos/${logo.replace(".", "\\.")}`, "i"));
+  }
+  assert.match(html, /class="product-mark-pair"/i);
   assert.match(html, /Gemini \+ Antigravity/i);
   assert.match(html, /data-mode="mcp"/i);
   assert.match(html, /data-mode="cli"/i);
@@ -304,7 +315,7 @@ test("removes the disposable starter preview", async () => {
   await access(new URL("../public/barmous-mark.png", import.meta.url));
 });
 
-test("ships synchronized official product marks", async () => {
+test("ships synchronized audited product marks", async () => {
   const productMarks = [
     {
       name: "openai.svg",
@@ -316,6 +327,26 @@ test("ships synchronized official product marks", async () => {
       checksum:
         "6D53DB4BE375E899C937C26CF16684A80D6E869B1928D72B37748BEF2560E219",
     },
+    {
+      name: "cursor.svg",
+      checksum:
+        "EA5D9706762F2EAE285B69C8769C376892BA1EFE068FEBD8E2857AFF0AFEBC85",
+    },
+    {
+      name: "google-gemini.svg",
+      checksum:
+        "CC58217AF6FF40B9DE0D105A3820CA2CBC8B806905DBEDF3BAF47FF7EEC91A7A",
+    },
+    {
+      name: "perplexity.svg",
+      checksum:
+        "097A62048785135C87E4F1BBB4E021A194E8AA3BFB9BBA3F54ABA84DC4D8991C",
+    },
+    {
+      name: "antigravity.png",
+      checksum:
+        "E0CD08CCD10CD8D08CCF0BA449823EE88495825C0841619618100D3AB089F51E",
+    },
   ];
 
   for (const { name, checksum } of productMarks) {
@@ -324,8 +355,19 @@ test("ships synchronized official product marks", async () => {
       readFile(new URL(`../docs/logos/${name}`, import.meta.url)),
     ]);
     assert.equal(Buffer.compare(runtimeLogo, pagesLogo), 0, name);
-    assert.equal(digest(runtimeLogo), checksum, name);
-    assert.match(runtimeLogo.toString("utf8"), /<svg\b/i, name);
+    const checksumBytes = name.endsWith(".svg")
+      ? Buffer.from(runtimeLogo.toString("utf8").replace(/\r\n?/g, "\n"))
+      : runtimeLogo;
+    assert.equal(digest(checksumBytes), checksum, name);
+    if (name.endsWith(".svg")) {
+      assert.match(runtimeLogo.toString("utf8"), /<svg\b/i, name);
+    } else {
+      assert.deepEqual(
+        [...runtimeLogo.subarray(0, 8)],
+        [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a],
+        name,
+      );
+    }
   }
 });
 
@@ -411,7 +453,16 @@ test("keeps the static Pages release synchronized", async () => {
   assert.match(html, /data-mode="cli"/i);
   assert.match(html, /src="logos\/openai\.svg"/i);
   assert.match(html, /src="logos\/claude\.svg"/i);
-  assert.match(html, /href="styles\.css\?v=20260806\.1"/i);
+  assert.match(html, /src="logos\/cursor\.svg"/i);
+  assert.match(html, /src="logos\/google-gemini\.svg"/i);
+  assert.match(html, /src="logos\/antigravity\.png"/i);
+  assert.match(html, /src="logos\/perplexity\.svg"/i);
+  assert.match(html, /class="product-mark-pair"/i);
+  assert.doesNotMatch(
+    html,
+    /class="client-mark[^\"]*"[^>]*>\s*<svg\b/i,
+  );
+  assert.match(html, /href="styles\.css\?v=20260806\.2"/i);
   assert.match(styles, /fonts\/noto-sans-variable\.woff2/i);
   assert.match(html, /class="setup-stage"/i);
   assert.equal(
