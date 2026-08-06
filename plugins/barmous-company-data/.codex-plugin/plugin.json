@@ -1,6 +1,6 @@
 {
   "name": "barmous-company-data",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Secure read-only access to company compliance data in Barmous",
   "author": {
     "name": "Barmous Compliance"

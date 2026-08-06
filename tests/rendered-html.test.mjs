@@ -6,23 +6,25 @@ import test from "node:test";
 const releases = [
   {
     product: "Codex",
-    name: "barmous-compliance-codex-plugin-v0.2.0.zip",
-    root: "barmous-compliance-codex-plugin-v0.2.0",
-    bytes: 1202822,
+    name: "barmous-compliance-codex-plugin-v0.3.0.zip",
+    root: "barmous-compliance-codex-plugin-v0.3.0",
+    bytes: 1203409,
     checksum:
-      "06A05BF0F1B745FA4C8C8DEB4425C1685A48CD43545223CD91EECD3F95731E42",
+      "D7D2499D1AF2F5B5B434D185BB0F0A260ED6F1947ACD913E954B07FDFD8DA65F",
   },
   {
     product: "Claude Code",
-    name: "barmous-compliance-claude-plugin-v0.2.0.zip",
-    root: "barmous-compliance-claude-plugin-v0.2.0",
-    bytes: 421732,
+    name: "barmous-compliance-claude-plugin-v0.3.0.zip",
+    root: "barmous-compliance-claude-plugin-v0.3.0",
+    bytes: 422667,
     checksum:
-      "8FABFA35C8755A32F98BE11BBC6865E87D269BF341A3745880932E041E72E8D5",
+      "C6C6CF6A8C138D88B1F31A4B28F9486A8F0C1577C50D15905C150BF58BD2A7F5",
   },
 ];
 
 const retiredDownloads = [
+  "barmous-compliance-codex-plugin-v0.2.0.zip",
+  "barmous-compliance-claude-plugin-v0.2.0.zip",
   "barmous-compliance-codex-plugin-v0.1.0.zip",
   "barmous-compliance-claude-plugin-v0.1.0.zip",
   "barmous-company-data-codex-plugin-0.1.0-codex.20260802110450.zip",
@@ -87,42 +89,41 @@ function zipEntryNames(buffer) {
   return entries;
 }
 
-test("server-renders both clean v0.2.0 plugin downloads", async () => {
+test("server-renders both clean v0.3.0 plugin downloads", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Barmous Compliance \| AI Workspace Plugins<\/title>/i);
+  assert.match(html, /<title>Barmous Compliance \| MCP &amp; CLI Connections<\/title>/i);
   assert.match(
     html,
-    /Connect your compliance workspace in three clear steps\./i,
+    /Barmous MCP &amp; CLI for the AI tools you already use\./i,
   );
   assert.match(html, /class="setup-stage"/i);
-  assert.doesNotMatch(html, /Start setup/i);
-  assert.doesNotMatch(html, /Plugin repository/i);
-  assert.equal(
-    (html.match(/<a\b[^>]*\bsource-button\b[^>]*>/gi) ?? []).length,
-    1,
-  );
-  assert.ok(html.indexOf("View plugin source") > html.indexOf("Set up Barmous for"));
-  assert.ok(
-    html.indexOf("View plugin source") <
-      html.indexOf("Everything you need, nothing sensitive included."),
-  );
-  assert.match(html, /Set up Barmous for .*Codex/i);
-  assert.match(html, /Download Codex ZIP/i);
-  assert.match(html, /npm install --global .*plugins.*barmous-company-data/i);
-  assert.match(html, /codex plugin marketplace add \$pluginRoot/i);
-  assert.match(html, /data-client="claude"/i);
-  assert.match(html, /data-mode="connect"/i);
-  assert.match(html, />v0\.2\.0</i);
+  assert.match(html, /Connect .*Codex.* with .*remote MCP/i);
+  for (const client of ["codex", "claude", "cursor", "gemini", "perplexity"]) {
+    assert.match(html, new RegExp(`data-client="${client}"`, "i"));
+  }
+  assert.match(html, /Gemini \+ Antigravity/i);
+  assert.match(html, /data-mode="mcp"/i);
+  assert.match(html, /data-mode="cli"/i);
+  assert.match(html, /Remote MCP is being prepared/i);
+  assert.match(html, /Endpoint not available/i);
+  assert.match(html, /Official Barmous marketplace/i);
+  assert.match(html, /Coming soon/i);
+  assert.match(html, /GitHub source/i);
+  assert.doesNotMatch(html, /<a\b[^>]*>[^<]*Official Barmous marketplace/i);
+  assert.doesNotMatch(html, /mcp\.barmous\.ae|BARMOUS_AGENT_TOKEN/i);
+  assert.match(html, /never paste an agent token or secret/i);
+  assert.match(html, />v0\.3\.0</i);
+  assert.match(html, /Never default · 1h to 1y optional/i);
   for (const release of releases) {
     assert.match(html, new RegExp(`/downloads/${release.name}`));
     assert.match(html, new RegExp(release.checksum));
   }
   assert.doesNotMatch(html, /Public by link|Link-only preview|not access-controlled/i);
-  assert.doesNotMatch(html, /0\.2\.0\+codex|0\.1\.0\+codex|20260802110450/i);
+  assert.doesNotMatch(html, /0\.[23]\.0\+codex|0\.1\.0\+codex|20260802110450/i);
   assert.match(html, /noindex/i);
   assert.match(html, /nofollow/i);
 });
@@ -145,7 +146,7 @@ test("ships both exact verified plugin archives", async () => {
   }
 });
 
-test("publishes valid v0.2.0 Codex and Claude marketplace sources", async () => {
+test("publishes valid v0.3.0 Codex and Claude marketplace sources", async () => {
   const [
     codexMarketplaceText,
     codexPluginText,
@@ -210,8 +211,8 @@ test("publishes valid v0.2.0 Codex and Claude marketplace sources", async () => 
     "./plugins/barmous-company-data",
   );
   assert.equal(codexPlugin.name, "barmous-company-data");
-  assert.equal(codexPlugin.version, "0.2.0");
-  assert.equal(codexPackage.version, "0.2.0");
+  assert.equal(codexPlugin.version, "0.3.0");
+  assert.equal(codexPackage.version, "0.3.0");
   assert.equal(codexMcp.mcpServers.barmous.command, "node");
   assert.equal(codexMcp.mcpServers.barmous.args[0], "./mcp/server.mjs");
 
@@ -226,10 +227,10 @@ test("publishes valid v0.2.0 Codex and Claude marketplace sources", async () => 
     "./plugins/barmous-company-data",
   );
   assert.equal(claudePlugin.name, "barmous-company-data");
-  assert.equal(claudePlugin.version, "0.2.0");
+  assert.equal(claudePlugin.version, "0.3.0");
   assert.equal(claudePlugin.defaultEnabled, false);
   assert.equal(claudePlugin.userConfig, undefined);
-  assert.equal(claudePackage.version, "0.2.0");
+  assert.equal(claudePackage.version, "0.3.0");
   assert.equal(claudeMcp.barmous.type, "stdio");
   assert.equal(claudeMcp.barmous.args[0], "${CLAUDE_PLUGIN_ROOT}/mcp/server.mjs");
 });
@@ -281,7 +282,7 @@ test("packages complete local CLI and MCP bundles without sensitive material", a
       `${release.product} excludes secrets and transient files`,
     );
     assert.equal(
-      entries.some((entry) => /0\.2\.0\+codex|202608\d{8}/i.test(entry)),
+      entries.some((entry) => /0\.[23]\.0\+codex|202608\d{8}/i.test(entry)),
       false,
       `${release.product} uses the clean release version`,
     );
@@ -400,44 +401,48 @@ test("keeps the static Pages release synchronized", async () => {
     html,
     /name="robots" content="noindex, nofollow, noarchive, noimageindex"/i,
   );
-  assert.match(html, />v0\.2\.0</i);
-  assert.match(html, /src="scripts\.js"/i);
-  assert.match(html, /data-client="codex"/i);
-  assert.match(html, /data-client="claude"/i);
-  assert.match(html, /data-mode="install"/i);
-  assert.match(html, /data-mode="connect"/i);
+  assert.match(html, />v0\.3\.0</i);
+  assert.match(html, /src="scripts\.js\?v=20260806\.1"/i);
+  for (const client of ["codex", "claude", "cursor", "gemini", "perplexity"]) {
+    assert.match(html, new RegExp(`data-client="${client}"`, "i"));
+  }
+  assert.match(html, /Gemini \+ Antigravity/i);
+  assert.match(html, /data-mode="mcp"/i);
+  assert.match(html, /data-mode="cli"/i);
   assert.match(html, /src="logos\/openai\.svg"/i);
   assert.match(html, /src="logos\/claude\.svg"/i);
-  assert.match(html, /href="styles\.css\?v=20260805\.1"/i);
+  assert.match(html, /href="styles\.css\?v=20260806\.1"/i);
   assert.match(styles, /fonts\/noto-sans-variable\.woff2/i);
   assert.match(html, /class="setup-stage"/i);
-  assert.doesNotMatch(html, /Start setup/i);
-  assert.doesNotMatch(html, /Plugin repository/i);
   assert.equal(
-    (html.match(/<a\b[^>]*\bsource-button\b[^>]*>/gi) ?? []).length,
-    1,
+    (html.match(/<article\b[^>]*\bsetup-step\b[^>]*>/gi) ?? []).length,
+    3,
   );
-  assert.ok(
-    html.indexOf("View plugin source") >
-      html.indexOf("Set up Barmous for"),
-  );
-  assert.ok(
-    html.indexOf("View plugin source") <
-      html.indexOf("Everything you need, nothing sensitive included."),
-  );
+  assert.match(html, /role="tablist"/i);
+  assert.match(html, /role="tabpanel"/i);
+  assert.match(html, /Remote MCP is being prepared/i);
+  assert.match(html, /Endpoint not available/i);
+  assert.match(html, /Official Barmous marketplace/i);
+  assert.match(html, /GitHub source/i);
   assert.doesNotMatch(html, /class="(?:client|platform)-mark"[^>]*>[CA]</i);
   assert.match(script, /navigator\.clipboard/i);
   assert.match(script, /npm install --global/i);
   assert.match(script, /claude plugin marketplace add \./i);
   assert.match(script, /barmous login/i);
-  assert.match(script, /--expires-in 60/i);
-  assert.match(script, /--expires-in 90/i);
-  assert.match(script, /--profile work/i);
   assert.match(script, /barmous status/i);
   assert.match(script, /\/mcp/i);
+  assert.match(script, /URLSearchParams/i);
+  assert.match(script, /pushState/i);
+  assert.match(script, /ArrowRight/i);
+  assert.match(script, /REMOTE_MCP_URL/i);
+  assert.match(script, /Remote MCP is being prepared/i);
+  assert.match(script, /revocable non-expiring profile/i);
+  for (const lifetime of ["1h", "1d", "7d", "30d", "60d", "90d", "180d", "1y", "never"]) {
+    assert.match(script, new RegExp(`\\b${lifetime}\\b`, "i"));
+  }
   assert.doesNotMatch(script, /BARMOUS_AGENT_TOKEN|paste-token/i);
   assert.doesNotMatch(html, /Public by link|Link-only preview|not access-controlled/i);
-  assert.doesNotMatch(html + script, /hosted remote MCP|remote MCP endpoint/i);
+  assert.doesNotMatch(html + script, /mcp\.barmous\.ae|https:\/\/[^"'\s]*barmous[^"'\s]*\/mcp/i);
 
   for (const release of releases) {
     assert.match(html, new RegExp(`href="downloads/${release.name}"`));

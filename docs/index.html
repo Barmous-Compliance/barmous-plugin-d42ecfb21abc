@@ -8,12 +8,13 @@
     <meta name="referrer" content="no-referrer" />
     <meta
       name="description"
-      content="Install the read-only Barmous CLI and local MCP plugins for Codex and Claude Code."
+      content="Connect Barmous Compliance to Codex, Claude, Cursor, Gemini, Antigravity, and Perplexity through the read-only MCP and CLI."
     />
-    <title>Barmous Compliance | AI Workspace Plugins</title>
+    <meta name="barmous-mcp-url" content="" />
+    <title>Barmous Compliance | MCP &amp; CLI Connections</title>
     <link rel="icon" href="barmous-mark.png" />
-    <link rel="stylesheet" href="styles.css?v=20260805.1" />
-    <script src="scripts.js" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20260806.1" />
+    <script src="scripts.js?v=20260806.1" defer></script>
   </head>
   <body>
     <main class="site-shell">
@@ -27,13 +28,17 @@
         </a>
         <div class="header-release" aria-label="Current plugin release">
           <span><i></i> Verified preview</span>
-          <code>v0.2.0</code>
+          <code>v0.3.0</code>
         </div>
       </header>
 
       <div class="setup-stage" id="top">
         <section class="hero" aria-labelledby="hero-heading">
-          <h1 id="hero-heading">Connect your compliance workspace in three clear steps.</h1>
+          <h1 id="hero-heading">Barmous MCP &amp; CLI for the AI tools you already use.</h1>
+          <p>
+            Connect released compliance context through one verified setup flow
+            for Codex, Claude, Cursor, Gemini + Antigravity, and Perplexity.
+          </p>
           <ul class="trust-list" aria-label="Plugin safeguards">
             <li>
               <span>
@@ -58,159 +63,180 @@
                   <path d="M9 5h10M9 10h10M9 15h6M4 5l1 1 2-2M4 10l1 1 2-2M4 15l1 1 2-2"></path>
                 </svg>
               </span>
-              30-day default
+              No pasted secrets
             </li>
           </ul>
         </section>
 
         <section
-        class="installer"
-        id="installer"
-        aria-labelledby="installer-heading"
-        data-active-client="codex"
-      >
-        <div class="installer-topbar">
-          <div class="client-tabs" role="group" aria-label="Choose your AI workspace">
-            <button
-              class="client-tab is-active"
-              type="button"
-              aria-pressed="true"
-              data-client="codex"
-            >
-              <span class="client-mark product-mark product-mark-codex" aria-hidden="true">
-                <img src="logos/openai.svg" alt="" width="64" height="64" />
-              </span>
-              <span>
-                <strong>Codex</strong>
-                <small>OpenAI</small>
-              </span>
-            </button>
-            <button
-              class="client-tab"
-              type="button"
-              aria-pressed="false"
-              data-client="claude"
-            >
-              <span class="client-mark product-mark product-mark-claude" aria-hidden="true">
-                <img src="logos/claude.svg" alt="" width="64" height="64" />
-              </span>
-              <span>
-                <strong>Claude Code</strong>
-                <small>Anthropic</small>
-              </span>
-            </button>
-          </div>
-
-          <div class="mode-tabs" role="group" aria-label="Choose setup stage">
-            <button
-              class="mode-tab is-active"
-              type="button"
-              aria-pressed="true"
-              data-mode="install"
-            >
-              Install
-            </button>
-            <button
-              class="mode-tab"
-              type="button"
-              aria-pressed="false"
-              data-mode="connect"
-            >
-              Connect
-            </button>
-          </div>
-        </div>
-
-        <div class="installer-heading">
-          <div>
-            <h2 id="installer-heading" data-installer-title>Set up Barmous for Codex</h2>
-          </div>
-          <span class="local-mcp-badge"><i></i> Local MCP · read-only</span>
-        </div>
-
-        <div class="setup-grid" aria-live="polite" data-setup-grid>
-          <article class="setup-step">
-            <span class="step-number">1</span>
-            <h3>Download the Codex bundle</h3>
-            <p>Get the verified preview ZIP, then extract it to a folder you control.</p>
-            <div class="step-control">
-              <a
-                class="step-action"
-                href="downloads/barmous-compliance-codex-plugin-v0.2.0.zip"
-                download
-              >
-                Download Codex ZIP
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M5 12h14m-5-5 5 5-5 5"></path>
-                </svg>
-              </a>
-            </div>
-          </article>
-
-          <article class="setup-step">
-            <span class="step-number">2</span>
-            <h3>Install the CLI and plugin</h3>
-            <p>Open PowerShell in the extracted bundle root. This installs the local CLI and registers the bundled Codex marketplace.</p>
-            <div class="step-control">
-              <div class="command-box">
-                <code>npm install --global .\plugins\barmous-company-data
-$pluginRoot = (Resolve-Path ".").Path
-codex plugin marketplace add $pluginRoot
-codex plugin add barmous-company-data@barmous</code>
-                <button class="copy-button" type="button" data-copy aria-label="Copy command" aria-live="polite">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="8" y="8" width="11" height="11" rx="2"></rect>
-                    <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
-                  </svg>
-                  <span>Copy</span>
+          class="installer"
+          id="installer"
+          aria-labelledby="installer-heading"
+          data-active-client="codex"
+          data-active-mode="mcp"
+          data-remote-ready="false"
+        >
+          <div class="installer-topbar">
+            <div class="client-tab-scroll">
+              <div class="client-tabs" role="tablist" aria-label="Choose your AI workspace">
+                <button
+                  class="client-tab is-active"
+                  type="button"
+                  role="tab"
+                  id="client-tab-codex"
+                  aria-selected="true"
+                  aria-controls="setup-panel"
+                  tabindex="0"
+                  data-client="codex"
+                >
+                  <span class="client-mark product-mark product-mark-codex" aria-hidden="true">
+                    <img src="logos/openai.svg" alt="" width="64" height="64" />
+                  </span>
+                  <span><strong>Codex</strong><small>Plugin</small></span>
+                </button>
+                <button
+                  class="client-tab"
+                  type="button"
+                  role="tab"
+                  id="client-tab-claude"
+                  aria-selected="false"
+                  aria-controls="setup-panel"
+                  tabindex="-1"
+                  data-client="claude"
+                >
+                  <span class="client-mark product-mark product-mark-claude" aria-hidden="true">
+                    <img src="logos/claude.svg" alt="" width="64" height="64" />
+                  </span>
+                  <span><strong>Claude</strong><small>Plugin</small></span>
+                </button>
+                <button
+                  class="client-tab"
+                  type="button"
+                  role="tab"
+                  id="client-tab-cursor"
+                  aria-selected="false"
+                  aria-controls="setup-panel"
+                  tabindex="-1"
+                  data-client="cursor"
+                >
+                  <span class="client-mark product-mark product-mark-cursor" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="m6 4 12 8-6 2-2 6L6 4Z"></path></svg>
+                  </span>
+                  <span><strong>Cursor</strong><small>Connector</small></span>
+                </button>
+                <button
+                  class="client-tab"
+                  type="button"
+                  role="tab"
+                  id="client-tab-gemini"
+                  aria-selected="false"
+                  aria-controls="setup-panel"
+                  tabindex="-1"
+                  data-client="gemini"
+                >
+                  <span class="client-mark product-mark product-mark-gemini" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M12 3c.7 5.2 3.8 8.3 9 9-5.2.7-8.3 3.8-9 9-.7-5.2-3.8-8.3-9-9 5.2-.7 8.3-3.8 9-9Z"></path></svg>
+                  </span>
+                  <span><strong>Gemini + Antigravity</strong><small>Connector</small></span>
+                </button>
+                <button
+                  class="client-tab"
+                  type="button"
+                  role="tab"
+                  id="client-tab-perplexity"
+                  aria-selected="false"
+                  aria-controls="setup-panel"
+                  tabindex="-1"
+                  data-client="perplexity"
+                >
+                  <span class="client-mark product-mark product-mark-perplexity" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <path d="M5 8.5 12 4l7 4.5v7L12 20l-7-4.5v-7Z"></path>
+                      <path d="m8.5 10.5 3.5 2 3.5-2M12 12.5V17"></path>
+                    </svg>
+                  </span>
+                  <span><strong>Perplexity</strong><small>Connector</small></span>
                 </button>
               </div>
             </div>
-          </article>
 
-          <article class="setup-step">
-            <span class="step-number">3</span>
-            <h3>Verify the local MCP</h3>
-            <p>
-              Complete the Connect steps, start a new Codex task, and confirm
-              the Barmous local server and nine read-only tools.
-            </p>
-            <div class="step-control">
-              <div class="command-box">
-                <code>/mcp</code>
-                <button class="copy-button" type="button" data-copy aria-label="Copy command" aria-live="polite">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="8" y="8" width="11" height="11" rx="2"></rect>
-                    <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
-                  </svg>
-                  <span>Copy</span>
-                </button>
-              </div>
+            <div class="mode-tabs" role="tablist" aria-label="Choose connection method">
+              <button
+                class="mode-tab is-active"
+                type="button"
+                role="tab"
+                id="mode-tab-mcp"
+                aria-selected="true"
+                aria-controls="setup-panel"
+                tabindex="0"
+                data-mode="mcp"
+              >MCP</button>
+              <button
+                class="mode-tab"
+                type="button"
+                role="tab"
+                id="mode-tab-cli"
+                aria-selected="false"
+                aria-controls="setup-panel"
+                tabindex="-1"
+                data-mode="cli"
+              >CLI</button>
             </div>
-          </article>
-        </div>
+          </div>
 
-        <div class="installer-footer">
-          <span>Browser-authorized profiles are revocable, expire absolutely, and never require a token pasted into plugin configuration.</span>
-        </div>
-        </section>
+          <div class="installer-heading">
+            <div>
+              <h2 id="installer-heading" data-installer-title>Connect Codex with remote MCP</h2>
+              <p data-installer-description>
+                Official marketplace listing coming soon. The verified GitHub preview remains available.
+              </p>
+            </div>
+            <span class="connection-badge" data-connection-badge><i></i> Streamable HTTP · read-only</span>
+          </div>
 
-        <div class="source-action">
-          <a
-            class="button button-secondary source-button"
-            href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc"
-            target="_blank"
-            rel="noreferrer"
+          <div
+            class="setup-grid"
+            id="setup-panel"
+            role="tabpanel"
+            aria-labelledby="client-tab-codex mode-tab-mcp"
+            aria-live="polite"
+            data-setup-grid
           >
-            View plugin source
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 12h14m-5-5 5 5-5 5"></path>
-            </svg>
-          </a>
-        </div>
+            <article class="setup-step">
+              <span class="step-number">1</span>
+              <h3>Remote MCP is being prepared</h3>
+              <p>The public Streamable HTTP endpoint has not been published. Barmous will show one verified URL here when the service and OAuth boundary are ready.</p>
+              <div class="step-control"><div class="step-status" aria-disabled="true"><span></span>Endpoint not available</div></div>
+            </article>
+            <article class="setup-step">
+              <span class="step-number">2</span>
+              <h3>Keep Codex ready</h3>
+              <p>No client configuration is required until the verified endpoint is published.</p>
+              <div class="step-control"><div class="step-status" aria-disabled="true"><span></span>Plugin setup pending</div></div>
+            </article>
+            <article class="setup-step">
+              <span class="step-number">3</span>
+              <h3>Sign in when available</h3>
+              <p>Connection will open Barmous in your browser. You will never paste an agent token or secret into the client.</p>
+              <div class="step-control"><div class="step-status" aria-disabled="true"><span></span>Browser authorization pending</div></div>
+            </article>
+          </div>
+
+          <div class="installer-footer">
+            <div class="marketplace-status" aria-label="Official marketplace status">
+              <span>Official Barmous marketplace</span>
+              <strong>Coming soon</strong>
+            </div>
+            <a href="https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc" target="_blank" rel="noreferrer">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-2.85 17.54c.45.08.62-.2.62-.44v-1.72c-2.53.55-3.06-1.08-3.06-1.08-.41-1.06-1.02-1.34-1.02-1.34-.83-.57.06-.56.06-.56.92.07 1.4.95 1.4.95.82 1.41 2.14 1 2.66.77.08-.6.32-1 .58-1.23-2.02-.23-4.14-1.02-4.14-4.51 0-1 .35-1.81.94-2.45-.1-.23-.41-1.16.08-2.42 0 0 .77-.25 2.48.94A8.6 8.6 0 0 1 12 7.15a8.5 8.5 0 0 1 2.26.3c1.72-1.19 2.48-.94 2.48-.94.5 1.26.19 2.19.1 2.42.58.64.93 1.45.93 2.45 0 3.5-2.13 4.27-4.15 4.5.33.29.62.86.62 1.74v2.48c0 .24.16.52.62.43A9 9 0 0 0 12 3Z"></path></svg>
+              GitHub source
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"></path></svg>
+            </a>
+          </div>
+        </section>
       </div>
 
-      <section class="release-section" id="requirements" aria-labelledby="release-heading">
+      <section class="release-section" id="downloads" aria-labelledby="release-heading">
         <div class="release-intro">
           <h2 id="release-heading">Everything you need, nothing sensitive included.</h2>
           <p>
@@ -219,10 +245,10 @@ codex plugin add barmous-company-data@barmous</code>
             and plugin configuration never contains a pasted token.
           </p>
           <dl class="release-meta">
-            <div><dt>Version</dt><dd>v0.2.0</dd></div>
-            <div><dt>Released</dt><dd>05 Aug 2026</dd></div>
+            <div><dt>Version</dt><dd>v0.3.0</dd></div>
+            <div><dt>Released</dt><dd>06 Aug 2026</dd></div>
             <div><dt>Runtime</dt><dd>Node.js 22.12–24.x</dd></div>
-            <div><dt>Expiry</dt><dd>30 / 60 / 90 days</dd></div>
+            <div><dt>Lifetime</dt><dd>Never default · 1h to 1y optional</dd></div>
           </dl>
         </div>
 
@@ -232,25 +258,16 @@ codex plugin add barmous-company-data@barmous</code>
               <span class="platform-mark product-mark product-mark-codex" aria-hidden="true">
                 <img src="logos/openai.svg" alt="" width="64" height="64" />
               </span>
-              <span>
-                <small>OpenAI</small>
-                <strong>Codex</strong>
-              </span>
+              <span><small>OpenAI</small><strong>Codex</strong></span>
             </div>
-            <a
-              class="download-button"
-              href="downloads/barmous-compliance-codex-plugin-v0.2.0.zip"
-              download
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path>
-              </svg>
+            <a class="download-button" href="downloads/barmous-compliance-codex-plugin-v0.3.0.zip" download>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path></svg>
               Download ZIP
               <small>1,175 KB</small>
             </a>
             <div class="checksum">
               <span>SHA-256</span>
-              <code>06A05BF0F1B745FA4C8C8DEB4425C1685A48CD43545223CD91EECD3F95731E42</code>
+              <code>D7D2499D1AF2F5B5B434D185BB0F0A260ED6F1947ACD913E954B07FDFD8DA65F</code>
             </div>
           </article>
 
@@ -259,25 +276,16 @@ codex plugin add barmous-company-data@barmous</code>
               <span class="platform-mark product-mark product-mark-claude" aria-hidden="true">
                 <img src="logos/claude.svg" alt="" width="64" height="64" />
               </span>
-              <span>
-                <small>Anthropic</small>
-                <strong>Claude Code</strong>
-              </span>
+              <span><small>Anthropic</small><strong>Claude Code</strong></span>
             </div>
-            <a
-              class="download-button"
-              href="downloads/barmous-compliance-claude-plugin-v0.2.0.zip"
-              download
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path>
-              </svg>
+            <a class="download-button" href="downloads/barmous-compliance-claude-plugin-v0.3.0.zip" download>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path></svg>
               Download ZIP
-              <small>412 KB</small>
+              <small>413 KB</small>
             </a>
             <div class="checksum">
               <span>SHA-256</span>
-              <code>8FABFA35C8755A32F98BE11BBC6865E87D269BF341A3745880932E041E72E8D5</code>
+              <code>C6C6CF6A8C138D88B1F31A4B28F9486A8F0C1577C50D15905C150BF58BD2A7F5</code>
             </div>
           </article>
         </div>

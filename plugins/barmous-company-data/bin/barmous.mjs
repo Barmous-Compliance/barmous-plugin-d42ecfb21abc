@@ -6939,6 +6939,9 @@ function safeErrorMessage(error51) {
   return "The Barmous request could not be completed.";
 }
 
+// src/version.ts
+var AGENT_VERSION = "0.3.0";
+
 // src/api.ts
 var MAX_RESPONSE_BYTES = 5 * 1024 * 1024;
 var BarmousApiClient = class {
@@ -7010,7 +7013,7 @@ var BarmousApiClient = class {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${config2.token}`,
-        "User-Agent": "barmous-agent/0.2.0"
+        "User-Agent": `barmous-agent/${AGENT_VERSION}`
       },
       body: "{}"
     });
@@ -7035,7 +7038,7 @@ var BarmousApiClient = class {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${config2.token}`,
-        "User-Agent": "barmous-agent/0.2.0"
+        "User-Agent": `barmous-agent/${AGENT_VERSION}`
       }
     });
     const payload = parseJson(response.text);
@@ -7345,7 +7348,7 @@ function validateMetadata(value, profile) {
     "company",
     "createdAt",
     "expiresAt"
-  ]) || candidate.profile !== profile || typeof candidate.apiUrl !== "string" || typeof candidate.tokenId !== "string" || candidate.tokenType !== "Bearer" || !Array.isArray(candidate.scopes) || candidate.scopes.some((scope) => typeof scope !== "string") || !candidate.company || typeof candidate.company.id !== "string" || typeof candidate.company.name !== "string" || typeof candidate.createdAt !== "string" || typeof candidate.expiresAt !== "string") {
+  ]) || candidate.profile !== profile || typeof candidate.apiUrl !== "string" || typeof candidate.tokenId !== "string" || candidate.tokenType !== "Bearer" || !Array.isArray(candidate.scopes) || candidate.scopes.some((scope) => typeof scope !== "string") || !candidate.company || typeof candidate.company.id !== "string" || typeof candidate.company.name !== "string" || typeof candidate.createdAt !== "string" || candidate.expiresAt !== null && typeof candidate.expiresAt !== "string") {
     throw invalidProfileMetadata(profile);
   }
 }
@@ -7603,6 +7606,7 @@ function validateToken(token) {
   }
 }
 function validateStoredExpiry(profile, now, requireToken) {
+  if (profile.expiresAt === null) return;
   const expiresAt = Date.parse(profile.expiresAt);
   if (!Number.isFinite(expiresAt)) {
     throw new BarmousAgentError(`Credential profile '${profile.profile}' has an invalid expiry.`, {
@@ -7668,15 +7672,49 @@ var READ_ONLY_SCOPE = "context:read findings:read remediation:read reports:read"
 var DEFAULT_VERIFICATION_ORIGIN = "https://barmous-compliance-web.vercel.app";
 var DEVICE_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:device_code";
 var MAX_AUTH_RESPONSE_BYTES = 256 * 1024;
+var TOKEN_METADATA_CLOCK_SKEW_MS = 5 * 60 * 1e3;
+var TOKEN_LIFETIME_SERIALIZATION_TOLERANCE_MS = 1e3;
+var LOGIN_LIFETIME_IDS = [
+  "1h",
+  "1d",
+  "7d",
+  "30d",
+  "60d",
+  "90d",
+  "180d",
+  "1y",
+  "never"
+];
+var LOGIN_LIFETIME_MILLISECONDS = {
+  "1h": 60 * 60 * 1e3,
+  "1d": 24 * 60 * 60 * 1e3,
+  "7d": 7 * 24 * 60 * 60 * 1e3,
+  "30d": 30 * 24 * 60 * 60 * 1e3,
+  "60d": 60 * 24 * 60 * 60 * 1e3,
+  "90d": 90 * 24 * 60 * 60 * 1e3,
+  "180d": 180 * 24 * 60 * 60 * 1e3,
+  "1y": 365 * 24 * 60 * 60 * 1e3
+};
+var LOGIN_LIFETIME_ALIASES = {
+  "30": "30d",
+  "60": "60d",
+  "90": "90d",
+  "no-expiration": "never",
+  "no-expiry": "never",
+  permanent: "never",
+  forever: "never"
+};
 function parseLoginDuration(value) {
-  const normalized = String(value ?? "30").trim().replace(/d$/i, "");
-  const parsed = Number(normalized);
-  if (parsed !== 30 && parsed !== 60 && parsed !== 90) {
-    throw new BarmousAgentError("--expires-in must be 30, 60, or 90 days.", {
-      code: "invalid_expiry"
-    });
+  const normalized = String(value ?? "never").trim().toLowerCase();
+  if (LOGIN_LIFETIME_IDS.includes(normalized)) {
+    return normalized;
   }
-  return parsed;
+  const alias = LOGIN_LIFETIME_ALIASES[normalized];
+  if (alias) return alias;
+  throw new BarmousAgentError(
+    `--expires-in must be one of ${LOGIN_LIFETIME_IDS.join(", ")}.`,
+    { code: "invalid_expiry" }
+  );
 }
 function createPkcePair() {
   const verifier = randomBytes2(32).toString("base64url");
@@ -7694,7 +7732,7 @@ async function loginWithDeviceFlow(options) {
       client_name: "Barmous CLI",
       client_version: options.clientVersion,
       device_name: deviceName(),
-      expires_in_days: options.duration,
+      credential_lifetime: options.duration,
       scope: READ_ONLY_SCOPE,
       code_challenge: challenge,
       code_challenge_method: "S256"
@@ -7726,11 +7764,12 @@ async function loginWithDeviceFlow(options) {
     }
     if (result.kind === "error") throw deviceFlowError(result.error);
     const token = result.value;
-    validateTokenResponse(token, options.apiUrl, options.duration);
-    const now = /* @__PURE__ */ new Date();
-    const serverExpiresAt = token.token.expiresAt ? new Date(token.token.expiresAt) : new Date(now.getTime() + token.expires_in * 1e3);
-    if (!Number.isFinite(serverExpiresAt.getTime()) || serverExpiresAt.getTime() <= now.getTime()) {
-      throw new BarmousAgentError("Barmous returned an invalid credential expiry.", {
+    const receivedAtMs = Date.now();
+    validateTokenResponse(token, options.apiUrl, options.duration, receivedAtMs);
+    const now = new Date(receivedAtMs);
+    const serverExpiresAt = token.token.expiresAt;
+    if (serverExpiresAt !== null && Date.parse(serverExpiresAt) <= now.getTime()) {
+      throw new BarmousAgentError("Barmous returned an expired credential.", {
         code: "invalid_auth_response"
       });
     }
@@ -7745,8 +7784,8 @@ async function loginWithDeviceFlow(options) {
         tokenType: "Bearer",
         scopes,
         company: token.company,
-        createdAt: token.token.createdAt || now.toISOString(),
-        expiresAt: serverExpiresAt.toISOString()
+        createdAt: token.token.createdAt,
+        expiresAt: serverExpiresAt
       }
     };
   }
@@ -7793,7 +7832,7 @@ async function rawPostJson(url2, body, fetchImpl, signal) {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        "User-Agent": "barmous-agent/0.2.0"
+        "User-Agent": `barmous-agent/${AGENT_VERSION}`
       },
       body: JSON.stringify(body),
       redirect: "error",
@@ -7844,16 +7883,15 @@ function validateStartResponse(value, verifier, expectedApiUrl) {
     });
   }
 }
-function validateTokenResponse(value, expectedApiUrl, duration3) {
+function validateTokenResponse(value, expectedApiUrl, duration3, receivedAtMs) {
   if (!isRecord2(value) || !hasOwnFields(value, [
     "access_token",
     "token_type",
-    "expires_in",
     "scope",
     "api_url",
     "company",
     "token"
-  ]) || !safeSecret(value.access_token, 40, 200) || value.token_type !== "Bearer" || !Number.isInteger(value.expires_in) || value.expires_in <= 0 || typeof value.scope !== "string" || typeof value.api_url !== "string" || !isRecord2(value.company) || !hasOwnFields(value.company, ["id", "name"]) || typeof value.company.id !== "string" || typeof value.company.name !== "string" || !isRecord2(value.token) || !hasOwnFields(value.token, ["id"]) || typeof value.token.id !== "string") {
+  ]) || !safeSecret(value.access_token, 40, 200) || value.token_type !== "Bearer" || typeof value.scope !== "string" || typeof value.api_url !== "string" || !isRecord2(value.company) || !hasOwnFields(value.company, ["id", "name"]) || typeof value.company.id !== "string" || typeof value.company.name !== "string" || !isRecord2(value.token) || !hasOwnFields(value.token, ["id", "createdAt", "credentialLifetime", "expiresAt"]) || typeof value.token.id !== "string" || typeof value.token.createdAt !== "string" || value.token.credentialLifetime !== duration3) {
     throw new BarmousAgentError("Barmous returned an invalid token response.", {
       code: "invalid_auth_response"
     });
@@ -7884,22 +7922,38 @@ function validateTokenResponse(value, expectedApiUrl, duration3) {
       });
     }
   }
-  const toleranceMs = 5 * 60 * 1e3;
-  if (value.expires_in * 1e3 > duration3 * 24 * 60 * 60 * 1e3 + toleranceMs) {
+  const metadataCreatedAt = Date.parse(value.token.createdAt);
+  if (!Number.isFinite(metadataCreatedAt) || Math.abs(receivedAtMs - metadataCreatedAt) > TOKEN_METADATA_CLOCK_SKEW_MS) {
+    throw new BarmousAgentError("Barmous returned credential metadata with an invalid creation time.", {
+      code: "invalid_auth_response"
+    });
+  }
+  const hasExpiresIn = Object.hasOwn(value, "expires_in");
+  if (duration3 === "never") {
+    if (hasExpiresIn || value.token.expiresAt !== null) {
+      throw new BarmousAgentError("Barmous returned an expiry for a non-expiring credential.", {
+        code: "invalid_auth_response"
+      });
+    }
+    return;
+  }
+  if (!hasExpiresIn || !Number.isInteger(value.expires_in) || value.expires_in <= 0 || typeof value.token.expiresAt !== "string") {
+    throw new BarmousAgentError("Barmous returned an invalid credential expiry.", {
+      code: "invalid_auth_response"
+    });
+  }
+  const requestedLifetimeMs = LOGIN_LIFETIME_MILLISECONDS[duration3];
+  const expiresInMs = value.expires_in * 1e3;
+  if (expiresInMs > requestedLifetimeMs) {
     throw new BarmousAgentError("Barmous returned a credential lifetime longer than requested.", {
       code: "invalid_auth_response"
     });
   }
-  if (value.token.expiresAt) {
-    const metadataExpiry = Date.parse(value.token.expiresAt);
-    const metadataCreatedAt = value.token.createdAt ? Date.parse(value.token.createdAt) : NaN;
-    const lifetimeStart = Number.isFinite(metadataCreatedAt) ? metadataCreatedAt : metadataExpiry - value.expires_in * 1e3;
-    const maximumExpiry = lifetimeStart + duration3 * 24 * 60 * 60 * 1e3 + toleranceMs;
-    if (!Number.isFinite(metadataExpiry) || !Number.isFinite(lifetimeStart) || metadataExpiry <= lifetimeStart || metadataExpiry > maximumExpiry) {
-      throw new BarmousAgentError("Barmous returned credential metadata with an invalid lifetime.", {
-        code: "invalid_auth_response"
-      });
-    }
+  const metadataExpiry = Date.parse(value.token.expiresAt);
+  if (!Number.isFinite(metadataExpiry) || Math.abs(metadataExpiry - metadataCreatedAt - requestedLifetimeMs) > TOKEN_LIFETIME_SERIALIZATION_TOLERANCE_MS || Math.abs(metadataExpiry - (receivedAtMs + expiresInMs)) > TOKEN_METADATA_CLOCK_SKEW_MS) {
+    throw new BarmousAgentError("Barmous returned credential metadata with an invalid lifetime.", {
+      code: "invalid_auth_response"
+    });
   }
 }
 function parsePayload(text) {
@@ -32093,7 +32147,10 @@ var OUTPUT_SCHEMA = {
 };
 function createMcpServer(client, options = {}) {
   const env = options.env ?? process.env;
-  const pinnedProfile = client ? void 0 : validateProfileName(
+  const hasEnvironmentCredentials = Boolean(
+    String(env.BARMOUS_API_URL || "").trim() && String(env.BARMOUS_AGENT_TOKEN || "").trim()
+  );
+  const pinnedProfile = client || hasEnvironmentCredentials ? void 0 : validateProfileName(
     options.profile || String(env.BARMOUS_PROFILE || "").trim() || listCredentialProfiles({ configDir: options.configDir, env }).currentProfile || DEFAULT_PROFILE
   );
   const apiClient = client ?? new BarmousApiClient(() => loadConfig({
@@ -32103,7 +32160,7 @@ function createMcpServer(client, options = {}) {
   }));
   const server = new McpServer({
     name: "barmous-company-data",
-    version: "0.2.0"
+    version: AGENT_VERSION
   });
   server.registerTool(
     "barmous_get_company_context",
@@ -32240,7 +32297,7 @@ async function asToolResult(action) {
 }
 
 // src/cli.ts
-var VERSION = "0.2.0";
+var VERSION = AGENT_VERSION;
 var BOOLEAN_OPTIONS = /* @__PURE__ */ new Set([
   "compact",
   "force",
@@ -32325,7 +32382,7 @@ async function runLogin(options, context, io, runtime) {
   }
   const configuredApiUrl = optionString(options, "api-url", false) || DEFAULT_API_URL;
   const apiUrl = normalizeApiUrl(configuredApiUrl, context.env);
-  const duration3 = parseLoginDuration(optionString(options, "expires-in", false) || 30);
+  const duration3 = parseLoginDuration(optionString(options, "expires-in", false));
   const abortController = new AbortController();
   const onInterrupt = () => abortController.abort();
   process.once("SIGINT", onInterrupt);
@@ -32377,7 +32434,7 @@ async function runLogin(options, context, io, runtime) {
       throw saveError;
     }
     io.stdout(
-      `Connected profile '${selectedProfile}' to ${result.profile.company.name}. Expires ${result.profile.expiresAt}.
+      `Connected profile '${selectedProfile}' to ${result.profile.company.name}. ${credentialExpiryLabel(result.profile.expiresAt)}.
 `
     );
     return 0;
@@ -32403,6 +32460,7 @@ async function runStatus(options, context, io, runtime) {
     configDir: config2.configDir,
     readOnly: true,
     expiresAt: config2.expiresAt,
+    expiry: config2.source === "profile" ? credentialExpiryLabel(config2.expiresAt) : null,
     expired
   };
   if (!config2.token) {
@@ -32411,7 +32469,7 @@ async function runStatus(options, context, io, runtime) {
     return 2;
   }
   if (expired) {
-    result.nextStep = `Run barmous login${config2.profile ? ` --profile ${config2.profile}` : ""}.`;
+    result.nextStep = config2.profile ? `Run barmous logout --profile ${config2.profile}, then run barmous login --profile ${config2.profile}.` : "Remove the expired credential, then run barmous login.";
     writeJson(io, result, options.compact === true);
     return 2;
   }
@@ -32472,7 +32530,9 @@ async function runDoctor(options, context, io, runtime) {
     profile: optionalConfig.profile,
     tokenConfigured: Boolean(optionalConfig.token),
     transport: "stdio",
-    readOnly: true
+    readOnly: true,
+    expiresAt: optionalConfig.expiresAt,
+    expiry: optionalConfig.source === "profile" ? credentialExpiryLabel(optionalConfig.expiresAt) : null
   };
   const expired = optionalConfig.expiresAt ? Date.parse(optionalConfig.expiresAt) <= (runtime.now?.() ?? /* @__PURE__ */ new Date()).getTime() : false;
   result.expired = expired;
@@ -32651,6 +32711,9 @@ function writeJson(io, value, compact) {
   io.stdout(`${JSON.stringify(value, null, compact ? void 0 : 2)}
 `);
 }
+function credentialExpiryLabel(expiresAt) {
+  return expiresAt ? `Expires ${expiresAt}` : "Never expires";
+}
 function exitCodeForError(error51) {
   if (!(error51 instanceof BarmousAgentError)) return 1;
   if (error51.status === 401 || error51.code === "unauthorized") return 3;
@@ -32661,7 +32724,7 @@ function helpText() {
   return `Barmous read-only company CLI v${VERSION}
 
 Usage:
-  barmous login [--expires-in 30|60|90] [--profile <name>]
+  barmous login [--expires-in <lifetime>] [--profile <name>]
   barmous status [--profile <name>] [--offline]
   barmous logout [--profile <name>] [--force]
   barmous doctor
@@ -32675,7 +32738,8 @@ Usage:
   barmous mcp [--profile <name>]
 
 Authentication:
-  --expires-in <days>  Login lifetime: 30, 60, or 90 days (default: 30)
+  --expires-in <lifetime>  ${LOGIN_LIFETIME_IDS.join(", ")} (default: never)
+                           Legacy values 30, 60, and 90 remain accepted
   --profile <name>     Use a named local profile
   --api-url <url>      Explicit Barmous API origin for login
   --config-dir <path>  Override the local profile directory
