@@ -1,6 +1,6 @@
 # Barmous Compliance plugin preview distribution notice
 
-This package is an evaluation preview of the Barmous Compliance integration and CLI for Claude Code. It is provided for testing by recipients who have an authorized Barmous account. No credential is included; `barmous login` issues a scoped, expiring credential after browser approval.
+This package is an evaluation preview of the Barmous Compliance integration and CLI for Claude Code. It is provided for testing by recipients who have an authorized Barmous account. No credential is included; `barmous login` issues a scoped credential after browser approval. Login supports finite lifetimes and a revocable non-expiring credential, which is the default.
 
 No open-source license is granted for Barmous-owned code in this package. Barmous Compliance retains all rights in that code.
 

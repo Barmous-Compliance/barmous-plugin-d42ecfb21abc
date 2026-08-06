@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Barmous Compliance | AI Workspace Plugins",
+  title: "Barmous Compliance | MCP & CLI Connections",
   description:
-    "Install the read-only Barmous CLI and local MCP plugins for Codex and Claude Code.",
+    "Connect Barmous Compliance to Codex, Claude, Cursor, Gemini, Antigravity, and Perplexity through the read-only MCP and CLI.",
   icons: {
     icon: "/barmous-mark.png",
     shortcut: "/barmous-mark.png",

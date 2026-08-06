@@ -1,6 +1,6 @@
 # Barmous Compliance for Claude Code
 
-This v0.2.0 bundle provides the same read-only Barmous CLI and local stdio MCP runtime as the Codex package, plus five Claude Code skills. No credential or company data is bundled and the plugin no longer asks users to paste a token into plugin settings.
+This v0.3.0 bundle provides the same read-only Barmous CLI and local stdio MCP runtime as the Codex package, plus five Claude Code skills. No credential or company data is bundled and the plugin no longer asks users to paste a token into plugin settings.
 
 ## Install and log in
 
@@ -12,7 +12,7 @@ barmous login
 barmous status
 ```
 
-Browser login defaults to 30 days. Use `--expires-in 60` or `--expires-in 90`, and `--profile NAME` for separate accounts. Existing profiles are never overwritten silently.
+Browser login supports `1h`, `1d`, `7d`, `30d`, `60d`, `90d`, `180d`, `1y` (365 days), and `never`; `never` is the default. Use `--expires-in 7d` for a finite lifetime and `--profile NAME` for separate accounts. Legacy numeric `30`, `60`, and `90` values remain accepted. Non-expiring credentials remain revocable, no lifetime extends with activity, and existing profiles are never overwritten silently.
 
 ## Install the Claude plugin
 

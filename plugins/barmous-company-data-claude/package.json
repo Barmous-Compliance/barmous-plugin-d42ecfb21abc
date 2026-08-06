@@ -1,6 +1,6 @@
 {
   "name": "@barmous/company-data-cli-claude",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Local installer for the read-only Barmous CLI bundled with the Claude plugin",
   "type": "module",

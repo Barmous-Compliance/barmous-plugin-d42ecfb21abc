@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "barmous-company-data",
   "displayName": "Barmous Compliance",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Secure read-only access to company compliance data in Barmous",
   "author": {
     "name": "Barmous Compliance",

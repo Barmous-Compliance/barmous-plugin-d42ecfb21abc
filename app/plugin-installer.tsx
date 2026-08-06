@@ -1,15 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 import ProductMark, { type ProductId } from "./product-mark";
 
 type ClientId = ProductId;
-type ModeId = "install" | "connect";
+type ModeId = "mcp" | "cli";
 
 type SetupStep = {
   title: string;
   description: string;
   command?: string;
+  copyLabel?: string;
+  status?: string;
   action?: {
     href: string;
     label: string;
@@ -18,128 +26,289 @@ type SetupStep = {
   };
 };
 
-const clients: { id: ClientId; label: string; maker: string }[] = [
-  { id: "codex", label: "Codex", maker: "OpenAI" },
-  { id: "claude", label: "Claude Code", maker: "Anthropic" },
-];
-
-const modes: { id: ModeId; label: string }[] = [
-  { id: "install", label: "Install" },
-  { id: "connect", label: "Connect" },
-];
-
-const flows: Record<ClientId, Record<ModeId, SetupStep[]>> = {
-  codex: {
-    install: [
-      {
-        title: "Download the Codex bundle",
-        description:
-          "Get the verified preview ZIP, then extract it to a folder you control.",
-        action: {
-          href: "/downloads/barmous-compliance-codex-plugin-v0.2.0.zip",
-          label: "Download Codex ZIP",
-          download: true,
-        },
-      },
-      {
-        title: "Install the CLI and plugin",
-        description:
-          "Open PowerShell in the extracted bundle root. This installs the local CLI and registers the bundled Codex marketplace.",
-        command: [
-          "npm install --global .\\plugins\\barmous-company-data",
-          '$pluginRoot = (Resolve-Path ".").Path',
-          "codex plugin marketplace add $pluginRoot",
-          "codex plugin add barmous-company-data@barmous",
-        ].join("\n"),
-      },
-      {
-        title: "Verify the local MCP",
-        description:
-          "Complete the Connect steps, start a new Codex task, and confirm the Barmous local server and nine read-only tools.",
-        command: "/mcp",
-      },
-    ],
-    connect: [
-      {
-        title: "Authorize in your browser",
-        description:
-          "Login opens Barmous. Match the short code, choose the exact company, review four read-only scopes, and approve 30 days.",
-        command: "barmous login",
-      },
-      {
-        title: "Choose a named profile",
-        description:
-          "Optional: keep accounts separate and choose either 60 or 90 days. These examples create work and audit profiles.",
-        command: [
-          "barmous login --expires-in 60 --profile work",
-          "barmous login --expires-in 90 --profile audit",
-          "barmous status --profile work",
-        ].join("\n"),
-      },
-      {
-        title: "Check the active profile",
-        description:
-          "Confirm the default profile in your terminal, then run /mcp in Codex. Access is revocable and never extends beyond its approved expiry.",
-        command: "barmous status",
-      },
-    ],
-  },
-  claude: {
-    install: [
-      {
-        title: "Download the Claude bundle",
-        description:
-          "Get the verified preview ZIP, then extract it to a folder you control.",
-        action: {
-          href: "/downloads/barmous-compliance-claude-plugin-v0.2.0.zip",
-          label: "Download Claude ZIP",
-          download: true,
-        },
-      },
-      {
-        title: "Install the CLI and plugin",
-        description:
-          "Open PowerShell in the extracted bundle root. Install the local CLI, add this marketplace, and enable the plugin.",
-        command: [
-          "npm install --global .\\plugins\\barmous-company-data",
-          "claude plugin marketplace add .",
-          "claude plugin install barmous-company-data@barmous",
-          "claude plugin enable barmous-company-data@barmous",
-        ].join("\n"),
-      },
-      {
-        title: "Verify the local MCP",
-        description:
-          "Complete the Connect steps, reload plugins, and confirm the Barmous local server and nine read-only tools.",
-        command: ["/reload-plugins", "/mcp"].join("\n"),
-      },
-    ],
-    connect: [
-      {
-        title: "Authorize in your browser",
-        description:
-          "Login opens Barmous. Match the short code, choose the exact company, review four read-only scopes, and approve 30 days.",
-        command: "barmous login",
-      },
-      {
-        title: "Choose a named profile",
-        description:
-          "Optional: keep accounts separate and choose either 60 or 90 days. These examples create work and audit profiles.",
-        command: [
-          "barmous login --expires-in 60 --profile work",
-          "barmous login --expires-in 90 --profile audit",
-          "barmous status --profile work",
-        ].join("\n"),
-      },
-      {
-        title: "Check the active profile",
-        description:
-          "Confirm the default profile in your terminal, then run /reload-plugins and /mcp in Claude Code. Expiry is absolute and access can be revoked earlier.",
-        command: "barmous status",
-      },
-    ],
-  },
+type ClientDefinition = {
+  id: ClientId;
+  label: string;
+  maker: string;
+  kind: "Plugin" | "Connector";
 };
+
+const CLIENT_IDS: ClientId[] = [
+  "codex",
+  "claude",
+  "cursor",
+  "gemini",
+  "perplexity",
+];
+const MODE_IDS: ModeId[] = ["mcp", "cli"];
+
+const clients: ClientDefinition[] = [
+  { id: "codex", label: "Codex", maker: "OpenAI", kind: "Plugin" },
+  { id: "claude", label: "Claude", maker: "Anthropic", kind: "Plugin" },
+  { id: "cursor", label: "Cursor", maker: "Anysphere", kind: "Connector" },
+  {
+    id: "gemini",
+    label: "Gemini + Antigravity",
+    maker: "Google",
+    kind: "Connector",
+  },
+  {
+    id: "perplexity",
+    label: "Perplexity",
+    maker: "Perplexity",
+    kind: "Connector",
+  },
+];
+
+const REMOTE_MCP_URL = verifiedRemoteMcpUrl(
+  process.env.NEXT_PUBLIC_BARMOUS_MCP_URL,
+);
+const GITHUB_SOURCE_URL =
+  "https://github.com/Barmous-Compliance/barmous-plugin-d42ecfb21abc";
+const CODEX_DOWNLOAD = "/downloads/barmous-compliance-codex-plugin-v0.3.0.zip";
+const CLAUDE_DOWNLOAD = "/downloads/barmous-compliance-claude-plugin-v0.3.0.zip";
+
+function verifiedRemoteMcpUrl(value: string | undefined): string {
+  if (!value?.trim()) return "";
+  try {
+    const url = new URL(value.trim());
+    if (
+      url.protocol !== "https:" ||
+      url.username ||
+      url.password ||
+      url.search ||
+      url.hash
+    ) {
+      return "";
+    }
+    return url.toString();
+  } catch {
+    return "";
+  }
+}
+
+function clientById(id: ClientId): ClientDefinition {
+  return clients.find((client) => client.id === id) ?? clients[0];
+}
+
+function localConnectorConfig() {
+  return JSON.stringify(
+    {
+      mcpServers: {
+        barmous: {
+          command: "barmous",
+          args: ["mcp"],
+        },
+      },
+    },
+    null,
+    2,
+  );
+}
+
+function cursorRemoteConfig(endpoint: string) {
+  return JSON.stringify(
+    {
+      mcpServers: {
+        barmous: {
+          url: endpoint,
+        },
+      },
+    },
+    null,
+    2,
+  );
+}
+
+function remoteSetupStep(client: ClientDefinition, endpoint: string): SetupStep {
+  if (client.id === "cursor") {
+    return {
+      title: "Add Barmous to Cursor",
+      description:
+        "Add this server to your user or project MCP configuration, then refresh Cursor's MCP tools.",
+      command: cursorRemoteConfig(endpoint),
+      copyLabel: "Copy Cursor configuration",
+    };
+  }
+
+  if (client.id === "gemini") {
+    return {
+      title: "Add Barmous to Gemini",
+      description:
+        "Run the command in Gemini CLI, or use the same endpoint in Antigravity's Manage MCP Servers screen.",
+      command: `gemini mcp add barmous ${endpoint} --transport http`,
+      copyLabel: "Copy Gemini command",
+    };
+  }
+
+  if (client.id === "perplexity") {
+    return {
+      title: "Add a remote connector",
+      description:
+        "In Perplexity, open Account settings → Connectors → Add custom connector. Choose Remote, Streamable HTTP, and OAuth. Your plan or admin must allow custom connectors.",
+      status: "Use the copied endpoint",
+    };
+  }
+
+  if (client.id === "claude") {
+    return {
+      title: "Add the Barmous connector",
+      description:
+        "Open Claude's connector settings, add a custom remote connector named Barmous, and paste the copied Streamable HTTP URL.",
+      status: "Use the copied endpoint",
+    };
+  }
+
+  return {
+    title: "Add the remote MCP",
+    description:
+      "Open Codex MCP settings, create a server named Barmous, and use the copied Streamable HTTP URL.",
+    status: "Use the copied endpoint",
+  };
+}
+
+function remoteSteps(client: ClientDefinition): SetupStep[] {
+  if (!REMOTE_MCP_URL) {
+    return [
+      {
+        title: "Remote MCP is being prepared",
+        description:
+          "The public Streamable HTTP endpoint has not been published. Barmous will show one verified URL here when the service and OAuth boundary are ready.",
+        status: "Endpoint not available",
+      },
+      {
+        title: `Keep ${client.label} ready`,
+        description:
+          client.id === "perplexity"
+            ? "Custom remote connectors may require a paid plan and administrator approval. No connector needs to be created yet."
+            : "No client configuration is required until the verified endpoint is published.",
+        status: `${client.kind} setup pending`,
+      },
+      {
+        title: "Sign in when available",
+        description:
+          "Connection will open Barmous in your browser. You will never paste an agent token or secret into the client.",
+        status: "Browser authorization pending",
+      },
+    ];
+  }
+
+  return [
+    {
+      title: "Copy the Barmous MCP URL",
+      description:
+        "Use this single verified endpoint for the remote Barmous compliance connection.",
+      command: REMOTE_MCP_URL,
+      copyLabel: "Copy MCP endpoint",
+    },
+    remoteSetupStep(client, REMOTE_MCP_URL),
+    {
+      title: "Sign in and verify",
+      description:
+        "Complete Barmous browser authorization, then ask the client to check the current failing compliance tests.",
+      command: "Show the failing compliance tests for this workspace.",
+      copyLabel: "Copy verification prompt",
+    },
+  ];
+}
+
+function pluginCliSteps(client: ClientDefinition): SetupStep[] {
+  const isCodex = client.id === "codex";
+  return [
+    {
+      title: `Download the ${client.label} bundle`,
+      description:
+        "Download the verified v0.3.0 preview ZIP and extract it to a folder you control.",
+      action: {
+        href: isCodex ? CODEX_DOWNLOAD : CLAUDE_DOWNLOAD,
+        label: `Download ${client.label} ZIP`,
+        download: true,
+      },
+    },
+    {
+      title: "Install the CLI and plugin",
+      description: isCodex
+        ? "Open PowerShell in the extracted bundle root. Install the CLI, register the bundled marketplace, and enable the Codex plugin."
+        : "Open PowerShell in the extracted bundle root. Install the CLI, add the bundled marketplace, and enable the Claude plugin.",
+      command: isCodex
+        ? [
+            "npm install --global .\\plugins\\barmous-company-data",
+            '$pluginRoot = (Resolve-Path ".").Path',
+            "codex plugin marketplace add $pluginRoot",
+            "codex plugin add barmous-company-data@barmous",
+          ].join("\n")
+        : [
+            "npm install --global .\\plugins\\barmous-company-data",
+            "claude plugin marketplace add .",
+            "claude plugin install barmous-company-data@barmous",
+            "claude plugin enable barmous-company-data@barmous",
+          ].join("\n"),
+    },
+    {
+      title: "Authorize and verify",
+      description: isCodex
+        ? "Login defaults to a revocable non-expiring profile. Choose 1h, 1d, 7d, 30d, 60d, 90d, 180d, 1y, or never, then start a new Codex task and run /mcp."
+        : "Login defaults to a revocable non-expiring profile. Choose 1h, 1d, 7d, 30d, 60d, 90d, 180d, 1y, or never, then reload Claude plugins and run /mcp.",
+      command: isCodex
+        ? ["barmous login", "barmous status", "/mcp in Codex"].join("\n")
+        : ["barmous login", "barmous status", "/reload-plugins", "/mcp"].join("\n"),
+    },
+  ];
+}
+
+function connectorCliSteps(client: ClientDefinition): SetupStep[] {
+  let finalStep: SetupStep;
+
+  if (client.id === "cursor") {
+    finalStep = {
+      title: "Add the local connector",
+      description:
+        "Add this configuration to Cursor's user or project MCP settings, then refresh the available tools.",
+      command: localConnectorConfig(),
+      copyLabel: "Copy Cursor configuration",
+    };
+  } else if (client.id === "gemini") {
+    finalStep = {
+      title: "Add the local connector",
+      description:
+        "Use this MCP server definition in Gemini CLI or Antigravity. Both launch the authenticated Barmous CLI over stdio.",
+      command: localConnectorConfig(),
+      copyLabel: "Copy MCP configuration",
+    };
+  } else {
+    finalStep = {
+      title: "Add the local connector",
+      description:
+        "Perplexity local MCP currently requires its macOS app and helper. Add a Simple connector with this server command; other platforms should use remote MCP when available.",
+      command: "barmous mcp",
+      copyLabel: "Copy Perplexity server command",
+    };
+  }
+
+  return [
+    {
+      title: "Install the Barmous CLI",
+      description:
+        "The current CLI is included in both verified v0.3.0 plugin bundles. Choose either bundle below, extract it, then run this command from its root.",
+      command: "npm install --global .\\plugins\\barmous-company-data",
+      action: {
+        href: "#downloads",
+        label: "Choose a verified bundle",
+      },
+    },
+    {
+      title: "Authorize this device",
+      description:
+        "Login opens Barmous. Match the short code, choose the exact company, review the read-only scopes, and approve the default revocable non-expiring profile or choose 1h, 1d, 7d, 30d, 60d, 90d, 180d, or 1y.",
+      command: ["barmous login", "barmous status"].join("\n"),
+    },
+    finalStep,
+  ];
+}
+
+function cliSteps(client: ClientDefinition): SetupStep[] {
+  return client.kind === "Plugin" ? pluginCliSteps(client) : connectorCliSteps(client);
+}
 
 function CopyIcon() {
   return (
@@ -154,6 +323,14 @@ function ArrowIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M5 12h14m-5-5 5 5-5 5" />
+    </svg>
+  );
+}
+
+function GithubIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 3a9 9 0 0 0-2.85 17.54c.45.08.62-.2.62-.44v-1.72c-2.53.55-3.06-1.08-3.06-1.08-.41-1.06-1.02-1.34-1.02-1.34-.83-.57.06-.56.06-.56.92.07 1.4.95 1.4.95.82 1.41 2.14 1 2.66.77.08-.6.32-1 .58-1.23-2.02-.23-4.14-1.02-4.14-4.51 0-1 .35-1.81.94-2.45-.1-.23-.41-1.16.08-2.42 0 0 .77-.25 2.48.94A8.6 8.6 0 0 1 12 7.15a8.5 8.5 0 0 1 2.26.3c1.72-1.19 2.48-.94 2.48-.94.5 1.26.19 2.19.1 2.42.58.64.93 1.45.93 2.45 0 3.5-2.13 4.27-4.15 4.5.33.29.62.86.62 1.74v2.48c0 .24.16.52.62.43A9 9 0 0 0 12 3Z" />
     </svg>
   );
 }
@@ -176,13 +353,19 @@ async function copyText(value: string) {
   textarea.select();
   const copied = document.execCommand("copy");
   textarea.remove();
-  if (!copied) {
-    throw new Error("Copy command was rejected");
-  }
+  if (!copied) throw new Error("Copy command was rejected");
 }
 
-function CommandBox({ value }: { value: string }) {
+function CommandBox({ value, label = "Copy command" }: { value: string; label?: string }) {
   const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">("idle");
+  const resetTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (resetTimer.current) window.clearTimeout(resetTimer.current);
+    },
+    [],
+  );
 
   async function handleCopy() {
     try {
@@ -191,15 +374,12 @@ function CommandBox({ value }: { value: string }) {
     } catch {
       setCopyState("failed");
     }
-    window.setTimeout(() => setCopyState("idle"), 1600);
+    if (resetTimer.current) window.clearTimeout(resetTimer.current);
+    resetTimer.current = window.setTimeout(() => setCopyState("idle"), 1600);
   }
 
-  const copyLabel =
-    copyState === "copied"
-      ? "Command copied"
-      : copyState === "failed"
-        ? "Copy failed"
-        : "Copy command";
+  const buttonLabel =
+    copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy failed" : label;
 
   return (
     <div className="command-box">
@@ -214,26 +394,95 @@ function CommandBox({ value }: { value: string }) {
         }
         type="button"
         onClick={handleCopy}
-        aria-label={copyLabel}
+        aria-label={buttonLabel}
         aria-live="polite"
       >
         <CopyIcon />
-        <span>
-          {copyState === "copied"
-            ? "Copied"
-            : copyState === "failed"
-              ? "Failed"
-              : "Copy"}
-        </span>
+        <span>{copyState === "copied" ? "Copied" : copyState === "failed" ? "Failed" : "Copy"}</span>
       </button>
     </div>
   );
 }
 
+function readUrlState(): { client: ClientId; mode: ModeId } {
+  const params = new URLSearchParams(window.location.search);
+  const requestedClient = params.get("client") as ClientId | null;
+  const requestedMode = params.get("mode") as ModeId | null;
+  return {
+    client: requestedClient && CLIENT_IDS.includes(requestedClient) ? requestedClient : "codex",
+    mode: requestedMode && MODE_IDS.includes(requestedMode) ? requestedMode : "mcp",
+  };
+}
+
+function writeUrlState(client: ClientId, mode: ModeId) {
+  const nextUrl = new URL(window.location.href);
+  nextUrl.searchParams.set("client", client);
+  nextUrl.searchParams.set("mode", mode);
+  nextUrl.hash = "installer";
+  window.history.pushState({}, "", nextUrl);
+}
+
 export default function PluginInstaller() {
   const [client, setClient] = useState<ClientId>("codex");
-  const [mode, setMode] = useState<ModeId>("install");
-  const steps = flows[client][mode];
+  const [mode, setMode] = useState<ModeId>("mcp");
+  const clientTabRefs = useRef<Partial<Record<ClientId, HTMLButtonElement | null>>>({});
+  const modeTabRefs = useRef<Partial<Record<ModeId, HTMLButtonElement | null>>>({});
+  const activeClient = clientById(client);
+  const steps = useMemo(
+    () => (mode === "mcp" ? remoteSteps(activeClient) : cliSteps(activeClient)),
+    [activeClient, mode],
+  );
+
+  useEffect(() => {
+    const syncFromUrl = () => {
+      const next = readUrlState();
+      setClient(next.client);
+      setMode(next.mode);
+    };
+    syncFromUrl();
+    window.addEventListener("popstate", syncFromUrl);
+    return () => window.removeEventListener("popstate", syncFromUrl);
+  }, []);
+
+  function chooseClient(nextClient: ClientId) {
+    setClient(nextClient);
+    writeUrlState(nextClient, mode);
+  }
+
+  function chooseMode(nextMode: ModeId) {
+    setMode(nextMode);
+    writeUrlState(client, nextMode);
+  }
+
+  function tabTargetIndex(
+    event: KeyboardEvent<HTMLButtonElement>,
+    index: number,
+    length: number,
+  ) {
+    if (event.key === "Home") return 0;
+    if (event.key === "End") return length - 1;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") return (index + 1) % length;
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp") return (index - 1 + length) % length;
+    return null;
+  }
+
+  function handleClientKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    const targetIndex = tabTargetIndex(event, index, CLIENT_IDS.length);
+    if (targetIndex === null) return;
+    event.preventDefault();
+    const nextClient = CLIENT_IDS[targetIndex];
+    clientTabRefs.current[nextClient]?.focus();
+    chooseClient(nextClient);
+  }
+
+  function handleModeKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    const targetIndex = tabTargetIndex(event, index, MODE_IDS.length);
+    if (targetIndex === null) return;
+    event.preventDefault();
+    const nextMode = MODE_IDS[targetIndex];
+    modeTabRefs.current[nextMode]?.focus();
+    chooseMode(nextMode);
+  }
 
   return (
     <section
@@ -241,38 +490,58 @@ export default function PluginInstaller() {
       id="installer"
       aria-labelledby="installer-heading"
       data-active-client={client}
+      data-active-mode={mode}
+      data-remote-ready={REMOTE_MCP_URL ? "true" : "false"}
     >
       <div className="installer-topbar">
-        <div className="client-tabs" role="group" aria-label="Choose your AI workspace">
-          {clients.map((item) => (
-            <button
-              className={client === item.id ? "client-tab is-active" : "client-tab"}
-              type="button"
-              aria-pressed={client === item.id}
-              data-client={item.id}
-              key={item.id}
-              onClick={() => setClient(item.id)}
-            >
-              <ProductMark product={item.id} className="client-mark" />
-              <span>
-                <strong>{item.label}</strong>
-                <small>{item.maker}</small>
-              </span>
-            </button>
-          ))}
+        <div className="client-tab-scroll">
+          <div className="client-tabs" role="tablist" aria-label="Choose your AI workspace">
+            {clients.map((item, index) => (
+              <button
+                className={client === item.id ? "client-tab is-active" : "client-tab"}
+                type="button"
+                role="tab"
+                id={`client-tab-${item.id}`}
+                aria-selected={client === item.id}
+                aria-controls="setup-panel"
+                tabIndex={client === item.id ? 0 : -1}
+                data-client={item.id}
+                key={item.id}
+                ref={(node) => {
+                  clientTabRefs.current[item.id] = node;
+                }}
+                onClick={() => chooseClient(item.id)}
+                onKeyDown={(event) => handleClientKeyDown(event, index)}
+              >
+                <ProductMark product={item.id} className="client-mark" />
+                <span>
+                  <strong>{item.label}</strong>
+                  <small>{item.kind}</small>
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="mode-tabs" role="group" aria-label="Choose setup stage">
-          {modes.map((item) => (
+        <div className="mode-tabs" role="tablist" aria-label="Choose connection method">
+          {MODE_IDS.map((item, index) => (
             <button
-              className={mode === item.id ? "mode-tab is-active" : "mode-tab"}
+              className={mode === item ? "mode-tab is-active" : "mode-tab"}
               type="button"
-              aria-pressed={mode === item.id}
-              data-mode={item.id}
-              key={item.id}
-              onClick={() => setMode(item.id)}
+              role="tab"
+              id={`mode-tab-${item}`}
+              aria-selected={mode === item}
+              aria-controls="setup-panel"
+              tabIndex={mode === item ? 0 : -1}
+              data-mode={item}
+              key={item}
+              ref={(node) => {
+                modeTabRefs.current[item] = node;
+              }}
+              onClick={() => chooseMode(item)}
+              onKeyDown={(event) => handleModeKeyDown(event, index)}
             >
-              {item.label}
+              {item === "mcp" ? "MCP" : "CLI"}
             </button>
           ))}
         </div>
@@ -281,14 +550,24 @@ export default function PluginInstaller() {
       <div className="installer-heading">
         <div>
           <h2 id="installer-heading">
-            Set up Barmous for {clients.find((item) => item.id === client)?.label}
+            Connect {activeClient.label} with {mode === "mcp" ? "remote MCP" : "the Barmous CLI"}
           </h2>
+          <p>
+            {activeClient.kind === "Plugin"
+              ? "Official marketplace listing coming soon. The verified GitHub preview remains available."
+              : "This client connects through the open Barmous MCP interface; no client-specific ZIP is required."}
+          </p>
         </div>
-        <span className="local-mcp-badge"><i /> Local MCP · read-only</span>
+        <span className="connection-badge">
+          <i /> {mode === "mcp" ? "Streamable HTTP" : "Local stdio"} · read-only
+        </span>
       </div>
 
       <div
         className="setup-grid"
+        id="setup-panel"
+        role="tabpanel"
+        aria-labelledby={`client-tab-${client} mode-tab-${mode}`}
         aria-live="polite"
         key={client + mode}
       >
@@ -298,7 +577,13 @@ export default function PluginInstaller() {
             <h3>{step.title}</h3>
             <p>{step.description}</p>
             <div className="step-control">
-              {step.command ? <CommandBox value={step.command} /> : null}
+              {step.command ? <CommandBox value={step.command} label={step.copyLabel} /> : null}
+              {step.status ? (
+                <div className="step-status" aria-disabled="true">
+                  <span />
+                  {step.status}
+                </div>
+              ) : null}
               {step.action ? (
                 <a
                   className="step-action"
@@ -317,7 +602,15 @@ export default function PluginInstaller() {
       </div>
 
       <div className="installer-footer">
-        <span>Browser-authorized profiles are revocable, expire absolutely, and never require a token pasted into plugin configuration.</span>
+        <div className="marketplace-status" aria-label="Official marketplace status">
+          <span>Official Barmous marketplace</span>
+          <strong>Coming soon</strong>
+        </div>
+        <a href={GITHUB_SOURCE_URL} target="_blank" rel="noreferrer">
+          <GithubIcon />
+          GitHub source
+          <ArrowIcon />
+        </a>
       </div>
     </section>
   );

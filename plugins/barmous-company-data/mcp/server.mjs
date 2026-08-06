@@ -31019,6 +31019,9 @@ function safeErrorMessage(error51) {
   return "The Barmous request could not be completed.";
 }
 
+// src/version.ts
+var AGENT_VERSION = "0.3.0";
+
 // src/api.ts
 var MAX_RESPONSE_BYTES = 5 * 1024 * 1024;
 var BarmousApiClient = class {
@@ -31090,7 +31093,7 @@ var BarmousApiClient = class {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${config2.token}`,
-        "User-Agent": "barmous-agent/0.2.0"
+        "User-Agent": `barmous-agent/${AGENT_VERSION}`
       },
       body: "{}"
     });
@@ -31115,7 +31118,7 @@ var BarmousApiClient = class {
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${config2.token}`,
-        "User-Agent": "barmous-agent/0.2.0"
+        "User-Agent": `barmous-agent/${AGENT_VERSION}`
       }
     });
     const payload = parseJson(response.text);
@@ -31356,7 +31359,7 @@ function validateMetadata(value, profile) {
     "company",
     "createdAt",
     "expiresAt"
-  ]) || candidate.profile !== profile || typeof candidate.apiUrl !== "string" || typeof candidate.tokenId !== "string" || candidate.tokenType !== "Bearer" || !Array.isArray(candidate.scopes) || candidate.scopes.some((scope) => typeof scope !== "string") || !candidate.company || typeof candidate.company.id !== "string" || typeof candidate.company.name !== "string" || typeof candidate.createdAt !== "string" || typeof candidate.expiresAt !== "string") {
+  ]) || candidate.profile !== profile || typeof candidate.apiUrl !== "string" || typeof candidate.tokenId !== "string" || candidate.tokenType !== "Bearer" || !Array.isArray(candidate.scopes) || candidate.scopes.some((scope) => typeof scope !== "string") || !candidate.company || typeof candidate.company.id !== "string" || typeof candidate.company.name !== "string" || typeof candidate.createdAt !== "string" || candidate.expiresAt !== null && typeof candidate.expiresAt !== "string") {
     throw invalidProfileMetadata(profile);
   }
 }
@@ -31555,6 +31558,7 @@ function validateToken(token) {
   }
 }
 function validateStoredExpiry(profile, now, requireToken) {
+  if (profile.expiresAt === null) return;
   const expiresAt = Date.parse(profile.expiresAt);
   if (!Number.isFinite(expiresAt)) {
     throw new BarmousAgentError(`Credential profile '${profile.profile}' has an invalid expiry.`, {
@@ -31591,7 +31595,10 @@ var OUTPUT_SCHEMA = {
 };
 function createMcpServer(client, options = {}) {
   const env = options.env ?? process.env;
-  const pinnedProfile = client ? void 0 : validateProfileName(
+  const hasEnvironmentCredentials = Boolean(
+    String(env.BARMOUS_API_URL || "").trim() && String(env.BARMOUS_AGENT_TOKEN || "").trim()
+  );
+  const pinnedProfile = client || hasEnvironmentCredentials ? void 0 : validateProfileName(
     options.profile || String(env.BARMOUS_PROFILE || "").trim() || listCredentialProfiles({ configDir: options.configDir, env }).currentProfile || DEFAULT_PROFILE
   );
   const apiClient = client ?? new BarmousApiClient(() => loadConfig({
@@ -31601,7 +31608,7 @@ function createMcpServer(client, options = {}) {
   }));
   const server = new McpServer({
     name: "barmous-company-data",
-    version: "0.2.0"
+    version: AGENT_VERSION
   });
   server.registerTool(
     "barmous_get_company_context",

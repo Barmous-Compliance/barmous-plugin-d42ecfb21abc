@@ -1,14 +1,18 @@
-# Barmous Compliance AI workspace plugins
+# Barmous Compliance MCP and CLI connections
 
-This repository publishes evaluation preview downloads for the Barmous Compliance read-only CLI and local MCP plugins for Codex and Claude Code.
+This repository publishes evaluation preview downloads for the Barmous Compliance read-only CLI and local MCP plugins for Codex and Claude Code. The setup page also explains how Cursor, Gemini + Antigravity, and Perplexity connect as MCP clients without pretending they have separate plugin ZIPs.
 
 - Download page: <https://barmous-compliance.github.io/barmous-plugin-d42ecfb21abc/>
 - Published source: `docs/`
-- Release version: `v0.2.0`
-- Codex SHA-256: `06A05BF0F1B745FA4C8C8DEB4425C1685A48CD43545223CD91EECD3F95731E42`
-- Claude Code SHA-256: `8FABFA35C8755A32F98BE11BBC6865E87D269BF341A3745880932E041E72E8D5`
+- Release version: `v0.3.0`
+- Codex bytes: `1,203,409`
+- Codex SHA-256: `D7D2499D1AF2F5B5B434D185BB0F0A260ED6F1947ACD913E954B07FDFD8DA65F`
+- Claude Code bytes: `422,667`
+- Claude Code SHA-256: `C6C6CF6A8C138D88B1F31A4B28F9486A8F0C1577C50D15905C150BF58BD2A7F5`
 
 The landing page is marked `noindex`, `nofollow`, and `noarchive`.
+
+The official Barmous marketplace listing is marked `Coming soon` and is not linked until a verified listing URL is supplied.
 
 ## Browser authorization
 
@@ -20,15 +24,21 @@ barmous login
 barmous status
 ```
 
-`barmous login` defaults to 30 days. Choose 60 or 90 days and keep multiple accounts separate with named profiles:
+`barmous login` defaults to a revocable non-expiring credential. Choose `1h`, `1d`, `7d`, `30d`, `60d`, `90d`, `180d`, `1y`, or `never`, and keep multiple accounts separate with named profiles:
 
 ```powershell
-barmous login --expires-in 60 --profile work
-barmous login --expires-in 90 --profile audit
+barmous login --expires-in 7d --profile work
+barmous login --expires-in 1y --profile audit
 barmous status --profile work
 ```
 
-The browser shows the exact company, scopes, and expiry before approval. Credentials are stored locally outside plugin configuration, can be revoked, and never extend beyond the approved expiry. The bundled MCP server runs locally over stdio; this release does not claim or require a hosted remote MCP endpoint.
+`1y` means 365 days, and legacy numeric `30`, `60`, and `90` values remain accepted. The browser shows the exact company, scopes, and lifetime before approval. Credentials are stored locally outside plugin configuration, remain revocable, and never extend with activity. The bundled MCP server runs locally over stdio.
+
+## Remote MCP gate
+
+The interactive application reads one optional build-time value, `NEXT_PUBLIC_BARMOUS_MCP_URL`. When it is absent, the MCP setup mode says `Remote MCP is being prepared`, disables endpoint actions, and does not invent a hostname or ask for a pasted secret. Only set this value to the complete verified Streamable HTTP endpoint after the hosted service and its separate browser-authorization boundary are deployed.
+
+The checked-in GitHub Pages mirror intentionally keeps its `barmous-mcp-url` metadata value empty, so the published v0.3.0 page remains in the honest prepared state until a real endpoint release updates it.
 
 ## Verification
 

@@ -1,11 +1,11 @@
 # Barmous Compliance for Codex
 
-This v0.2.0 bundle provides two read-only clients for the same company-scoped Barmous access:
+This v0.3.0 bundle provides two read-only clients for the same company-scoped Barmous access:
 
 - a standalone `barmous` CLI; and
 - a local stdio MCP server plus five Codex compliance skills.
 
-No credential or company data is included. Browser login creates an absolute 30, 60, or 90-day credential; 30 days is the default. The CLI stores it in a restricted named profile that the bundled MCP reads lazily.
+No credential or company data is included. Browser login supports `1h`, `1d`, `7d`, `30d`, `60d`, `90d`, `180d`, `1y`, and `never`; `never` is the default. A non-expiring credential remains revocable. The CLI stores it in a restricted named profile that the bundled MCP reads lazily.
 
 ## Requirements
 
@@ -24,12 +24,14 @@ barmous login
 barmous status
 ```
 
-Choose another lifetime or a named account profile when needed:
+Choose a finite lifetime or a named account profile when needed:
 
 ```powershell
-barmous login --expires-in 60 --profile work
+barmous login --expires-in 7d --profile work
 barmous status --profile work
 ```
+
+`1y` means 365 days. Legacy `--expires-in 30`, `60`, and `90` values remain accepted. No lifetime refreshes or extends with activity.
 
 Login always prints a verification URL and short code. It never prints the device secret, PKCE verifier, or issued credential. Existing named profiles are not overwritten; log out first or choose a different name.
 
