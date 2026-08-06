@@ -464,7 +464,7 @@ test("keeps the static Pages release synchronized", async () => {
     /name="robots" content="noindex, nofollow, noarchive, noimageindex"/i,
   );
   assert.match(html, />v0\.3\.0</i);
-  assert.match(html, /src="scripts\.js\?v=20260806\.2"/i);
+  assert.match(html, /src="scripts\.js\?v=20260806\.3"/i);
   for (const client of [
     "codex",
     "claude",
