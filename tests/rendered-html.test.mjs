@@ -572,8 +572,16 @@ test("ships a durable GitHub Pages workflow", async () => {
   assert.match(workflow, /actions\/upload-pages-artifact@v5/);
   assert.match(workflow, /path:\s*docs/);
   assert.match(workflow, /include-hidden-files:\s*true/);
-  assert.match(workflow, /actions\/deploy-pages@v5/);
-  assert.doesNotMatch(workflow, /timeout:\s*1200000/);
+  assert.match(workflow, /actions\/github-script@v9/);
+  assert.match(workflow, /PAGES_DEPLOY_TIMEOUT_MS:\s*"1200000"/);
+  assert.match(workflow, /listWorkflowRunArtifacts/);
+  assert.match(workflow, /core\.getIDToken\(\)/);
+  assert.match(workflow, /pages_build_version:\s*buildVersion/);
+  assert.match(workflow, /context\.runId/);
+  assert.match(workflow, /POST \/repos\/\{owner\}\/\{repo\}\/pages\/deployments/);
+  assert.match(workflow, /GET \/repos\/\{owner\}\/\{repo\}\/pages\/deployments/);
+  assert.doesNotMatch(workflow, /pages\/deployments\/\{[^}]+\}\/cancel/);
+  assert.match(workflow, /actions:\s*read/);
   assert.match(workflow, /pages:\s*write/);
   assert.match(workflow, /id-token:\s*write/);
 });
