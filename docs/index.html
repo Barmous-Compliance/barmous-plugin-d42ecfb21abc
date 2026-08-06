@@ -8,13 +8,13 @@
     <meta name="referrer" content="no-referrer" />
     <meta
       name="description"
-      content="Connect Barmous Compliance to Codex, Claude, Cursor, Antigravity, Perplexity, Kimi Code, and Hermes through the read-only MCP and CLI."
+      content="Connect Barmous Compliance to Codex, Claude Code, Cursor, Antigravity, Perplexity, Kimi Code, and Hermes through the read-only MCP and CLI."
     />
     <meta name="barmous-mcp-url" content="" />
     <title>Barmous Compliance | MCP &amp; CLI Connections</title>
     <link rel="icon" href="barmous-mark.png" />
-    <link rel="stylesheet" href="styles.css?v=20260806.4" />
-    <script src="scripts.js?v=20260806.4" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20260807.1" />
+    <script src="scripts.js?v=20260807.1" defer></script>
   </head>
   <body>
     <main class="site-shell">
@@ -41,7 +41,7 @@
           <h1 id="hero-heading">Barmous MCP &amp; CLI for the AI tools you already use.</h1>
           <p>
             Connect released compliance context through one verified setup flow
-            for Codex, Claude, Cursor, Antigravity, Perplexity, Kimi Code, and
+            for Codex, Claude Code, Cursor, Antigravity, Perplexity, Kimi Code, and
             Hermes.
           </p>
           <ul class="trust-list" aria-label="Plugin safeguards">
@@ -112,7 +112,7 @@
                   <span class="client-mark product-mark product-mark-claude" aria-hidden="true">
                     <img src="logos/claude.svg" alt="" width="64" height="64" />
                   </span>
-                  <span><strong>Claude</strong><small>Plugin</small></span>
+                  <span><strong>Claude Code</strong><small>Plugin</small></span>
                 </button>
                 <button
                   class="client-tab"
@@ -127,7 +127,7 @@
                   <span class="client-mark product-mark product-mark-cursor" aria-hidden="true">
                     <img src="logos/cursor.svg" alt="" width="64" height="64" />
                   </span>
-                  <span><strong>Cursor</strong><small>Connector</small></span>
+                  <span><strong>Cursor</strong><small>Plugin</small></span>
                 </button>
                 <button
                   class="client-tab"
@@ -142,7 +142,7 @@
                   <span class="client-mark product-mark product-mark-antigravity" aria-hidden="true">
                     <img src="logos/antigravity.png" alt="" width="64" height="64" />
                   </span>
-                  <span><strong>Antigravity</strong><small>Connector</small></span>
+                  <span><strong>Antigravity</strong><small>Plugin</small></span>
                 </button>
                 <button
                   class="client-tab"
@@ -172,7 +172,7 @@
                   <span class="client-mark product-mark product-mark-kimi" aria-hidden="true">
                     <img src="logos/kimi-code.png" alt="" width="64" height="64" />
                   </span>
-                  <span><strong>Kimi Code</strong><small>Connector</small></span>
+                  <span><strong>Kimi Code</strong><small>Plugin</small></span>
                 </button>
                 <button
                   class="client-tab"
@@ -220,7 +220,7 @@
             <div>
               <h2 id="installer-heading" data-installer-title>Connect Codex with remote MCP</h2>
               <p data-installer-description>
-                Official marketplace listing coming soon. The verified GitHub preview remains available.
+                Remote MCP will use the verified browser-authorized endpoint when it is published.
               </p>
             </div>
             <span class="connection-badge" data-connection-badge><i></i> Streamable HTTP · read-only</span>
@@ -268,60 +268,147 @@
         </section>
       </div>
 
-      <section class="release-section" id="downloads" aria-labelledby="release-heading">
-        <div class="release-intro">
-          <h2 id="release-heading">Everything you need, nothing sensitive included.</h2>
-          <p>
-            Packages contain the read-only Barmous CLI, local MCP server, and
-            five compliance skills. No credential or company data is bundled,
-            and plugin configuration never contains a pasted token.
-          </p>
-          <dl class="release-meta">
-            <div><dt>Version</dt><dd>v0.3.0</dd></div>
-            <div><dt>Released</dt><dd>06 Aug 2026</dd></div>
-            <div><dt>Runtime</dt><dd>Node.js 22.12–24.x</dd></div>
-            <div><dt>Lifetime</dt><dd>Never default · 1h to 1y optional</dd></div>
-          </dl>
-        </div>
+      <details class="release-disclosure" id="downloads">
+        <summary class="release-summary">
+          <span class="release-summary-copy">
+            <small>Verified v0.3.0 packages</small>
+            <strong>Download integration packages</strong>
+            <span>7 client packages plus one complete ZIP</span>
+          </span>
+          <span class="release-summary-action">
+            Downloads
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"></path></svg>
+          </span>
+        </summary>
 
-        <div class="release-downloads" aria-label="Verified plugin downloads">
-          <article class="release-download">
-            <div class="download-heading">
-              <span class="platform-mark product-mark product-mark-codex" aria-hidden="true">
-                <img src="logos/openai.svg" alt="" width="64" height="64" />
-              </span>
-              <span><small>OpenAI</small><strong>Codex</strong></span>
-            </div>
-            <a class="download-button" href="downloads/barmous-compliance-codex-plugin-v0.3.0.zip" download>
+        <div class="release-content">
+          <a
+            class="download-all"
+            href="downloads/barmous-compliance-all-integrations-v0.3.0.zip"
+            download
+            aria-label="Download all Barmous integrations as one ZIP"
+          >
+            <span class="download-all-icon">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path></svg>
-              Download ZIP
-              <small>1,175 KB</small>
-            </a>
-            <div class="checksum">
-              <span>SHA-256</span>
-              <code>D7D2499D1AF2F5B5B434D185BB0F0A260ED6F1947ACD913E954B07FDFD8DA65F</code>
-            </div>
-          </article>
+            </span>
+            <span>
+              <small>Complete bundle</small>
+              <strong>Download all integrations</strong>
+              <span>Every client package, manifest, and SHA-256 list</span>
+            </span>
+            <span>7,415 KB</span>
+          </a>
+          <div class="download-all-checksum">
+            <span>Complete bundle SHA-256</span>
+            <code>697C6E774F55659D156F9A614BED61E09226839EEFF2FBD7F6EFAC21FD0FEB71</code>
+          </div>
 
-          <article class="release-download">
-            <div class="download-heading">
-              <span class="platform-mark product-mark product-mark-claude" aria-hidden="true">
-                <img src="logos/claude.svg" alt="" width="64" height="64" />
-              </span>
-              <span><small>Anthropic</small><strong>Claude Code</strong></span>
+          <section class="release-section" aria-labelledby="release-heading">
+            <div class="release-overview">
+              <div class="release-intro">
+                <h2 id="release-heading">Everything you need, nothing sensitive included.</h2>
+                <p>
+                  Every client gets its real supported format: plugin source where
+                  plugins exist, and an MCP setup kit where they do not. No credential
+                  or company data is bundled.
+                </p>
+              </div>
+              <dl class="release-meta">
+                <div><dt>Version</dt><dd>v0.3.0</dd></div>
+                <div><dt>Released</dt><dd>07 Aug 2026</dd></div>
+                <div><dt>Runtime</dt><dd>Node.js 22.12–24.x</dd></div>
+                <div><dt>Lifetime</dt><dd>Never default · 1h to 1y optional</dd></div>
+              </dl>
             </div>
-            <a class="download-button" href="downloads/barmous-compliance-claude-plugin-v0.3.0.zip" download>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path></svg>
-              Download ZIP
-              <small>413 KB</small>
-            </a>
-            <div class="checksum">
-              <span>SHA-256</span>
-              <code>C6C6CF6A8C138D88B1F31A4B28F9486A8F0C1577C50D15905C150BF58BD2A7F5</code>
+
+            <div class="release-downloads" role="list" aria-label="Barmous integration package downloads">
+              <article class="release-download" role="listitem">
+                <div class="download-heading">
+                  <span class="platform-mark product-mark product-mark-codex" aria-hidden="true"><img src="logos/openai.svg" alt="" width="64" height="64" /></span>
+                  <span><small>OpenAI · Native plugin</small><strong>Codex + ChatGPT</strong></span>
+                </div>
+                <p class="download-method">Marketplace source</p>
+                <a class="download-button" href="downloads/barmous-compliance-codex-plugin-v0.3.0.zip" download aria-label="Download Codex and ChatGPT package ZIP">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path></svg>Download ZIP<small>1,175 KB</small>
+                </a>
+                <div class="checksum"><span>SHA-256</span><code>D7D2499D1AF2F5B5B434D185BB0F0A260ED6F1947ACD913E954B07FDFD8DA65F</code></div>
+              </article>
+
+              <article class="release-download" role="listitem">
+                <div class="download-heading">
+                  <span class="platform-mark product-mark product-mark-claude" aria-hidden="true"><img src="logos/claude.svg" alt="" width="64" height="64" /></span>
+                  <span><small>Anthropic · Native plugin</small><strong>Claude Code</strong></span>
+                </div>
+                <p class="download-method">Marketplace source</p>
+                <a class="download-button" href="downloads/barmous-compliance-claude-plugin-v0.3.0.zip" download aria-label="Download Claude Code package ZIP">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path></svg>Download ZIP<small>413 KB</small>
+                </a>
+                <div class="checksum"><span>SHA-256</span><code>C6C6CF6A8C138D88B1F31A4B28F9486A8F0C1577C50D15905C150BF58BD2A7F5</code></div>
+              </article>
+
+              <article class="release-download" role="listitem">
+                <div class="download-heading">
+                  <span class="platform-mark product-mark product-mark-cursor" aria-hidden="true"><img src="logos/cursor.svg" alt="" width="64" height="64" /></span>
+                  <span><small>Anysphere · Agent Plugin</small><strong>Cursor</strong></span>
+                </div>
+                <p class="download-method">Unzip into local plugins</p>
+                <a class="download-button" href="downloads/barmous-compliance-cursor-plugin-v0.3.0.zip" download aria-label="Download Cursor package ZIP">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path></svg>Download ZIP<small>1,164 KB</small>
+                </a>
+                <div class="checksum"><span>SHA-256</span><code>137859C3B38B31CF532F969002725B7389BC3BF1DB67061129ED4CDBC40F000D</code></div>
+              </article>
+
+              <article class="release-download" role="listitem">
+                <div class="download-heading">
+                  <span class="platform-mark product-mark product-mark-antigravity" aria-hidden="true"><img src="logos/antigravity.png" alt="" width="64" height="64" /></span>
+                  <span><small>Google · Native plugin</small><strong>Antigravity</strong></span>
+                </div>
+                <p class="download-method">Unzip, then install folder</p>
+                <a class="download-button" href="downloads/barmous-compliance-antigravity-plugin-v0.3.0.zip" download aria-label="Download Antigravity package ZIP">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path></svg>Download ZIP<small>1,165 KB</small>
+                </a>
+                <div class="checksum"><span>SHA-256</span><code>2BDD93B1EBE1B0A7B2BBE9BE93FA845E901086750F32C31213EF169048378B0E</code></div>
+              </article>
+
+              <article class="release-download" role="listitem">
+                <div class="download-heading">
+                  <span class="platform-mark product-mark product-mark-perplexity" aria-hidden="true"><img src="logos/perplexity.svg" alt="" width="64" height="64" /></span>
+                  <span><small>Perplexity · Connector kit</small><strong>Perplexity</strong></span>
+                </div>
+                <p class="download-method">Configure endpoint or command</p>
+                <a class="download-button" href="downloads/barmous-compliance-perplexity-connector-v0.3.0.zip" download aria-label="Download Perplexity package ZIP">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path></svg>Download ZIP<small>1,197 KB</small>
+                </a>
+                <div class="checksum"><span>SHA-256</span><code>B9C7C17D23EA54AA2C02BC8050D8FF304D6F998B308472E25E3544D8E5703846</code></div>
+              </article>
+
+              <article class="release-download" role="listitem">
+                <div class="download-heading">
+                  <span class="platform-mark product-mark product-mark-kimi" aria-hidden="true"><img src="logos/kimi-code.png" alt="" width="64" height="64" /></span>
+                  <span><small>Moonshot AI · Native plugin</small><strong>Kimi Code</strong></span>
+                </div>
+                <p class="download-method">Install extracted folder</p>
+                <a class="download-button" href="downloads/barmous-compliance-kimi-code-plugin-v0.3.0.zip" download aria-label="Download Kimi Code package ZIP">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path></svg>Download ZIP<small>1,164 KB</small>
+                </a>
+                <div class="checksum"><span>SHA-256</span><code>D80047878387AB382F69A97A705484CD4C4DBAF6F0DDAE6C22DC2BF68012D870</code></div>
+              </article>
+
+              <article class="release-download" role="listitem">
+                <div class="download-heading">
+                  <span class="platform-mark product-mark product-mark-hermes" aria-hidden="true"><img src="logos/hermes.png" alt="" width="64" height="64" /></span>
+                  <span><small>Nous Research · Connector kit</small><strong>Hermes</strong></span>
+                </div>
+                <p class="download-method">Merge config</p>
+                <a class="download-button" href="downloads/barmous-compliance-hermes-connector-v0.3.0.zip" download aria-label="Download Hermes package ZIP">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2"></path></svg>Download ZIP<small>1,164 KB</small>
+                </a>
+                <div class="checksum"><span>SHA-256</span><code>E20A430FFB9FEF8CB097B59B285B35C1FEDFDA6D4C474AC60387F6942DFE7C20</code></div>
+              </article>
             </div>
-          </article>
+          </section>
         </div>
-      </section>
+      </details>
 
       <footer>
         <span>© 2026 Barmous Compliance</span>

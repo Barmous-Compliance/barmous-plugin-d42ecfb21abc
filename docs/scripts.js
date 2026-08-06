@@ -13,12 +13,20 @@ const REMOTE_MCP_URL =
 
 const clients = {
   codex: { label: "Codex", kind: "Plugin" },
-  claude: { label: "Claude", kind: "Plugin" },
-  cursor: { label: "Cursor", kind: "Connector" },
-  antigravity: { label: "Antigravity", kind: "Connector" },
+  claude: { label: "Claude Code", kind: "Plugin" },
+  cursor: { label: "Cursor", kind: "Plugin" },
+  antigravity: { label: "Antigravity", kind: "Plugin" },
   perplexity: { label: "Perplexity", kind: "Connector" },
-  kimi: { label: "Kimi Code", kind: "Connector" },
+  kimi: { label: "Kimi Code", kind: "Plugin" },
   hermes: { label: "Hermes", kind: "Connector" },
+};
+
+const LOCAL_PACKAGE_DOWNLOADS = {
+  cursor: "downloads/barmous-compliance-cursor-plugin-v0.3.0.zip",
+  antigravity: "downloads/barmous-compliance-antigravity-plugin-v0.3.0.zip",
+  perplexity: "downloads/barmous-compliance-perplexity-connector-v0.3.0.zip",
+  kimi: "downloads/barmous-compliance-kimi-code-plugin-v0.3.0.zip",
+  hermes: "downloads/barmous-compliance-hermes-connector-v0.3.0.zip",
 };
 
 const arrowIcon =
@@ -26,13 +34,12 @@ const arrowIcon =
 const copyIcon =
   '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>';
 
-function localConnectorConfig() {
+function cursorRemoteConfig(endpoint) {
   return JSON.stringify(
     {
       mcpServers: {
         barmous: {
-          command: "barmous",
-          args: ["mcp"],
+          url: endpoint,
         },
       },
     },
@@ -41,12 +48,12 @@ function localConnectorConfig() {
   );
 }
 
-function cursorRemoteConfig(endpoint) {
+function antigravityRemoteConfig(endpoint) {
   return JSON.stringify(
     {
       mcpServers: {
         barmous: {
-          url: endpoint,
+          serverUrl: endpoint,
         },
       },
     },
@@ -83,9 +90,9 @@ function remoteSetupStep(clientId, endpoint) {
   if (clientId === "antigravity") {
     return {
       title: "Add Barmous to Antigravity",
-      description:
-        "Open Antigravity's Manage MCP Servers screen, create a Barmous server, and use the copied Streamable HTTP endpoint.",
-      status: "Use the copied endpoint",
+      description: "Add this Streamable HTTP server definition in Manage MCP Servers.",
+      command: antigravityRemoteConfig(endpoint),
+      copyLabel: "Copy Antigravity configuration",
     };
   }
 
@@ -124,10 +131,10 @@ function remoteSetupStep(clientId, endpoint) {
 
   if (clientId === "claude") {
     return {
-      title: "Add the Barmous connector",
-      description:
-        "Open Claude's connector settings, add a custom remote connector named Barmous, and paste the copied Streamable HTTP URL.",
-      status: "Use the copied endpoint",
+      title: "Add Barmous to Claude Code",
+      description: "Register the verified HTTP endpoint, then confirm it with /mcp.",
+      command: `claude mcp add --transport http barmous ${endpoint}\n/mcp`,
+      copyLabel: "Copy Claude Code MCP commands",
     };
   }
 
@@ -232,31 +239,34 @@ function pluginCliSteps(clientId) {
   ];
 }
 
-function connectorCliSteps(clientId) {
+function localPackageCliSteps(clientId) {
   let finalStep;
   if (clientId === "cursor") {
     finalStep = {
-      title: "Add the local connector",
+      title: "Load the Cursor plugin",
       description:
-        "Add this configuration to Cursor's user or project MCP settings, then refresh the available tools.",
-      command: localConnectorConfig(),
-      copyLabel: "Copy Cursor configuration",
+        "Copy the extracted folder to ~/.cursor/plugins/local/barmous-company-data, then restart Cursor or run Developer: Reload Window. The MCP definition and five skills are already included.",
+      status: "Plugin folder included",
     };
   } else if (clientId === "antigravity") {
     finalStep = {
-      title: "Add the local connector",
+      title: "Install the Antigravity plugin",
       description:
-        "Use this MCP server definition in Antigravity's Manage MCP Servers screen. It launches the authenticated Barmous CLI over stdio.",
-      command: localConnectorConfig(),
-      copyLabel: "Copy Antigravity configuration",
+        "Install the extracted plugin folder. Antigravity loads its bundled mcp_config.json and five compliance skills.",
+      command: "agy plugin install <full-path-to-extracted-folder>\n/mcp",
+      copyLabel: "Copy Antigravity install command",
     };
   } else if (clientId === "kimi") {
     finalStep = {
-      title: "Configure Kimi Code and verify",
+      title: "Install the Kimi Code plugin",
       description:
-        "Save this JSON as ~/.kimi-code/mcp.json (or .kimi-code/mcp.json for this project), start a new Kimi Code session, and run /mcp to confirm Barmous is connected.",
-      command: localConnectorConfig(),
-      copyLabel: "Copy Kimi Code configuration",
+        "Install the extracted folder, reload plugins, then verify the bundled Barmous MCP server. Kimi loads kimi.plugin.json directly.",
+      command: [
+        "/plugins install <full-path-to-extracted-folder>",
+        "/reload",
+        "/mcp",
+      ].join("\n"),
+      copyLabel: "Copy Kimi Code install steps",
     };
   } else if (clientId === "hermes") {
     finalStep = {
@@ -282,17 +292,24 @@ function connectorCliSteps(clientId) {
 
   return [
     {
-      title: "Install the Barmous CLI",
+      title: `Download the ${clients[clientId].label} package`,
       description:
-        "The current CLI is included in both verified v0.3.0 plugin bundles. Choose either bundle below, extract it, then run this command from its root.",
-      command: "npm install --global .\\plugins\\barmous-company-data",
-      action: { href: "#downloads", label: "Choose a verified bundle" },
+        "Download the verified client-specific ZIP and extract it to a folder you control.",
+      action: {
+        href: LOCAL_PACKAGE_DOWNLOADS[clientId],
+        label: `Download ${clients[clientId].label} ZIP`,
+        download: true,
+      },
     },
     {
-      title: "Authorize this device",
+      title: "Install and authorize Barmous",
       description:
         "Login opens Barmous. Match the short code, choose the exact company, review the read-only scopes, and approve the default revocable non-expiring profile or choose 1h, 1d, 7d, 30d, 60d, 90d, 180d, or 1y.",
-      command: ["barmous login", "barmous status"].join("\n"),
+      command: [
+        "npm install --global ./runtime",
+        "barmous login",
+        "barmous status",
+      ].join("\n"),
     },
     finalStep,
   ];
@@ -300,9 +317,9 @@ function connectorCliSteps(clientId) {
 
 function stepsFor(clientId, mode) {
   if (mode === "mcp") return remoteSteps(clientId);
-  return clients[clientId].kind === "Plugin"
+  return clientId === "codex" || clientId === "claude"
     ? pluginCliSteps(clientId)
-    : connectorCliSteps(clientId);
+    : localPackageCliSteps(clientId);
 }
 
 const requestedParams = new URLSearchParams(window.location.search);
@@ -394,10 +411,13 @@ function render() {
   const isRemote = state.mode === "mcp";
 
   title.textContent = `Connect ${activeClient.label} with ${isRemote ? "remote MCP" : "the Barmous CLI"}`;
-  description.textContent =
-    activeClient.kind === "Plugin"
-      ? "Official marketplace listing coming soon. The verified GitHub preview remains available."
-      : "This client connects through the open Barmous MCP interface; no client-specific ZIP is required.";
+  description.textContent = isRemote
+    ? "Remote MCP will use the verified browser-authorized endpoint when it is published."
+    : state.client === "codex" || state.client === "claude"
+      ? "Download the verified marketplace source bundle, then install it from the extracted folder."
+      : activeClient.kind === "Plugin"
+        ? "Download the verified plugin source ZIP, then install the extracted plugin folder."
+        : "Download the verified connector setup kit with the local CLI and MCP runtime.";
   connectionBadge.innerHTML = `<i></i> ${isRemote ? "Streamable HTTP" : "Local stdio"} · read-only`;
   installer.dataset.activeClient = state.client;
   installer.dataset.activeMode = state.mode;

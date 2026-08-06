@@ -1,14 +1,13 @@
 # Barmous Compliance MCP and CLI connections
 
-This repository publishes evaluation preview downloads for the Barmous Compliance read-only CLI and local MCP plugins for Codex and Claude Code. The setup page also explains how Cursor, Antigravity, Perplexity, Kimi Code, and Hermes connect as MCP clients without pretending they have separate plugin ZIPs.
+This repository publishes evaluation preview packages for the Barmous Compliance read-only CLI and local MCP runtime. The download page provides the real supported format for every displayed client: plugin source for OpenAI Codex/ChatGPT, Claude Code, Cursor, Antigravity, and Kimi Code; connector setup kits for Perplexity and Hermes; plus one all-in-one ZIP.
 
 - Download page: <https://barmous-compliance.github.io/barmous-plugin-d42ecfb21abc/>
 - Published source: `docs/`
 - Release version: `v0.3.0`
-- Codex bytes: `1,203,409`
-- Codex SHA-256: `D7D2499D1AF2F5B5B434D185BB0F0A260ED6F1947ACD913E954B07FDFD8DA65F`
-- Claude Code bytes: `422,667`
-- Claude Code SHA-256: `C6C6CF6A8C138D88B1F31A4B28F9486A8F0C1577C50D15905C150BF58BD2A7F5`
+- Generated manifest: `release/integration-downloads.generated.json`
+- Reproducible package builder: `scripts/build-integration-downloads.ps1`
+- Complete bundle: `public/downloads/barmous-compliance-all-integrations-v0.3.0.zip`
 
 The landing page is marked `noindex`, `nofollow`, and `noarchive`.
 
@@ -16,10 +15,10 @@ The official Barmous marketplace listing is marked `Coming soon` and is not link
 
 ## Browser authorization
 
-Install the CLI from either extracted bundle, then authorize a company-scoped, read-only profile in Barmous:
+Install the CLI from the extracted package using the path shown in its README, then authorize a company-scoped, read-only profile in Barmous. The client-specific packages use `runtime`; the Codex and Claude marketplace bundles use `plugins/barmous-company-data`.
 
 ```powershell
-npm install --global .\plugins\barmous-company-data
+npm install --global .\runtime
 barmous login
 barmous status
 ```
@@ -44,12 +43,15 @@ The checked-in GitHub Pages mirror intentionally keeps its `barmous-mcp-url` met
 
 ```powershell
 npm install
+& .\scripts\build-integration-downloads.ps1
 npm test
 npm run lint
 npm audit --omit=dev
 ```
 
-The test suite renders the application, verifies the static Pages artifact, checks both ZIP files by byte size and SHA-256 digest, and inspects the archives for the CLI, local MCP server, manifests, and five skills.
+The deterministic builder creates the five additional client packages, copies all seven packages into the complete bundle, writes SHA-256 metadata, and mirrors the exact bytes into `public/downloads` and `docs/downloads`. The test suite renders the application, verifies the static Pages artifact, checks every ZIP by byte size and SHA-256 digest, and inspects the archives for the expected manifests, CLI, MCP runtime, skills, and absence of credential-like material.
+
+ZIP does not imply that every client has a generic upload screen. Install each package using the instructions inside it: marketplace source where supported, local plugin folders for Cursor, Antigravity, and Kimi Code, and MCP configuration for Perplexity and Hermes.
 
 ## Distribution
 

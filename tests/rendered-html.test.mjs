@@ -1,26 +1,31 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, stat } from "node:fs/promises";
 import test from "node:test";
 
-const releases = [
-  {
-    product: "Codex",
-    name: "barmous-compliance-codex-plugin-v0.3.0.zip",
-    root: "barmous-compliance-codex-plugin-v0.3.0",
-    bytes: 1203409,
-    checksum:
-      "D7D2499D1AF2F5B5B434D185BB0F0A260ED6F1947ACD913E954B07FDFD8DA65F",
-  },
-  {
-    product: "Claude Code",
-    name: "barmous-compliance-claude-plugin-v0.3.0.zip",
-    root: "barmous-compliance-claude-plugin-v0.3.0",
-    bytes: 422667,
-    checksum:
-      "C6C6CF6A8C138D88B1F31A4B28F9486A8F0C1577C50D15905C150BF58BD2A7F5",
-  },
-];
+const generatedManifest = JSON.parse(
+  await readFile(
+    new URL("../release/integration-downloads.generated.json", import.meta.url),
+    "utf8",
+  ),
+);
+const releases = [...generatedManifest.packages, generatedManifest.all].map(
+  (release) => ({
+    ...release,
+    name: release.filename,
+    root: release.filename.replace(/\.zip$/i, ""),
+    checksum: release.sha256,
+  }),
+);
+const marketplaceReleases = releases.filter((release) =>
+  ["codex", "claude"].includes(release.id),
+);
+const clientPackageReleases = releases.filter((release) =>
+  ["cursor", "antigravity", "perplexity", "kimi", "hermes"].includes(
+    release.id,
+  ),
+);
+const allRelease = releases.find((release) => release.id === "all");
 
 const retiredDownloads = [
   "barmous-compliance-codex-plugin-v0.2.0.zip",
@@ -89,7 +94,7 @@ function zipEntryNames(buffer) {
   return entries;
 }
 
-test("server-renders both clean v0.3.0 plugin downloads", async () => {
+test("server-renders every clean v0.3.0 integration download", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -142,6 +147,14 @@ test("server-renders both clean v0.3.0 plugin downloads", async () => {
   assert.match(html, /never paste an agent token or secret/i);
   assert.match(html, />v0\.3\.0</i);
   assert.match(html, /Never default · 1h to 1y optional/i);
+  assert.match(html, /<details\b[^>]*class="release-disclosure"[^>]*>/i);
+  assert.doesNotMatch(html, /<details\b[^>]*\bopen\b[^>]*>/i);
+  assert.match(html, /Download integration packages/i);
+  assert.match(html, /Download all integrations/i);
+  assert.equal(
+    (html.match(/<article\b[^>]*class="release-download"[^>]*>/gi) ?? []).length,
+    7,
+  );
   for (const release of releases) {
     assert.match(html, new RegExp(`/downloads/${release.name}`));
     assert.match(html, new RegExp(release.checksum));
@@ -152,7 +165,7 @@ test("server-renders both clean v0.3.0 plugin downloads", async () => {
   assert.match(html, /nofollow/i);
 });
 
-test("ships both exact verified plugin archives", async () => {
+test("ships every exact verified integration archive", async () => {
   for (const release of releases) {
     const archiveUrl = new URL(
       `../public/downloads/${release.name}`,
@@ -259,7 +272,65 @@ test("publishes valid v0.3.0 Codex and Claude marketplace sources", async () => 
   assert.equal(claudeMcp.barmous.args[0], "${CLAUDE_PLUGIN_ROOT}/mcp/server.mjs");
 });
 
-test("packages complete local CLI and MCP bundles without sensitive material", async () => {
+test("publishes valid Cursor, Antigravity, Kimi, Perplexity, and Hermes sources", async () => {
+  const [cursorPlugin, cursorMcp, antigravityPlugin, antigravityMcp, kimiPlugin] =
+    await Promise.all(
+      [
+        "../release/integrations/cursor/plugin.json",
+        "../release/integrations/cursor/mcp.json",
+        "../release/integrations/antigravity/plugin.json",
+        "../release/integrations/antigravity/mcp_config.json",
+        "../release/integrations/kimi-code/kimi.plugin.json",
+      ].map(async (path) =>
+        JSON.parse(await readFile(new URL(path, import.meta.url), "utf8")),
+      ),
+    );
+
+  assert.equal(
+    cursorPlugin.$schema,
+    "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  );
+  assert.equal(
+    cursorMcp.$schema,
+    "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  );
+  assert.equal(cursorMcp.mcpServers.barmous.type, "stdio");
+  assert.equal(
+    cursorMcp.mcpServers.barmous.args[0],
+    "${PLUGIN_ROOT}/runtime/mcp/server.mjs",
+  );
+  assert.equal(
+    antigravityPlugin.$schema,
+    "https://antigravity.google/schemas/v1/plugin.json",
+  );
+  assert.equal(antigravityMcp.mcpServers.barmous.command, "node");
+  assert.equal(kimiPlugin.name, "barmous-company-data");
+  assert.equal(kimiPlugin.mcpServers.barmous.command, "node");
+
+  const connectorIcon = await stat(
+    new URL(
+      "../release/integrations/perplexity/assets/barmous-connector.png",
+      import.meta.url,
+    ),
+  );
+  assert.ok(connectorIcon.size > 0 && connectorIcon.size <= 128 * 1024);
+  await Promise.all([
+    access(
+      new URL(
+        "../release/integrations/perplexity/config/REMOTE_CONNECTOR.md",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL(
+        "../release/integrations/hermes/config/hermes-config.yaml",
+        import.meta.url,
+      ),
+    ),
+  ]);
+});
+
+test("packages complete Codex and Claude marketplace bundles without sensitive material", async () => {
   const requiredPluginFiles = [
     "package.json",
     "bin/barmous.mjs",
@@ -271,18 +342,18 @@ test("packages complete local CLI and MCP bundles without sensitive material", a
     "skills/barmous-remediation-plan/SKILL.md",
   ];
 
-  for (const release of releases) {
+  for (const release of marketplaceReleases) {
     const archive = await readFile(
       new URL(`../public/downloads/${release.name}`, import.meta.url),
     );
     const entries = zipEntryNames(archive);
     const pluginRoot = `${release.root}/plugins/barmous-company-data`;
     const platformManifest =
-      release.product === "Codex"
+      release.id === "codex"
         ? `${release.root}/.agents/plugins/marketplace.json`
         : `${release.root}/.claude-plugin/marketplace.json`;
     const pluginManifest =
-      release.product === "Codex"
+      release.id === "codex"
         ? `${pluginRoot}/.codex-plugin/plugin.json`
         : `${pluginRoot}/.claude-plugin/plugin.json`;
 
@@ -309,6 +380,77 @@ test("packages complete local CLI and MCP bundles without sensitive material", a
       entries.some((entry) => /0\.[23]\.0\+codex|202608\d{8}/i.test(entry)),
       false,
       `${release.product} uses the clean release version`,
+    );
+  }
+});
+
+test("packages client-native manifests, connector kits, and the shared read-only runtime", async () => {
+  const expectedByClient = {
+    cursor: ["plugin.json", "mcp.json", "skills/barmous-company-brief/SKILL.md"],
+    antigravity: [
+      "plugin.json",
+      "mcp_config.json",
+      "skills/barmous-company-brief/SKILL.md",
+    ],
+    perplexity: [
+      "config/LOCAL_COMMAND.txt",
+      "config/REMOTE_CONNECTOR.md",
+      "assets/barmous-connector.png",
+    ],
+    kimi: ["kimi.plugin.json", "skills/barmous-company-brief/SKILL.md"],
+    hermes: [
+      "config/COMMANDS.txt",
+      "config/hermes-config.yaml",
+      "skills/barmous-company-brief/SKILL.md",
+    ],
+  };
+  const sharedFiles = [
+    "PACKAGE-MANIFEST.json",
+    "README.md",
+    "runtime/package.json",
+    "runtime/bin/barmous.mjs",
+    "runtime/mcp/server.mjs",
+  ];
+
+  for (const release of clientPackageReleases) {
+    const archive = await readFile(
+      new URL(`../public/downloads/${release.name}`, import.meta.url),
+    );
+    const entries = zipEntryNames(archive);
+    for (const relativePath of [
+      ...sharedFiles,
+      ...expectedByClient[release.id],
+    ]) {
+      assert.ok(
+        entries.includes(`${release.root}/${relativePath}`),
+        `${release.product}: ${relativePath}`,
+      );
+    }
+    assert.equal(
+      entries.some((entry) =>
+        /(?:^|\/)(?:node_modules|\.env(?:\.|$)|credentials?(?:\.|$)|tokens?(?:\.|$)|\.git)(?:\/|$)/i.test(
+          entry,
+        ),
+      ),
+      false,
+      `${release.product} excludes secrets and transient files`,
+    );
+  }
+});
+
+test("packages all seven client archives in one complete bundle", async () => {
+  assert.ok(allRelease, "complete integration bundle metadata");
+  const archive = await readFile(
+    new URL(`../public/downloads/${allRelease.name}`, import.meta.url),
+  );
+  const entries = zipEntryNames(archive);
+  for (const file of ["README.md", "MANIFEST.json", "SHA256SUMS.txt"]) {
+    assert.ok(entries.includes(`${allRelease.root}/${file}`), file);
+  }
+  for (const release of generatedManifest.packages) {
+    assert.ok(
+      entries.includes(`${allRelease.root}/packages/${release.filename}`),
+      release.product,
     );
   }
 });
@@ -474,7 +616,7 @@ test("keeps the static Pages release synchronized", async () => {
     /<a\b[^>]*class="brand"[^>]*href="https:\/\/barmous\.ae\/"[^>]*aria-label="Return to Barmous Compliance website"[^>]*>/i,
   );
   assert.match(html, />v0\.3\.0</i);
-  assert.match(html, /src="scripts\.js\?v=20260806\.4"/i);
+  assert.match(html, /src="scripts\.js\?v=20260807\.1"/i);
   for (const client of [
     "codex",
     "claude",
@@ -501,7 +643,7 @@ test("keeps the static Pages release synchronized", async () => {
     html,
     /class="client-mark[^\"]*"[^>]*>\s*<svg\b/i,
   );
-  assert.match(html, /href="styles\.css\?v=20260806\.4"/i);
+  assert.match(html, /href="styles\.css\?v=20260807\.1"/i);
   assert.match(styles, /fonts\/noto-sans-variable\.woff2/i);
   assert.match(styles, /overflow-x:\s*auto/i);
   assert.match(styles, /flex:\s*0 0 158px/i);
@@ -518,6 +660,13 @@ test("keeps the static Pages release synchronized", async () => {
   assert.match(html, /Endpoint not available/i);
   assert.match(html, /Official Barmous marketplace/i);
   assert.match(html, /GitHub source/i);
+  assert.match(html, /<details\b[^>]*class="release-disclosure"[^>]*>/i);
+  assert.doesNotMatch(html, /<details\b[^>]*\bopen\b[^>]*>/i);
+  assert.match(html, /Download all integrations/i);
+  assert.equal(
+    (html.match(/<article\b[^>]*class="release-download"[^>]*>/gi) ?? []).length,
+    7,
+  );
   assert.doesNotMatch(html, /class="(?:client|platform)-mark"[^>]*>[CA]</i);
   assert.match(script, /navigator\.clipboard/i);
   assert.match(script, /npm install --global/i);
@@ -525,6 +674,10 @@ test("keeps the static Pages release synchronized", async () => {
   assert.match(script, /barmous login/i);
   assert.match(script, /barmous status/i);
   assert.match(script, /\/mcp/i);
+  assert.match(script, /serverUrl:\s*endpoint/i);
+  assert.match(script, /claude mcp add --transport http barmous/i);
+  assert.match(script, /"\/reload"/i);
+  assert.match(script, /npm install --global \.\/runtime/i);
   assert.match(script, /~\/\.kimi-code\/mcp\.json/i);
   assert.match(script, /\/mcp-config login barmous/i);
   assert.match(

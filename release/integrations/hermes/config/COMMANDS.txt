@@ -1,0 +1,3 @@
+hermes mcp add barmous --command barmous --args mcp
+hermes mcp test barmous
+hermes chat

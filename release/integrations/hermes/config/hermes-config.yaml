@@ -1,0 +1,5 @@
+mcp_servers:
+  barmous:
+    command: "barmous"
+    args: ["mcp"]
+    enabled: true
