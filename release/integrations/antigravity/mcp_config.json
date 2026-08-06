@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "barmous": {
+      "command": "node",
+      "args": [
+        "./runtime/mcp/server.mjs"
+      ],
+      "cwd": "."
+    }
+  }
+}

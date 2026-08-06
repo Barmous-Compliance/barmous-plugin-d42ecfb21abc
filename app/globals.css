@@ -703,17 +703,209 @@ a:focus-visible {
   stroke: none;
 }
 
-.release-section {
-  display: grid;
-  grid-template-columns: minmax(270px, 0.72fr) minmax(0, 1.28fr);
-  gap: 42px;
+.release-disclosure {
   margin: 22px 0 18px;
-  padding: 38px;
-  background: rgba(255, 255, 255, 0.88);
+  scroll-margin-top: 24px;
+}
+
+.release-summary {
+  display: flex;
+  min-height: 84px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 22px;
+  background: rgba(255, 255, 255, 0.9);
   border: 1px solid var(--line);
   border-radius: 20px;
   box-shadow: 0 15px 42px rgba(12, 49, 74, 0.06);
-  scroll-margin-top: 24px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.release-summary::-webkit-details-marker {
+  display: none;
+}
+
+.release-summary:hover {
+  border-color: #bfcfd8;
+  background: #ffffff;
+}
+
+.release-summary:focus-visible {
+  outline: 3px solid rgba(239, 169, 29, 0.45);
+  outline-offset: 3px;
+}
+
+.release-disclosure[open] .release-summary {
+  border-bottom-color: #dbe5ea;
+  border-radius: 20px 20px 0 0;
+  box-shadow: none;
+}
+
+.release-summary-copy {
+  display: grid;
+  gap: 3px;
+}
+
+.release-summary-copy > small {
+  color: #718493;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.release-summary-copy > strong {
+  color: var(--navy-deep);
+  font-size: 20px;
+  letter-spacing: -0.025em;
+}
+
+.release-summary-copy > span {
+  color: var(--slate);
+  font-size: 11px;
+}
+
+.release-summary-action {
+  display: inline-flex;
+  min-height: 44px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 9px;
+  padding: 0 14px;
+  color: var(--navy);
+  background: #edf3f6;
+  border: 1px solid #d6e2e8;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.release-summary-action svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  transition: transform 160ms ease;
+}
+
+.release-disclosure[open] .release-summary-action svg {
+  transform: rotate(180deg);
+}
+
+.release-content {
+  padding: 26px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 15px 42px rgba(12, 49, 74, 0.06);
+}
+
+.download-all {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 17px 18px;
+  color: #f5f8fa;
+  background: var(--navy);
+  border: 1px solid #214c66;
+  border-radius: 14px;
+  text-decoration: none;
+}
+
+.download-all:hover {
+  background: var(--navy-mid);
+}
+
+.download-all:focus-visible {
+  outline: 3px solid rgba(239, 169, 29, 0.55);
+  outline-offset: 3px;
+}
+
+.download-all-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 10px;
+}
+
+.download-all-icon svg {
+  width: 21px;
+  fill: none;
+  stroke: var(--gold-soft);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.download-all > span:nth-child(2) {
+  display: grid;
+  gap: 2px;
+}
+
+.download-all small {
+  color: #9db6c4;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.download-all strong {
+  font-size: 15px;
+}
+
+.download-all > span:nth-child(2) > span {
+  color: #b9cbd4;
+  font-size: 10px;
+}
+
+.download-all > span:last-child {
+  color: var(--gold-soft);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.download-all-checksum {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px 4px 0;
+  color: #718493;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.download-all-checksum code {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--navy);
+  font-size: 8px;
+  letter-spacing: 0;
+}
+
+.release-section {
+  margin-top: 26px;
+}
+
+.release-overview {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(300px, 1.2fr);
+  gap: 42px;
+  align-items: start;
+  margin-bottom: 26px;
 }
 
 .release-intro h2 {
@@ -724,7 +916,7 @@ a:focus-visible {
   letter-spacing: -0.04em;
 }
 
-.release-intro > p:last-of-type {
+.release-intro > p {
   margin: 0;
   color: var(--slate);
   font-size: 12px;
@@ -734,7 +926,7 @@ a:focus-visible {
 .release-meta {
   display: grid;
   gap: 0;
-  margin: 22px 0 0;
+  margin: 0;
   padding: 0;
   border-top: 1px solid var(--line);
 }
@@ -763,9 +955,8 @@ a:focus-visible {
 
 .release-downloads {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  align-self: start;
 }
 
 .release-download {
@@ -795,19 +986,31 @@ a:focus-visible {
 .download-heading > span:last-child {
   display: grid;
   gap: 2px;
+  min-width: 0;
 }
 
 .download-heading small {
+  overflow: hidden;
   color: #718493;
   font-size: 9px;
   font-weight: 750;
   letter-spacing: 0.08em;
+  text-overflow: ellipsis;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .download-heading strong {
   color: var(--navy-deep);
   font-size: 14px;
+}
+
+.download-method {
+  min-height: 32px;
+  margin: 12px 0 0;
+  color: var(--slate);
+  font-size: 10px;
+  line-height: 1.5;
 }
 
 .download-button {
@@ -897,6 +1100,10 @@ footer {
   .hero h1 {
     font-size: clamp(38px, 5.5vw, 50px);
   }
+
+  .release-downloads {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 780px) {
@@ -915,7 +1122,7 @@ footer {
     min-height: 0;
   }
 
-  .release-section {
+  .release-overview {
     grid-template-columns: 1fr;
     gap: 28px;
   }
@@ -1016,10 +1223,52 @@ footer {
     padding: 16px 0 19px;
   }
 
-  .release-section {
+  .release-disclosure {
     margin-bottom: 18px;
-    padding: 24px;
+  }
+
+  .release-summary {
+    gap: 12px;
+    padding: 16px;
     border-radius: 16px;
+  }
+
+  .release-disclosure[open] .release-summary {
+    border-radius: 16px 16px 0 0;
+  }
+
+  .release-summary-copy > strong {
+    font-size: 17px;
+  }
+
+  .release-summary-action {
+    width: 44px;
+    padding: 0;
+    justify-content: center;
+    font-size: 0;
+  }
+
+  .release-content {
+    padding: 16px;
+    border-radius: 0 0 16px 16px;
+  }
+
+  .download-all {
+    grid-template-columns: 38px minmax(0, 1fr);
+    padding: 14px;
+  }
+
+  .download-all-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .download-all > span:last-child {
+    grid-column: 2;
+  }
+
+  .release-overview {
+    gap: 20px;
   }
 
   .release-downloads {
@@ -1040,7 +1289,8 @@ footer {
   .client-tab,
   .mode-tab,
   .copy-button,
-  .step-action {
+  .step-action,
+  .release-summary-action svg {
     transition: none;
   }
 }

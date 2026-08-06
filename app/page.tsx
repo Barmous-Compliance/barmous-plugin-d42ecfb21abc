@@ -1,34 +1,31 @@
 import Image from "next/image";
+import releaseManifest from "../release/integration-downloads.generated.json";
 import PluginInstaller from "./plugin-installer";
 import ProductMark, { type ProductId } from "./product-mark";
 
-const releaseVersion = "v0.3.0";
-
-const downloads = [
-  {
-    product: "Codex",
-    productId: "codex" as ProductId,
-    maker: "OpenAI",
-    path: "/downloads/barmous-compliance-codex-plugin-v0.3.0.zip",
-    size: "1,175 KB",
-    checksum:
-      "D7D2499D1AF2F5B5B434D185BB0F0A260ED6F1947ACD913E954B07FDFD8DA65F",
-  },
-  {
-    product: "Claude Code",
-    productId: "claude" as ProductId,
-    maker: "Anthropic",
-    path: "/downloads/barmous-compliance-claude-plugin-v0.3.0.zip",
-    size: "413 KB",
-    checksum:
-      "C6C6CF6A8C138D88B1F31A4B28F9486A8F0C1577C50D15905C150BF58BD2A7F5",
-  },
-] as const;
+const releaseVersion = "v" + releaseManifest.version;
+const downloads = releaseManifest.packages.map((download) => ({
+  ...download,
+  productId: download.id as ProductId,
+  path: "/downloads/" + download.filename,
+}));
+const allDownload = {
+  ...releaseManifest.all,
+  path: "/downloads/" + releaseManifest.all.filename,
+};
 
 function DownloadIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M12 3v11m0 0 4-4m-4 4-4-4M5 18v2h14v-2" />
+    </svg>
+  );
+}
+
+function ChevronIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m7 9 5 5 5-5" />
     </svg>
   );
 }
@@ -84,7 +81,7 @@ export default function Home() {
           <h1 id="hero-heading">Barmous MCP &amp; CLI for the AI tools you already use.</h1>
           <p>
             Connect released compliance context through one verified setup flow for
-            Codex, Claude, Cursor, Antigravity, Perplexity, Kimi Code, and Hermes.
+            Codex, Claude Code, Cursor, Antigravity, Perplexity, Kimi Code, and Hermes.
           </p>
           <ul className="trust-list" aria-label="Plugin safeguards">
             <li><span><SafeguardIcon type="scope" /></span> Read-only CLI + MCP</li>
@@ -96,45 +93,92 @@ export default function Home() {
         <PluginInstaller />
       </div>
 
-      <section className="release-section" id="downloads" aria-labelledby="release-heading">
-        <div className="release-intro">
-          <h2 id="release-heading">Everything you need, nothing sensitive included.</h2>
-          <p>
-            Packages contain the read-only Barmous CLI, local MCP server, and five
-            compliance skills. No credential or company data is bundled, and
-            plugin configuration never contains a pasted token.
-          </p>
-          <dl className="release-meta">
-            <div><dt>Version</dt><dd>{releaseVersion}</dd></div>
-            <div><dt>Released</dt><dd>06 Aug 2026</dd></div>
-            <div><dt>Runtime</dt><dd>Node.js 22.12–24.x</dd></div>
-            <div><dt>Lifetime</dt><dd>Never default · 1h to 1y optional</dd></div>
-          </dl>
-        </div>
+      <details className="release-disclosure" id="downloads">
+        <summary className="release-summary">
+          <span className="release-summary-copy">
+            <small>Verified {releaseVersion} packages</small>
+            <strong>Download integration packages</strong>
+            <span>7 client packages plus one complete ZIP</span>
+          </span>
+          <span className="release-summary-action">
+            Downloads
+            <ChevronIcon />
+          </span>
+        </summary>
 
-        <div className="release-downloads" aria-label="Verified plugin downloads">
-          {downloads.map((download) => (
-            <article className="release-download" key={download.product}>
-              <div className="download-heading">
-                <ProductMark product={download.productId} className="platform-mark" />
-                <span>
-                  <small>{download.maker}</small>
-                  <strong>{download.product}</strong>
-                </span>
+        <div className="release-content">
+          <a
+            className="download-all"
+            href={allDownload.path}
+            download
+            aria-label="Download all Barmous integrations as one ZIP"
+          >
+            <span className="download-all-icon"><DownloadIcon /></span>
+            <span>
+              <small>Complete bundle</small>
+              <strong>Download all integrations</strong>
+              <span>Every client package, manifest, and SHA-256 list</span>
+            </span>
+            <span>{allDownload.size}</span>
+          </a>
+          <div className="download-all-checksum">
+            <span>Complete bundle SHA-256</span>
+            <code>{allDownload.sha256}</code>
+          </div>
+
+          <section className="release-section" aria-labelledby="release-heading">
+            <div className="release-overview">
+              <div className="release-intro">
+                <h2 id="release-heading">Everything you need, nothing sensitive included.</h2>
+                <p>
+                  Every client gets its real supported format: plugin source where
+                  plugins exist, and an MCP setup kit where they do not. No credential
+                  or company data is bundled.
+                </p>
               </div>
-              <a className="download-button" href={download.path} download>
-                <DownloadIcon />
-                Download ZIP
-                <small>{download.size}</small>
-              </a>
-              <div className="checksum">
-                <span>SHA-256</span>
-                <code>{download.checksum}</code>
-              </div>
-            </article>
-          ))}
+              <dl className="release-meta">
+                <div><dt>Version</dt><dd>{releaseVersion}</dd></div>
+                <div><dt>Released</dt><dd>07 Aug 2026</dd></div>
+                <div><dt>Runtime</dt><dd>Node.js 22.12–24.x</dd></div>
+                <div><dt>Lifetime</dt><dd>Never default · 1h to 1y optional</dd></div>
+              </dl>
+            </div>
+
+            <div
+              className="release-downloads"
+              role="list"
+              aria-label="Barmous integration package downloads"
+            >
+              {downloads.map((download) => (
+                <article className="release-download" role="listitem" key={download.product}>
+                  <div className="download-heading">
+                    <ProductMark product={download.productId} className="platform-mark" />
+                    <span>
+                      <small>{download.maker} · {download.packageType}</small>
+                      <strong>{download.product}</strong>
+                    </span>
+                  </div>
+                  <p className="download-method">{download.installMethod}</p>
+                  <a
+                    className="download-button"
+                    href={download.path}
+                    download
+                    aria-label={"Download " + download.product + " package ZIP"}
+                  >
+                    <DownloadIcon />
+                    Download ZIP
+                    <small>{download.size}</small>
+                  </a>
+                  <div className="checksum">
+                    <span>SHA-256</span>
+                    <code>{download.sha256}</code>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
         </div>
-      </section>
+      </details>
 
       <footer>
         <span>© 2026 Barmous Compliance</span>

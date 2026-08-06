@@ -1,0 +1,33 @@
+{
+  "name": "barmous-company-data",
+  "version": "0.3.0",
+  "description": "Read-only company compliance context and workflows from Barmous",
+  "keywords": [
+    "barmous",
+    "compliance",
+    "findings",
+    "readiness"
+  ],
+  "author": {
+    "name": "Barmous Compliance"
+  },
+  "homepage": "https://barmous.ae/",
+  "license": "LicenseRef-Barmous-Preview",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Barmous Compliance",
+    "shortDescription": "Review your company's live Barmous compliance posture.",
+    "longDescription": "Use audited read-only tools and workflows for frameworks, released findings, evidence actions, remediation, and published reports.",
+    "developerName": "Barmous Compliance",
+    "websiteURL": "https://barmous.ae/"
+  },
+  "mcpServers": {
+    "barmous": {
+      "command": "node",
+      "args": [
+        "./runtime/mcp/server.mjs"
+      ],
+      "cwd": "./"
+    }
+  }
+}

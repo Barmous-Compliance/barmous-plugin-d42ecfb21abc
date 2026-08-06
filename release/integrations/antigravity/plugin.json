@@ -1,0 +1,5 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "barmous-company-data",
+  "description": "Read-only company compliance context and workflows from Barmous"
+}

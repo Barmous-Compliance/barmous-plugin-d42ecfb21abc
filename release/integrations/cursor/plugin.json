@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "barmous-company-data",
+  "description": "Read-only company compliance context and workflows from Barmous",
+  "version": "0.3.0",
+  "author": {
+    "name": "Barmous Compliance"
+  }
+}

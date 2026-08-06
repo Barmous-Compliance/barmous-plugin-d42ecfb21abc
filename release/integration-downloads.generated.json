@@ -1,0 +1,94 @@
+{
+  "version": "0.3.0",
+  "released": "2026-08-07",
+  "packages": [
+    {
+      "id": "codex",
+      "product": "Codex + ChatGPT",
+      "maker": "OpenAI",
+      "packageType": "Native plugin",
+      "installMethod": "Marketplace source",
+      "filename": "barmous-compliance-codex-plugin-v0.3.0.zip",
+      "bytes": 1203409,
+      "size": "1,175 KB",
+      "sha256": "D7D2499D1AF2F5B5B434D185BB0F0A260ED6F1947ACD913E954B07FDFD8DA65F"
+    },
+    {
+      "id": "claude",
+      "product": "Claude Code",
+      "maker": "Anthropic",
+      "packageType": "Native plugin",
+      "installMethod": "Marketplace source",
+      "filename": "barmous-compliance-claude-plugin-v0.3.0.zip",
+      "bytes": 422667,
+      "size": "413 KB",
+      "sha256": "C6C6CF6A8C138D88B1F31A4B28F9486A8F0C1577C50D15905C150BF58BD2A7F5"
+    },
+    {
+      "id": "cursor",
+      "product": "Cursor",
+      "maker": "Anysphere",
+      "packageType": "Agent Plugin",
+      "installMethod": "Unzip into local plugins",
+      "filename": "barmous-compliance-cursor-plugin-v0.3.0.zip",
+      "bytes": 1192335,
+      "size": "1,164 KB",
+      "sha256": "137859C3B38B31CF532F969002725B7389BC3BF1DB67061129ED4CDBC40F000D"
+    },
+    {
+      "id": "antigravity",
+      "product": "Antigravity",
+      "maker": "Google",
+      "packageType": "Native plugin",
+      "installMethod": "Unzip, then install folder",
+      "filename": "barmous-compliance-antigravity-plugin-v0.3.0.zip",
+      "bytes": 1192466,
+      "size": "1,165 KB",
+      "sha256": "2BDD93B1EBE1B0A7B2BBE9BE93FA845E901086750F32C31213EF169048378B0E"
+    },
+    {
+      "id": "perplexity",
+      "product": "Perplexity",
+      "maker": "Perplexity",
+      "packageType": "Connector kit",
+      "installMethod": "Configure endpoint or command",
+      "filename": "barmous-compliance-perplexity-connector-v0.3.0.zip",
+      "bytes": 1225461,
+      "size": "1,197 KB",
+      "sha256": "B9C7C17D23EA54AA2C02BC8050D8FF304D6F998B308472E25E3544D8E5703846"
+    },
+    {
+      "id": "kimi",
+      "product": "Kimi Code",
+      "maker": "Moonshot AI",
+      "packageType": "Native plugin",
+      "installMethod": "Install extracted folder",
+      "filename": "barmous-compliance-kimi-code-plugin-v0.3.0.zip",
+      "bytes": 1192362,
+      "size": "1,164 KB",
+      "sha256": "D80047878387AB382F69A97A705484CD4C4DBAF6F0DDAE6C22DC2BF68012D870"
+    },
+    {
+      "id": "hermes",
+      "product": "Hermes",
+      "maker": "Nous Research",
+      "packageType": "Connector kit",
+      "installMethod": "Merge config",
+      "filename": "barmous-compliance-hermes-connector-v0.3.0.zip",
+      "bytes": 1192309,
+      "size": "1,164 KB",
+      "sha256": "E20A430FFB9FEF8CB097B59B285B35C1FEDFDA6D4C474AC60387F6942DFE7C20"
+    }
+  ],
+  "all": {
+    "id": "all",
+    "product": "All integrations",
+    "maker": "Barmous Compliance",
+    "packageType": "Complete bundle",
+    "installMethod": "Choose your client package",
+    "filename": "barmous-compliance-all-integrations-v0.3.0.zip",
+    "bytes": 7592981,
+    "size": "7,415 KB",
+    "sha256": "697C6E774F55659D156F9A614BED61E09226839EEFF2FBD7F6EFAC21FD0FEB71"
+  }
+}
