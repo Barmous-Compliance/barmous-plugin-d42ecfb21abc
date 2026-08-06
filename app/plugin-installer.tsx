@@ -39,6 +39,8 @@ const CLIENT_IDS: ClientId[] = [
   "cursor",
   "gemini",
   "perplexity",
+  "kimi",
+  "hermes",
 ];
 const MODE_IDS: ModeId[] = ["mcp", "cli"];
 
@@ -56,6 +58,18 @@ const clients: ClientDefinition[] = [
     id: "perplexity",
     label: "Perplexity",
     maker: "Perplexity",
+    kind: "Connector",
+  },
+  {
+    id: "kimi",
+    label: "Kimi Code",
+    maker: "Moonshot AI",
+    kind: "Connector",
+  },
+  {
+    id: "hermes",
+    label: "Hermes",
+    maker: "Nous Research",
     kind: "Connector",
   },
 ];
@@ -120,6 +134,20 @@ function cursorRemoteConfig(endpoint: string) {
   );
 }
 
+function kimiRemoteConfig(endpoint: string) {
+  return JSON.stringify(
+    {
+      mcpServers: {
+        barmous: {
+          url: endpoint,
+        },
+      },
+    },
+    null,
+    2,
+  );
+}
+
 function remoteSetupStep(client: ClientDefinition, endpoint: string): SetupStep {
   if (client.id === "cursor") {
     return {
@@ -147,6 +175,30 @@ function remoteSetupStep(client: ClientDefinition, endpoint: string): SetupStep 
       description:
         "In Perplexity, open Account settings → Connectors → Add custom connector. Choose Remote, Streamable HTTP, and OAuth. Your plan or admin must allow custom connectors.",
       status: "Use the copied endpoint",
+    };
+  }
+
+  if (client.id === "kimi") {
+    return {
+      title: "Add Barmous to Kimi Code",
+      description:
+        "Save this server in ~/.kimi-code/mcp.json, start a new Kimi Code session, run /mcp-config login barmous, then use /mcp to verify the connection.",
+      command: kimiRemoteConfig(endpoint),
+      copyLabel: "Copy Kimi Code configuration",
+    };
+  }
+
+  if (client.id === "hermes") {
+    return {
+      title: "Add Barmous to Hermes",
+      description:
+        "Register the authenticated HTTP server, complete browser authorization, and test the connection before opening Hermes chat.",
+      command: [
+        `hermes mcp add barmous --url ${endpoint} --auth oauth`,
+        "hermes mcp login barmous",
+        "hermes mcp test barmous",
+      ].join("\n"),
+      copyLabel: "Copy Hermes commands",
     };
   }
 
@@ -274,6 +326,26 @@ function connectorCliSteps(client: ClientDefinition): SetupStep[] {
         "Use this MCP server definition in Gemini CLI or Antigravity. Both launch the authenticated Barmous CLI over stdio.",
       command: localConnectorConfig(),
       copyLabel: "Copy MCP configuration",
+    };
+  } else if (client.id === "kimi") {
+    finalStep = {
+      title: "Configure Kimi Code and verify",
+      description:
+        "Save this JSON as ~/.kimi-code/mcp.json (or .kimi-code/mcp.json for this project), start a new Kimi Code session, and run /mcp to confirm Barmous is connected.",
+      command: localConnectorConfig(),
+      copyLabel: "Copy Kimi Code configuration",
+    };
+  } else if (client.id === "hermes") {
+    finalStep = {
+      title: "Connect and test Hermes",
+      description:
+        "Register the local stdio server, test it, then start a new Hermes chat. The same definition can also be stored under mcp_servers in ~/.hermes/config.yaml.",
+      command: [
+        "hermes mcp add barmous --command barmous --args mcp",
+        "hermes mcp test barmous",
+        "hermes chat",
+      ].join("\n"),
+      copyLabel: "Copy Hermes commands",
     };
   } else {
     finalStep = {
@@ -422,6 +494,27 @@ function writeUrlState(client: ClientId, mode: ModeId) {
   window.history.pushState({}, "", nextUrl);
 }
 
+function revealClientTab(button: HTMLButtonElement | null) {
+  const scroller = button?.closest<HTMLElement>(".client-tab-scroll");
+  if (!button || !scroller) return;
+  const scrollerBounds = scroller.getBoundingClientRect();
+  const buttonBounds = button.getBoundingClientRect();
+  if (
+    buttonBounds.left >= scrollerBounds.left &&
+    buttonBounds.right <= scrollerBounds.right
+  ) {
+    return;
+  }
+  const centerDelta =
+    buttonBounds.left +
+    buttonBounds.width / 2 -
+    (scrollerBounds.left + scrollerBounds.width / 2);
+  scroller.scrollTo({
+    left: Math.max(0, scroller.scrollLeft + centerDelta),
+    behavior: "auto",
+  });
+}
+
 export default function PluginInstaller() {
   const [client, setClient] = useState<ClientId>("codex");
   const [mode, setMode] = useState<ModeId>("mcp");
@@ -443,6 +536,10 @@ export default function PluginInstaller() {
     window.addEventListener("popstate", syncFromUrl);
     return () => window.removeEventListener("popstate", syncFromUrl);
   }, []);
+
+  useEffect(() => {
+    revealClientTab(clientTabRefs.current[client] ?? null);
+  }, [client]);
 
   function chooseClient(nextClient: ClientId) {
     setClient(nextClient);

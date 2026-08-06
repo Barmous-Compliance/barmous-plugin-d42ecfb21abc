@@ -80,7 +80,8 @@ export default function Home() {
           <h1 id="hero-heading">Barmous MCP &amp; CLI for the AI tools you already use.</h1>
           <p>
             Connect released compliance context through one verified setup flow for
-            Codex, Claude, Cursor, Gemini + Antigravity, and Perplexity.
+            Codex, Claude, Cursor, Gemini + Antigravity, Perplexity, Kimi Code,
+            and Hermes.
           </p>
           <ul className="trust-list" aria-label="Plugin safeguards">
             <li><span><SafeguardIcon type="scope" /></span> Read-only CLI + MCP</li>

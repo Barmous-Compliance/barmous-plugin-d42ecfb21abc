@@ -1,4 +1,12 @@
-const CLIENT_IDS = ["codex", "claude", "cursor", "gemini", "perplexity"];
+const CLIENT_IDS = [
+  "codex",
+  "claude",
+  "cursor",
+  "gemini",
+  "perplexity",
+  "kimi",
+  "hermes",
+];
 const MODE_IDS = ["mcp", "cli"];
 const REMOTE_MCP_URL =
   document.querySelector('meta[name="barmous-mcp-url"]')?.content.trim() || "";
@@ -9,6 +17,8 @@ const clients = {
   cursor: { label: "Cursor", kind: "Connector" },
   gemini: { label: "Gemini + Antigravity", kind: "Connector" },
   perplexity: { label: "Perplexity", kind: "Connector" },
+  kimi: { label: "Kimi Code", kind: "Connector" },
+  hermes: { label: "Hermes", kind: "Connector" },
 };
 
 const arrowIcon =
@@ -32,6 +42,20 @@ function localConnectorConfig() {
 }
 
 function cursorRemoteConfig(endpoint) {
+  return JSON.stringify(
+    {
+      mcpServers: {
+        barmous: {
+          url: endpoint,
+        },
+      },
+    },
+    null,
+    2,
+  );
+}
+
+function kimiRemoteConfig(endpoint) {
   return JSON.stringify(
     {
       mcpServers: {
@@ -72,6 +96,30 @@ function remoteSetupStep(clientId, endpoint) {
       description:
         "In Perplexity, open Account settings → Connectors → Add custom connector. Choose Remote, Streamable HTTP, and OAuth. Your plan or admin must allow custom connectors.",
       status: "Use the copied endpoint",
+    };
+  }
+
+  if (clientId === "kimi") {
+    return {
+      title: "Add Barmous to Kimi Code",
+      description:
+        "Save this server in ~/.kimi-code/mcp.json, start a new Kimi Code session, run /mcp-config login barmous, then use /mcp to verify the connection.",
+      command: kimiRemoteConfig(endpoint),
+      copyLabel: "Copy Kimi Code configuration",
+    };
+  }
+
+  if (clientId === "hermes") {
+    return {
+      title: "Add Barmous to Hermes",
+      description:
+        "Register the authenticated HTTP server, complete browser authorization, and test the connection before opening Hermes chat.",
+      command: [
+        `hermes mcp add barmous --url ${endpoint} --auth oauth`,
+        "hermes mcp login barmous",
+        "hermes mcp test barmous",
+      ].join("\n"),
+      copyLabel: "Copy Hermes commands",
     };
   }
 
@@ -203,6 +251,26 @@ function connectorCliSteps(clientId) {
       command: localConnectorConfig(),
       copyLabel: "Copy MCP configuration",
     };
+  } else if (clientId === "kimi") {
+    finalStep = {
+      title: "Configure Kimi Code and verify",
+      description:
+        "Save this JSON as ~/.kimi-code/mcp.json (or .kimi-code/mcp.json for this project), start a new Kimi Code session, and run /mcp to confirm Barmous is connected.",
+      command: localConnectorConfig(),
+      copyLabel: "Copy Kimi Code configuration",
+    };
+  } else if (clientId === "hermes") {
+    finalStep = {
+      title: "Connect and test Hermes",
+      description:
+        "Register the local stdio server, test it, then start a new Hermes chat. The same definition can also be stored under mcp_servers in ~/.hermes/config.yaml.",
+      command: [
+        "hermes mcp add barmous --command barmous --args mcp",
+        "hermes mcp test barmous",
+        "hermes chat",
+      ].join("\n"),
+      copyLabel: "Copy Hermes commands",
+    };
   } else {
     finalStep = {
       title: "Add the local connector",
@@ -253,6 +321,27 @@ const connectionBadge = document.querySelector("[data-connection-badge]");
 const installer = document.querySelector(".installer");
 const clientButtons = [...document.querySelectorAll("[data-client]")];
 const modeButtons = [...document.querySelectorAll("[data-mode]")];
+
+function revealClientTab(button) {
+  const scroller = button?.closest(".client-tab-scroll");
+  if (!button || !scroller) return;
+  const scrollerBounds = scroller.getBoundingClientRect();
+  const buttonBounds = button.getBoundingClientRect();
+  if (
+    buttonBounds.left >= scrollerBounds.left &&
+    buttonBounds.right <= scrollerBounds.right
+  ) {
+    return;
+  }
+  const centerDelta =
+    buttonBounds.left +
+    buttonBounds.width / 2 -
+    (scrollerBounds.left + scrollerBounds.width / 2);
+  scroller.scrollTo({
+    left: Math.max(0, scroller.scrollLeft + centerDelta),
+    behavior: "auto",
+  });
+}
 
 function createCommandBox(command, label = "Copy command") {
   const box = document.createElement("div");
@@ -314,6 +403,7 @@ function render() {
     button.setAttribute("aria-selected", String(active));
     button.tabIndex = active ? 0 : -1;
   });
+  revealClientTab(clientButtons.find((button) => button.dataset.client === state.client));
   modeButtons.forEach((button) => {
     const active = button.dataset.mode === state.mode;
     button.classList.toggle("is-active", active);
