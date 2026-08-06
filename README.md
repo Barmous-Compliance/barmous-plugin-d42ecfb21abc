@@ -1,6 +1,6 @@
 # Barmous Compliance MCP and CLI connections
 
-This repository publishes evaluation preview downloads for the Barmous Compliance read-only CLI and local MCP plugins for Codex and Claude Code. The setup page also explains how Cursor, Gemini + Antigravity, Perplexity, Kimi Code, and Hermes connect as MCP clients without pretending they have separate plugin ZIPs.
+This repository publishes evaluation preview downloads for the Barmous Compliance read-only CLI and local MCP plugins for Codex and Claude Code. The setup page also explains how Cursor, Antigravity, Perplexity, Kimi Code, and Hermes connect as MCP clients without pretending they have separate plugin ZIPs.
 
 - Download page: <https://barmous-compliance.github.io/barmous-plugin-d42ecfb21abc/>
 - Published source: `docs/`

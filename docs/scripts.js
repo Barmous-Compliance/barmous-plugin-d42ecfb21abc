@@ -2,7 +2,7 @@ const CLIENT_IDS = [
   "codex",
   "claude",
   "cursor",
-  "gemini",
+  "antigravity",
   "perplexity",
   "kimi",
   "hermes",
@@ -15,7 +15,7 @@ const clients = {
   codex: { label: "Codex", kind: "Plugin" },
   claude: { label: "Claude", kind: "Plugin" },
   cursor: { label: "Cursor", kind: "Connector" },
-  gemini: { label: "Gemini + Antigravity", kind: "Connector" },
+  antigravity: { label: "Antigravity", kind: "Connector" },
   perplexity: { label: "Perplexity", kind: "Connector" },
   kimi: { label: "Kimi Code", kind: "Connector" },
   hermes: { label: "Hermes", kind: "Connector" },
@@ -80,13 +80,12 @@ function remoteSetupStep(clientId, endpoint) {
     };
   }
 
-  if (clientId === "gemini") {
+  if (clientId === "antigravity") {
     return {
-      title: "Add Barmous to Gemini",
+      title: "Add Barmous to Antigravity",
       description:
-        "Run the command in Gemini CLI, or use the same endpoint in Antigravity's Manage MCP Servers screen.",
-      command: `gemini mcp add barmous ${endpoint} --transport http`,
-      copyLabel: "Copy Gemini command",
+        "Open Antigravity's Manage MCP Servers screen, create a Barmous server, and use the copied Streamable HTTP endpoint.",
+      status: "Use the copied endpoint",
     };
   }
 
@@ -243,13 +242,13 @@ function connectorCliSteps(clientId) {
       command: localConnectorConfig(),
       copyLabel: "Copy Cursor configuration",
     };
-  } else if (clientId === "gemini") {
+  } else if (clientId === "antigravity") {
     finalStep = {
       title: "Add the local connector",
       description:
-        "Use this MCP server definition in Gemini CLI or Antigravity. Both launch the authenticated Barmous CLI over stdio.",
+        "Use this MCP server definition in Antigravity's Manage MCP Servers screen. It launches the authenticated Barmous CLI over stdio.",
       command: localConnectorConfig(),
-      copyLabel: "Copy MCP configuration",
+      copyLabel: "Copy Antigravity configuration",
     };
   } else if (clientId === "kimi") {
     finalStep = {
@@ -309,8 +308,15 @@ function stepsFor(clientId, mode) {
 const requestedParams = new URLSearchParams(window.location.search);
 const requestedClient = requestedParams.get("client");
 const requestedMode = requestedParams.get("mode");
+const normalizedClient =
+  requestedClient === "gemini" ? "antigravity" : requestedClient;
+if (requestedClient === "gemini") {
+  const canonicalUrl = new URL(window.location.href);
+  canonicalUrl.searchParams.set("client", "antigravity");
+  window.history.replaceState({}, "", canonicalUrl);
+}
 const state = {
-  client: CLIENT_IDS.includes(requestedClient) ? requestedClient : "codex",
+  client: CLIENT_IDS.includes(normalizedClient) ? normalizedClient : "codex",
   mode: MODE_IDS.includes(requestedMode) ? requestedMode : "mcp",
 };
 
@@ -528,7 +534,13 @@ window.addEventListener("popstate", () => {
   const params = new URLSearchParams(window.location.search);
   const clientId = params.get("client");
   const mode = params.get("mode");
-  state.client = CLIENT_IDS.includes(clientId) ? clientId : "codex";
+  const normalizedClient = clientId === "gemini" ? "antigravity" : clientId;
+  if (clientId === "gemini") {
+    const canonicalUrl = new URL(window.location.href);
+    canonicalUrl.searchParams.set("client", "antigravity");
+    window.history.replaceState({}, "", canonicalUrl);
+  }
+  state.client = CLIENT_IDS.includes(normalizedClient) ? normalizedClient : "codex";
   state.mode = MODE_IDS.includes(mode) ? mode : "mcp";
   render();
 });

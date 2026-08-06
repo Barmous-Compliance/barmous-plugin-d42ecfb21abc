@@ -37,7 +37,7 @@ const CLIENT_IDS: ClientId[] = [
   "codex",
   "claude",
   "cursor",
-  "gemini",
+  "antigravity",
   "perplexity",
   "kimi",
   "hermes",
@@ -49,8 +49,8 @@ const clients: ClientDefinition[] = [
   { id: "claude", label: "Claude", maker: "Anthropic", kind: "Plugin" },
   { id: "cursor", label: "Cursor", maker: "Anysphere", kind: "Connector" },
   {
-    id: "gemini",
-    label: "Gemini + Antigravity",
+    id: "antigravity",
+    label: "Antigravity",
     maker: "Google",
     kind: "Connector",
   },
@@ -159,13 +159,12 @@ function remoteSetupStep(client: ClientDefinition, endpoint: string): SetupStep 
     };
   }
 
-  if (client.id === "gemini") {
+  if (client.id === "antigravity") {
     return {
-      title: "Add Barmous to Gemini",
+      title: "Add Barmous to Antigravity",
       description:
-        "Run the command in Gemini CLI, or use the same endpoint in Antigravity's Manage MCP Servers screen.",
-      command: `gemini mcp add barmous ${endpoint} --transport http`,
-      copyLabel: "Copy Gemini command",
+        "Open Antigravity's Manage MCP Servers screen, create a Barmous server, and use the copied Streamable HTTP endpoint.",
+      status: "Use the copied endpoint",
     };
   }
 
@@ -319,13 +318,13 @@ function connectorCliSteps(client: ClientDefinition): SetupStep[] {
       command: localConnectorConfig(),
       copyLabel: "Copy Cursor configuration",
     };
-  } else if (client.id === "gemini") {
+  } else if (client.id === "antigravity") {
     finalStep = {
       title: "Add the local connector",
       description:
-        "Use this MCP server definition in Gemini CLI or Antigravity. Both launch the authenticated Barmous CLI over stdio.",
+        "Use this MCP server definition in Antigravity's Manage MCP Servers screen. It launches the authenticated Barmous CLI over stdio.",
       command: localConnectorConfig(),
-      copyLabel: "Copy MCP configuration",
+      copyLabel: "Copy Antigravity configuration",
     };
   } else if (client.id === "kimi") {
     finalStep = {
@@ -478,10 +477,20 @@ function CommandBox({ value, label = "Copy command" }: { value: string; label?: 
 
 function readUrlState(): { client: ClientId; mode: ModeId } {
   const params = new URLSearchParams(window.location.search);
-  const requestedClient = params.get("client") as ClientId | null;
+  const requestedClient = params.get("client");
   const requestedMode = params.get("mode") as ModeId | null;
+  const normalizedClient =
+    requestedClient === "gemini" ? "antigravity" : requestedClient;
+  if (requestedClient === "gemini") {
+    const canonicalUrl = new URL(window.location.href);
+    canonicalUrl.searchParams.set("client", "antigravity");
+    window.history.replaceState({}, "", canonicalUrl);
+  }
   return {
-    client: requestedClient && CLIENT_IDS.includes(requestedClient) ? requestedClient : "codex",
+    client:
+      normalizedClient && CLIENT_IDS.includes(normalizedClient as ClientId)
+        ? (normalizedClient as ClientId)
+        : "codex",
     mode: requestedMode && MODE_IDS.includes(requestedMode) ? requestedMode : "mcp",
   };
 }

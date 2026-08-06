@@ -269,8 +269,26 @@ a:focus-visible {
   min-width: 0;
   flex: 1 1 auto;
   overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 6px;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x proximity;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.34) rgba(255, 255, 255, 0.06);
+}
+
+.client-tab-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.client-tab-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+}
+
+.client-tab-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
 }
 
 .client-tabs,
@@ -282,7 +300,8 @@ a:focus-visible {
 
 .client-tabs {
   width: max-content;
-  min-width: 100%;
+  min-width: max-content;
+  padding-inline-end: 8px;
 }
 
 .client-tab,
@@ -294,7 +313,9 @@ a:focus-visible {
 
 .client-tab {
   display: flex;
-  min-width: max-content;
+  width: 158px;
+  min-width: 158px;
+  flex: 0 0 158px;
   align-items: center;
   gap: 8px;
   padding: 7px 9px;
@@ -303,6 +324,7 @@ a:focus-visible {
   border: 1px solid transparent;
   border-radius: 8px;
   text-align: left;
+  scroll-snap-align: nearest;
   transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 
@@ -346,21 +368,6 @@ a:focus-visible {
   object-fit: contain;
 }
 
-.product-mark-pair {
-  display: flex;
-  width: 96%;
-  height: 72%;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
-}
-
-.product-mark-pair img {
-  width: calc(50% - 1px);
-  height: 100%;
-  object-fit: contain;
-}
-
 .product-mark-codex img {
   width: 76%;
   height: 76%;
@@ -374,6 +381,11 @@ a:focus-visible {
 .product-mark-cursor img {
   width: 72%;
   height: 72%;
+}
+
+.product-mark-antigravity img {
+  width: 76%;
+  height: 76%;
 }
 
 .product-mark-perplexity img {
@@ -395,11 +407,16 @@ a:focus-visible {
 
 .client-tab > span:last-child {
   display: grid;
+  min-width: 0;
+  flex: 1;
   gap: 2px;
 }
 
 .client-tab strong {
+  display: block;
+  overflow: hidden;
   font-size: 12px;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -957,8 +974,9 @@ footer {
   }
 
   .client-tab {
-    min-width: max-content;
-    flex: 0 0 auto;
+    width: 158px;
+    min-width: 158px;
+    flex: 0 0 158px;
     padding: 8px;
   }
 

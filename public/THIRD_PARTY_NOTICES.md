@@ -6,8 +6,8 @@ The Barmous Compliance Codex and Claude Code plugin bundles include the followin
 
 - The OpenAI mark is provided by OpenAI and is used only to identify the Codex setup option. OpenAI and its marks remain the property of OpenAI. Source and usage terms: <https://openai.com/brand/>.
 - The Claude spark is provided in Anthropic's official media press kit and is used only to identify the Claude Code setup option. Anthropic, Claude, and their marks remain the property of Anthropic. Source: <https://www.anthropic.com/news>.
-- The Cursor, Google Gemini, and Perplexity SVG icon data is sourced from Simple Icons 16.28.0 and distributed under CC0 1.0 Universal. Source: <https://github.com/simple-icons/simple-icons/tree/16.28.0>. The CC0 dedication applies to the icon data and does not grant trademark rights in the identified products.
-- The Google Antigravity full-color icon is provided by Google on the official Antigravity brand site and is used only to identify Antigravity in the combined Gemini + Antigravity setup option. Source: <https://antigravity.google/assets/image/brand/antigravity-icon__full-color.png>.
+- The Cursor and Perplexity SVG icon data is sourced from Simple Icons 16.28.0 and distributed under CC0 1.0 Universal. Source: <https://github.com/simple-icons/simple-icons/tree/16.28.0>. The CC0 dedication applies to the icon data and does not grant trademark rights in the identified products.
+- The Google Antigravity full-color icon is provided by Google on the official Antigravity brand site and is used only to identify the Antigravity setup option. Source: <https://antigravity.google/assets/image/brand/antigravity-icon__full-color.png>.
 - The Kimi Code storefront icon is sourced from Moonshot AI's official Kimi Code repository and is used only to identify the compatible Kimi Code setup option. Source: <https://github.com/MoonshotAI/kimi-code/blob/02c026d4871a14cd5e7b4b0e0ec71ba815f643df/apps/vscode/resources/kimi-icon-storefront.png>.
 - The Hermes icon is sourced from Nous Research's official Hermes Agent repository and is used only to identify the compatible Hermes setup option. Source: <https://github.com/NousResearch/hermes-agent/blob/ea0d54db1d22416ea07cd98abfb5d6e160aa86c9/website/static/img/apple-touch-icon.png>.
 
@@ -15,7 +15,7 @@ These product marks identify compatible setup options and do not imply endorseme
 
 ## CC0 1.0 Universal component
 
-Simple Icons 16.28.0 icon data for Cursor, Google Gemini, and Perplexity is dedicated to the public domain under CC0 1.0 Universal. The complete legal code is available at <https://creativecommons.org/publicdomain/zero/1.0/legalcode>.
+Simple Icons 16.28.0 icon data for Cursor and Perplexity is dedicated to the public domain under CC0 1.0 Universal. The complete legal code is available at <https://creativecommons.org/publicdomain/zero/1.0/legalcode>.
 
 ## SIL Open Font License component
 

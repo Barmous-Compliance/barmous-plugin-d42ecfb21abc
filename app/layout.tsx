@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Barmous Compliance | MCP & CLI Connections",
   description:
-    "Connect Barmous Compliance to Codex, Claude, Cursor, Gemini, Antigravity, Perplexity, Kimi Code, and Hermes through the read-only MCP and CLI.",
+    "Connect Barmous Compliance to Codex, Claude, Cursor, Antigravity, Perplexity, Kimi Code, and Hermes through the read-only MCP and CLI.",
   icons: {
     icon: "/barmous-mark.png",
     shortcut: "/barmous-mark.png",
