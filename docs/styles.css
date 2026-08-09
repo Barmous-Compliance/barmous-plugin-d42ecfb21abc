@@ -141,14 +141,14 @@ a:focus-visible {
 .hero {
   width: 100%;
   max-width: 1120px;
-  margin: 0 auto;
-  padding: 12px 20px 44px;
-  text-align: center;
+  margin: 0;
+  padding: 12px 0 44px;
+  text-align: left;
 }
 
 .hero h1 {
   max-width: 1080px;
-  margin: 0 auto;
+  margin: 0;
   color: var(--navy-deep);
   font-size: clamp(46px, 5.6vw, 72px);
   font-weight: 680;
@@ -1048,7 +1048,7 @@ footer {
 
   .hero {
     max-width: 920px;
-    padding: 8px 20px 38px;
+    padding: 8px 0 38px;
   }
 
   .hero h1 {
