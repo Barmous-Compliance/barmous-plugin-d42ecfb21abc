@@ -30,31 +30,6 @@ function ChevronIcon() {
   );
 }
 
-function SafeguardIcon({ type }: { type: "scope" | "company" | "audit" }) {
-  if (type === "company") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M5 21V6l7-3 7 3v15M9 9h.01M15 9h.01M9 13h.01M15 13h.01M9 17h6" />
-      </svg>
-    );
-  }
-
-  if (type === "audit") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M9 5h10M9 10h10M9 15h6M4 5l1 1 2-2M4 10l1 1 2-2M4 15l1 1 2-2" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 3 5 6v5c0 4.5 2.8 8.3 7 10 4.2-1.7 7-5.5 7-10V6l-7-3Z" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
-  );
-}
-
 export default function Home() {
   return (
     <main className="site-shell">
@@ -78,16 +53,7 @@ export default function Home() {
 
       <div className="setup-stage" id="top">
         <section className="hero" aria-labelledby="hero-heading">
-          <h1 id="hero-heading">Barmous MCP &amp; CLI for the AI tools you already use.</h1>
-          <p>
-            Connect released compliance context through one verified setup flow for
-            Codex, Claude Code, Cursor, Antigravity, Perplexity, Kimi Code, and Hermes.
-          </p>
-          <ul className="trust-list" aria-label="Plugin safeguards">
-            <li><span><SafeguardIcon type="scope" /></span> Read-only CLI + MCP</li>
-            <li><span><SafeguardIcon type="company" /></span> Browser-authorized profiles</li>
-            <li><span><SafeguardIcon type="audit" /></span> No pasted secrets</li>
-          </ul>
+          <h1 id="hero-heading">Bring Barmous compliance context into your AI workflow.</h1>
         </section>
 
         <PluginInstaller />

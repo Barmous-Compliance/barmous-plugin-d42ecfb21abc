@@ -139,27 +139,22 @@ a:focus-visible {
 }
 
 .hero {
-  max-width: 820px;
-  padding: 0 0 30px;
-  text-align: left;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 12px 20px 44px;
+  text-align: center;
 }
 
 .hero h1 {
-  margin: 0;
+  max-width: 1080px;
+  margin: 0 auto;
   color: var(--navy-deep);
-  max-width: 18ch;
-  font-size: clamp(38px, 4.4vw, 52px);
-  line-height: 1.05;
-  letter-spacing: -0.035em;
+  font-size: clamp(46px, 5.6vw, 72px);
+  font-weight: 680;
+  line-height: 0.99;
+  letter-spacing: -0.04em;
   text-wrap: balance;
-}
-
-.hero > p {
-  max-width: 70ch;
-  margin: 16px 0 0;
-  color: var(--slate);
-  font-size: 15px;
-  line-height: 1.65;
 }
 
 .button {
@@ -200,45 +195,6 @@ a:focus-visible {
 .button-secondary:hover {
   background: var(--white);
   border-color: #9fb2be;
-}
-
-.trust-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: start;
-  gap: 12px 22px;
-  margin: 22px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.trust-list li {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #405a6c;
-  font-size: 12px;
-  font-weight: 750;
-}
-
-.trust-list span {
-  display: grid;
-  width: 28px;
-  height: 28px;
-  place-items: center;
-  color: var(--navy);
-  background: #e4eef3;
-  border: 1px solid #cfdee6;
-  border-radius: 8px;
-}
-
-.trust-list svg {
-  width: 15px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.8;
 }
 
 .installer {
@@ -1091,12 +1047,12 @@ footer {
   }
 
   .hero {
-    max-width: 760px;
-    padding-bottom: 28px;
+    max-width: 920px;
+    padding: 8px 20px 38px;
   }
 
   .hero h1 {
-    font-size: clamp(38px, 5.5vw, 50px);
+    font-size: clamp(42px, 6vw, 60px);
   }
 
   .release-downloads {
@@ -1146,17 +1102,17 @@ footer {
   }
 
   .hero {
-    padding: 0 0 26px;
+    max-width: none;
+    padding: 0 0 28px;
     text-align: left;
   }
 
   .hero h1 {
-    max-width: 20ch;
-    font-size: clamp(32px, 10vw, 40px);
-  }
-
-  .trust-list {
-    justify-content: flex-start;
+    max-width: 620px;
+    margin: 0;
+    font-size: clamp(34px, 10vw, 42px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
   }
 
   .installer {
