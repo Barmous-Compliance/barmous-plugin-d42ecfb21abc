@@ -107,8 +107,11 @@ test("server-renders every clean v0.3.0 integration download", async () => {
   );
   assert.match(
     html,
-    /Barmous MCP &amp; CLI for the AI tools you already use\./i,
+    /Bring Barmous compliance context into your AI workflow\./i,
   );
+  assert.doesNotMatch(html, /Connect released compliance context/i);
+  assert.doesNotMatch(html, /class="trust-list"/i);
+  assert.doesNotMatch(html, /Read-only CLI \+ MCP|Browser-authorized profiles|No pasted secrets/i);
   assert.match(html, /class="setup-stage"/i);
   assert.match(html, /Connect .*Codex.* with .*remote MCP/i);
   for (const client of [
@@ -616,7 +619,7 @@ test("keeps the static Pages release synchronized", async () => {
     /<a\b[^>]*class="brand"[^>]*href="https:\/\/barmous\.ae\/"[^>]*aria-label="Return to Barmous Compliance website"[^>]*>/i,
   );
   assert.match(html, />v0\.3\.0</i);
-  assert.match(html, /src="scripts\.js\?v=20260807\.1"/i);
+  assert.match(html, /src="scripts\.js\?v=20260809\.1"/i);
   for (const client of [
     "codex",
     "claude",
@@ -643,7 +646,11 @@ test("keeps the static Pages release synchronized", async () => {
     html,
     /class="client-mark[^\"]*"[^>]*>\s*<svg\b/i,
   );
-  assert.match(html, /href="styles\.css\?v=20260807\.1"/i);
+  assert.match(html, /href="styles\.css\?v=20260809\.1"/i);
+  assert.match(html, /Bring Barmous compliance context into your AI workflow\./i);
+  assert.doesNotMatch(html, /Connect released compliance context/i);
+  assert.doesNotMatch(html, /class="trust-list"/i);
+  assert.doesNotMatch(html, /Read-only CLI \+ MCP|Browser-authorized profiles|No pasted secrets/i);
   assert.match(styles, /fonts\/noto-sans-variable\.woff2/i);
   assert.match(styles, /overflow-x:\s*auto/i);
   assert.match(styles, /flex:\s*0 0 158px/i);
