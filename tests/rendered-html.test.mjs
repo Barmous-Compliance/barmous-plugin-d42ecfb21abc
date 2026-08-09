@@ -619,7 +619,7 @@ test("keeps the static Pages release synchronized", async () => {
     /<a\b[^>]*class="brand"[^>]*href="https:\/\/barmous\.ae\/"[^>]*aria-label="Return to Barmous Compliance website"[^>]*>/i,
   );
   assert.match(html, />v0\.3\.0</i);
-  assert.match(html, /src="scripts\.js\?v=20260809\.1"/i);
+  assert.match(html, /src="scripts\.js\?v=20260809\.2"/i);
   for (const client of [
     "codex",
     "claude",
@@ -646,7 +646,8 @@ test("keeps the static Pages release synchronized", async () => {
     html,
     /class="client-mark[^\"]*"[^>]*>\s*<svg\b/i,
   );
-  assert.match(html, /href="styles\.css\?v=20260809\.1"/i);
+  assert.match(html, /href="styles\.css\?v=20260809\.2"/i);
+  assert.match(styles, /\.hero\s*\{[^}]*margin:\s*0;[^}]*text-align:\s*left;/i);
   assert.match(html, /Bring Barmous compliance context into your AI workflow\./i);
   assert.doesNotMatch(html, /Connect released compliance context/i);
   assert.doesNotMatch(html, /class="trust-list"/i);
